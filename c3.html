@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小书童 - 初中数学视频课程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        :root {
+            --primary: #4F97F9;
+            --secondary: #6FC8F9;
+            --accent: #FF9A8C;
+            --success: #6FD08C;
+            --light: #FFFEFC;
+            --dark: #2D334A;
+            --gray: #9CA3AF;
+            --light-bg: #F5F9FF;
+        }
+        
+        body {
+            background: var(--light-bg);
+            color: #374151;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        /* 顶部应用栏样式 */
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .back-btn {
+            font-size: 22px;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+        
+        .book-info {
+            flex: 1;
+        }
+        
+        .book-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .book-subject {
+            font-size: 14px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        
+        .book-subject .tag {
+            background: rgba(79, 151, 249, 0.15);
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .action-btn {
+            font-size: 20px;
+            color: var(--primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+        }
+        
+        .action-btn:active {
+            background: rgba(79, 151, 249, 0.1);
+        }
+        
+        /* 教材信息区 */
+        .book-header {
+            padding: 20px 16px;
+            background: white;
+            margin: 10px 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .progress-container {
+            margin-top: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-value {
+            height: 100%;
+            background: var(--primary);
+            width: 65%;
+            border-radius: 10px;
+        }
+        
+        /* 章节/页码导航 */
+        .pages-nav {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 16px 15px;
+            gap: 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin: 0 16px 10px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .pages-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .page-btn {
+            flex: 0 0 auto;
+            min-width: 70px;
+            height: 40px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--dark);
+            border: 2px solid #E5E7EB;
+            transition: all 0.3s;
+        }
+        
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 151, 249, 0.3);
+        }
+        
+        .page-btn i {
+            margin-right: 6px;
+            font-size: 14px;
+        }
+        
+        /* 试题列表区 */
+        .problem-list {
+            padding: 0 16px;
+            margin-top: 10px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .section-title span {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: normal;
+            margin-left: auto;
+        }
+        
+        .problem-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .problem-item:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+        
+        .problem-index {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(79, 151, 249, 0.1);
+            color: var(--primary);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .problem-content {
+            flex: 1;
+        }
+        
+        .problem-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .problem-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .problem-action {
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+        
+        .play-btn {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(79, 151, 249, 0.3);
+        }
+        
+        .play-btn i {
+            font-size: 18px;
+            color: white;
+            margin-left: 3px;
+        }
+        
+        /* 视频标签 */
+        .video-tag {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(111, 200, 249, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            gap: 6px;
+        }
+        
+        /* 难度标签 */
+        .difficulty-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .difficulty-easy {
+            background: rgba(111, 208, 140, 0.2);
+            color: #6FD08C;
+        }
+        
+        .difficulty-medium {
+            background: rgba(255, 218, 114, 0.2);
+            color: #F2BB16;
+        }
+        
+        .difficulty-hard {
+            background: rgba(255, 154, 140, 0.2);
+            color: #FF5A5A;
+        }
+        
+        /* 视频播放区域 (模拟) */
+        .video-player {
+            background: linear-gradient(135deg, #3a61b0, #1d3557);
+            height: 210px;
+            margin: 0 16px 20px;
+            border-radius: 16px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2;
+        }
+        
+        .play-large-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .play-large-btn i {
+            font-size: 28px;
+            color: white;
+            margin-left: 5px;
+        }
+        
+        .video-title {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding: 0 20px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .video-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+        
+        .video-thumb {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1562887189-5cfff9c214dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 200;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--gray);
+            transition: all 0.3s;
+            position: relative;
+            width: 60px;
+        }
+        
+        .nav-btn i {
+            font-size: 22px;
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+        }
+        
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            height: 3px;
+            width: 25px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .nav-btn .badge {
+            position: absolute;
+            top: -5px;
+            right: 0px;
+            background: var(--accent);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 收藏按钮 */
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+        
+        .favorite-btn i {
+            color: white;
+            font-size: 18px;
+        }
+        
+        /* 响应式设计 */
+        @media (min-width: 500px) {
+            body {
+                max-width: 500px;
+                margin: 0 auto;
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部应用栏 -->
+    <header class="app-bar">
+        <div class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="book-info">
+            <div class="book-title">人教版八年级数学（上册）</div>
+            <div class="book-subject">
+                <div class="tag">人教版教材</div>
+                <span>数学</span>
+            </div>
+        </div>
+        <div class="action-btn">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="action-btn">
+            <i class="fas fa-share-alt"></i>
+        </div>
+    </header>
+    
+    <!-- 教材信息区 -->
+    <div class="book-header">
+        <h2>三角形与全等证明</h2>
+        <p class="book-subject" style="justify-content: center; margin-top: 10px;">
+            <span>已学 26/98 个知识点</span>
+        </p>
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>学习进度</span>
+                <span>65%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-value"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 视频播放器 (模拟) -->
+    <div class="video-player">
+        <div class="video-thumb"></div>
+        <div class="video-overlay">
+            <div class="play-large-btn">
+                <i class="fas fa-play"></i>
+            </div>
+            <div class="video-title">三角形全等证明技巧</div>
+            <div class="video-subtitle">王老师 · 15:26</div>
+        </div>
+        <div class="favorite-btn">
+            <i class="fas fa-heart"></i>
+        </div>
+    </div>
+    
+    <!-- 章节/页码导航 -->
+    <div class="pages-nav">
+        <div class="page-btn">章节目录</div>
+        <div class="page-btn"><i class="fas fa-file"></i> 第8页</div>
+        <div class="page-btn active"><i class="fas fa-file"></i> 第9页</div>
+        <div class="page-btn"><i class="fas fa-file"></i> 第10页</div>
+        <div class="page-btn"><i class="fas fa-file"></i> 第11页</div>
+        <div class="page-btn"><i class="fas fa-file"></i> 第12页</div>
+        <div class="page-btn"><i class="fas fa-file"></i> 第13页</div>
+    </div>
+    
+    <!-- 试题列表区 -->
+    <div class="problem-list">
+        <div class="section-title">
+            第9页题目讲解 <span>共4道题</span>
+        </div>
+        
+        <div class="problem-item">
+            <div class="problem-index">1</div>
+            <div class="problem-content">
+                <div class="problem-title">证明：等腰三角形两底角相等</div>
+                <div class="problem-meta">
+                    <div class="difficulty-tag difficulty-easy">容易</div>
+                    <div class="video-tag"><i class="fas fa-play-circle"></i> 视频讲解</div>
+                    <div>04:26</div>
+                </div>
+            </div>
+            <div class="problem-action">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-item">
+            <div class="problem-index">2</div>
+            <div class="problem-content">
+                <div class="problem-title">根据条件证明两个三角形全等（SSS定理应用）</div>
+                <div class="problem-meta">
+                    <div class="difficulty-tag difficulty-medium">中等</div>
+                    <div class="video-tag"><i class="fas fa-play-circle"></i> 视频讲解</div>
+                    <div>07:42</div>
+                </div>
+            </div>
+            <div class="problem-action">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-item">
+            <div class="problem-index">3</div>
+            <div class="problem-content">
+                <div class="problem-title">已知两边一角，证明三角形全等（SAS定理应用）</div>
+                <div class="problem-meta">
+                    <div class="difficulty-tag difficulty-medium">中等</div>
+                    <div class="video-tag"><i class="fas fa-play-circle"></i> 视频讲解</div>
+                    <div>06:15</div>
+                </div>
+            </div>
+            <div class="problem-action">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-item">
+            <div class="problem-index">4</div>
+            <div class="problem-content">
+                <div class="problem-title">复杂几何图形的全等证明（ASA综合应用）</div>
+                <div class="problem-meta">
+                    <div class="difficulty-tag difficulty-hard">较难</div>
+                    <div class="video-tag"><i class="fas fa-play-circle"></i> 视频讲解</div>
+                    <div>10:36</div>
+                </div>
+            </div>
+            <div class="problem-action">
+                <div class="play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-btn active">
+            <i class="fas fa-play-circle"></i>
+            <span>视频</span>
+        </div>
+        <div class="nav-btn">
+            <i class="fas fa-pencil-alt"></i>
+            <span>错题</span>
+        </div>
+        <div class="nav-btn">
+            <i class="fas fa-file-download"></i>
+            <span>下载</span>
+            <span class="badge">3</span>
+        </div>
+        <div class="nav-btn">
+            <i class="fas fa-user-graduate"></i>
+            <span>我的</span>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮事件
+            document.querySelector('.back-btn').addEventListener('click', function() {
+                alert('返回上一页（书籍列表页）');
+            });
+            
+            // 切换页码
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新页面内容
+                    const activePage = this.textContent.trim();
+                    document.querySelector('.section-title').innerHTML = `${activePage}题目讲解 <span>共4道题</span>`;
+                });
+            });
+            
+            // 播放视频按钮事件
+            document.querySelectorAll('.play-btn, .play-large-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    alert('开始播放题目讲解视频\n（在实际应用中，这里将加载视频播放器）');
+                });
+            });
+            
+            // 题目点击事件
+            document.querySelectorAll('.problem-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const problemNum = this.querySelector('.problem-index').textContent;
+                    alert('开始播放题目' + problemNum + '讲解视频');
+                });
+            });
+            
+            // 收藏按钮
+            document.querySelector('.favorite-btn').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-heart" style="color:#ff5a5a"></i>';
+                alert('已添加到我的收藏');
+            });
+            
+            // 底部导航切换
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,600 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教育资源中心 - 图书浏览系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --white: #ffffff;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 10px;
+            --shadow: 0 6px 15px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f5f9, #e9ecef);
+            min-height: 100vh;
+            color: var(--dark);
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部设计 */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            background: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .titles h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .titles p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* 图书网格 */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .book-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            border: 1px solid var(--light-gray);
+        }
+
+            .book-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+                border-color: var(--primary);
+            }
+
+        .book-cover {
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(45deg, #f1f3f5, #e9ecef);
+        }
+
+            .book-cover img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: var(--transition);
+            }
+
+        .book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-info {
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--secondary);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .ribbon {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--accent);
+            color: var(--white);
+            font-size: 0.9rem;
+            padding: 5px 30px;
+            transform: rotate(45deg);
+            font-weight: 600;
+            width: 120px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .book-subject-tag {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            font-weight: 600;
+            border-radius: 0 18px 18px 0;
+        }
+
+        .book-level-tag {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            background: var(--success);
+            color: white;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            font-weight: 600;
+            border-radius: 0 18px 18px 0;
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--secondary);
+            color: rgba(255,255,255,0.8);
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0 30px;
+            flex-wrap: wrap;
+        }
+
+            .footer-links a {
+                color: rgba(255,255,255,0.9);
+                text-decoration: none;
+                font-size: 1.05rem;
+                transition: color 0.3s;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+                .footer-links a:hover {
+                    color: var(--primary);
+                }
+
+        .copyright {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+
+            .modal-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 450px;
+            width: 90%;
+            overflow: hidden;
+            transform: translateY(-50px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 22px 28px;
+            position: relative;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.8rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: transparent;
+            border: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+            .close-btn:hover {
+                transform: rotate(90deg);
+                background: rgba(255,255,255,0.15);
+            }
+
+        .modal-content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .modal-message {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin: 15px 0;
+            color: var(--secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .cancel-btn {
+            background: white;
+            color: var(--primary-dark);
+            border: 2px solid var(--primary);
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .cancel-btn:hover {
+            background: var(--light-gray);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .no-books {
+            text-align: center;
+            padding: 50px 20px;
+            grid-column: 1/-1;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            font-size: 1.2rem;
+            color: var(--gray);
+        }
+
+        /* 响应式样式 */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .book-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .titles h1 {
+                font-size: 1.8rem;
+            }
+
+            .book-grid {
+                gap: 20px;
+            }
+
+            .book-cover {
+                height: 240px;
+            }
+
+            .modal {
+                max-width: 90%;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-message {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .book-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .book-title {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .modal-header {
+                padding: 18px 22px;
+            }
+
+            .modal-content {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 弹窗容器 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-exclamation-circle"></i>
+                    系统通知
+                </h2>
+                <button class="close-btn" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <p class="modal-message">
+                    手动阀手动阀
+                </p>
+                <p class="context-info">这是一个通知消息弹窗示例，您可以在需要时显示重要信息给用户</p>
+
+                <div class="action-buttons">
+                    <button class="modal-btn confirm-btn" id="confirm-btn">我知道了</button>
+                    <button class="modal-btn cancel-btn" id="cancel-btn">不再显示</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="titles">
+                    <h1>我的图书</h1>
+                    <p>已订购的精选优质图书，助力您的学习</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="book-grid" id="book-container">
+            <!-- 图书将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#"><i class="fas fa-question-circle"></i> 帮助中心</a>
+            <a href="#"><i class="fas fa-user"></i> 用户支持</a>
+            <a href="#"><i class="fas fa-shield-alt"></i> 隐私保护</a>
+            <a href="#"><i class="fas fa-file-alt"></i> 使用条款</a>
+        </div>
+        <div class="copyright">
+            <p>© 2025 教育资源中心 | 吉ICP备12345678号 | 服务热线：400-123-4567</p>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(async function () {
+            // 显示弹窗的函数
+            function showModal() {
+                $('#modal-overlay').addClass('active');
+
+                // 添加动画效果
+                setTimeout(() => {
+                    $('.modal').css('transform', 'translateY(0)');
+                }, 100);
+            }
+
+            // 隐藏弹窗的函数
+            function hideModal() {
+                $('.modal').css('transform', 'translateY(-50px)');
+                setTimeout(() => {
+                    $('#modal-overlay').removeClass('active');
+                }, 300);
+            }
+
+            // 显示弹窗
+            setTimeout(showModal, 1000);
+
+            // 绑定关闭按钮事件
+            $('#close-modal, #confirm-btn').on('click', hideModal);
+
+            // "不再显示"按钮的事件
+            $('#cancel-btn').on('click', function () {
+                hideModal();
+                // 这里可以设置一个cookie或localStorage来记住用户选择
+                alert('您选择不再显示此消息');
+            });
+
+            // 图书数据
+            let booksData = [
+                {
+                    id: 1,
+                    title: "初中数学核心解题方法",
+                    cover: "http://tcyc.vip:9013/刷题-七年数学上册-人教版-初中/fengpi.png",
+                    http: "http://tcyc.vip:9012/a试题知识点视频.html?bookId=21",
+                    subject: "数学",
+                    level: "初中"
+                } 
+            ];
+
+            const bookContainer = $("#book-container");
+
+            // 渲染图书列表
+            function renderBooks(books) {
+                bookContainer.empty();
+
+                books.forEach(book => {
+                    let ribbon = "";
+                    if (book.isNew) {
+                        ribbon = `<div class="ribbon">最新</div>`;
+                    } else if (book.isPopular) {
+                        ribbon = `<div class="ribbon">热门</div>`;
+                    }
+                    console.log(book);
+                    const bookCard = $(`
+                            <div class="book-card" data-id="${book.id}">
+                                <div class="book-cover">
+                                    <img src="${book.cover}" alt="${book.title}">
+                                    ${ribbon}
+                                    <div class="book-subject-tag">${book.subject}</div>
+                                    <div class="book-level-tag">${book.level}</div>
+                                </div>
+                                <div class="book-info">
+                                    <h6 class="book-title">${book.title}</h6>
+                                </div>
+                            </div>
+                        `);
+
+                    bookCard.click(function () {
+                        window.location.href = book.http;
+                    });
+
+                    bookContainer.append(bookCard);
+                });
+            }
+
+            // 初始渲染部分图书（模拟API调用）
+            setTimeout(() => {
+                renderBooks(booksData);
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

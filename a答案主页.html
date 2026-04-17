@@ -1,0 +1,841 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>练习册答案 - 智慧学习平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --primary: #4A98CF;
+            --secondary: #6AB8E6;
+            --accent: #FF9EA7;
+            --success: #66C291;
+            --light: #FFFEFC;
+            --dark-text: #1E293B;
+            --dark-bg: #2D334A;
+            --warning: #FFD699;
+            --gray: #9CA3AF;
+            --card-radius: 16px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+            --text-medium: #475569;
+            --background-gradient: linear-gradient(135deg, #4A98CF 0%, #6AB8E6 100%);
+        }
+
+        body {
+            background: #f0f8ff;
+            background-image: radial-gradient(ellipse at 30% 10%, rgba(106, 184, 230, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 90% 80%, rgba(74, 152, 207, 0.08) 0%, transparent 50%);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+
+        /* 顶部导航 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(74, 152, 207, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            background: var(--background-gradient);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(74, 152, 207, 0.25);
+        }
+
+            .logo-icon i {
+                font-size: 18px;
+                color: white;
+            }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+            .nav-controls i {
+                font-size: 19px;
+                color: var(--primary);
+                transition: all 0.3s;
+                cursor: pointer;
+            }
+
+                .nav-controls i:hover {
+                    color: var(--dark-text);
+                    transform: translateY(-2px);
+                }
+
+        /* 主体内容容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            position: relative;
+            color: #2563eb;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-medium);
+            max-width: 600px;
+            margin: 0 auto 30px;
+            font-size: 1.05rem;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 20px 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            background: var(--light);
+            border: 1px solid rgba(106, 184, 230, 0.4);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+            .filter-select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(74, 152, 207, 0.15);
+            }
+
+        .count-info {
+            display: inline-flex;
+            padding: 5px 12px;
+            background: rgba(74, 152, 207, 0.15);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        /* 答案卡片区域 */
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .answer-card {
+            background: white;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            border-top: 5px solid var(--primary);
+        }
+
+            .answer-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-top {
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f8ff;
+        }
+
+        .card-details {
+            padding: 18px;
+            flex-grow: 1;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-img {
+            max-width: 100%;
+            max-height: 140px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+        }
+
+        .answer-card:hover .book-img {
+            transform: scale(1.06);
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-info {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+            .card-info li {
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-medium);
+                margin-bottom: 4px;
+            }
+
+            .card-info i {
+                color: var(--primary);
+                font-size: 14px;
+            }
+
+        .view-action {
+            background: var(--background-gradient);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: auto;
+            transition: all 0.3s ease;
+        }
+
+            .view-action:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(74, 152, 207, 0.25);
+            }
+
+            .view-action i {
+                margin-left: 8px;
+                transition: transform 0.3s;
+            }
+
+            .view-action:hover i {
+                transform: translateX(4px);
+            }
+
+        .new-tag {
+            position: absolute;
+            top: 12px;
+            right: -28px;
+            background: #ff4757;
+            color: white;
+            padding: 4px 28px;
+            transform: rotate(45deg);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* 大图预览弹窗 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+        }
+
+            .overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            font-size: 2.5rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+            .close-btn:hover {
+                color: white;
+                background: rgba(255, 0, 0, 0.5);
+                transform: rotate(90deg) scale(1.1);
+            }
+
+        .overlay-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .enlarged-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .enlarged-img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.7);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            background: linear-gradient(45deg, #2c3e50, #4a6491);
+            display: none;
+        }
+
+            .enlarged-img.loaded {
+                display: block;
+            }
+
+        .loading-large {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        .control-toolbar {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .zoom-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .zoom-btn:hover {
+                background: var(--primary);
+                transform: scale(1.1);
+            }
+
+        .instruction {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.05rem;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 8px 22px;
+            border-radius: 20px;
+            width: auto;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+                padding-bottom: 20px;
+            }
+
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+
+            .answers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 18px;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .close-btn {
+                top: 15px;
+                right: 15px;
+                font-size: 2rem;
+            }
+
+            .instruction {
+                font-size: 0.9rem;
+                padding: 6px 15px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h1>练习册答案</h1>
+        </div>
+        <div class="nav-controls">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-filter"></i>
+            <i class="fas fa-download"></i>
+            <i class="fas fa-arrow-left"></i>
+        </div>
+    </header>
+
+    <!-- 内容区域 -->
+    <div class="container">
+        <div class="header-section">
+            <h2 class="section-title">练习册答案库</h2>
+            <p class="subtitle">精选初中数学练习册答案与详细解析，助力学习效率提升</p>
+        </div>
+
+        <!-- 筛选区 -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <span class="filter-label"><i class="fas fa-book"></i>教材版本</span>
+                <select class="filter-select" id="bookVersion">
+                    <option value="all">全部版本</option>
+                    <option value="renjiao">人教版</option>
+                    <option value="beishida">北师大版</option>
+                    <option value="jiangsu">江苏版</option>
+                    <option value="zhejiang">浙江版</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label"><i class="fas fa-layer-group"></i>年级</span>
+                <select class="filter-select" id="gradeLevel">
+                    <option value="all">全部年级</option>
+                    <option value="seven">七年级</option>
+                    <option value="eight">八年级</option>
+                    <option value="nine">九年级</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <span class="filter-label"><i class="fas fa-star"></i>筛选</span>
+                <select class="filter-select" id="difficultyFilter">
+                    <option value="all">全部难度</option>
+                    <option value="easy">基础题</option>
+                    <option value="medium">中等题</option>
+                    <option value="hard">难题</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="results-info">
+            <p class="count-info">共 <strong id="totalCount">23</strong> 份练习册答案</p>
+        </div>
+
+        <!-- 答案卡片区域 -->
+        <div class="answers-grid" id="answersGrid">
+            <!-- 卡片将由JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- 大图预览弹窗 -->
+    <div class="overlay">
+        <button class="close-btn">&times;</button>
+        <div class="overlay-content">
+            <div class="enlarged-container">
+                <div class="loading-large">
+                    <i class="fas fa-spinner fa-spin"></i> 加载中...
+                </div>
+                <img class="enlarged-img" src="" alt="练习册答案">
+            </div>
+            <div class="control-toolbar">
+                <button class="zoom-btn" id="zoom-in"><i class="fas fa-search-plus"></i></button>
+                <button class="zoom-btn" id="zoom-out"><i class="fas fa-search-minus"></i></button>
+                <button class="zoom-btn" id="zoom-reset"><i class="fas fa-sync-alt"></i></button>
+            </div>
+            <div class="instruction">滚轮控制缩放 | 点击空白区域关闭 | ESC键返回</div>
+        </div>
+    </div>
+
+    <script>
+        // 图片数据
+        const answersData = [
+            {
+                id: 1,
+                title: "七年级数学练习册(人教版)",
+                version: "renjiao",
+                grade: "seven",
+                pages: "128页",
+                difficulty: "easy",
+                updated: "2023-10-15",
+                isNew: true
+            },
+            {
+                id: 2,
+                title: "八年级数学练习册(北师大版)",
+                version: "beishida",
+                grade: "eight",
+                pages: "142页",
+                difficulty: "medium",
+                updated: "2023-09-20",
+                isNew: false
+            },
+            {
+                id: 3,
+                title: "九年级数学总复习题",
+                version: "renjiao",
+                grade: "nine",
+                pages: "98页",
+                difficulty: "hard",
+                updated: "2023-11-05",
+                isNew: true
+            },
+            {
+                id: 4,
+                title: "七年级数学应用题精解",
+                version: "zhejiang",
+                grade: "seven",
+                pages: "110页",
+                difficulty: "medium",
+                updated: "2023-10-25",
+                isNew: false
+            },
+            {
+                id: 5,
+                title: "八年级代数精选解析",
+                version: "beishida",
+                grade: "eight",
+                pages: "136页",
+                difficulty: "hard",
+                updated: "2023-11-10",
+                isNew: false
+            },
+            {
+                id: 6,
+                title: "七年级几何基础训练",
+                version: "jiangsu",
+                grade: "seven",
+                pages: "96页",
+                difficulty: "easy",
+                updated: "2023-10-30",
+                isNew: true
+            },
+            {
+                id: 7,
+                title: "九年级中考模拟真题解析",
+                version: "renjiao",
+                grade: "nine",
+                pages: "112页",
+                difficulty: "hard",
+                updated: "2023-11-01",
+                isNew: false
+            },
+            {
+                id: 8,
+                title: "八年级综合练习册",
+                version: "beishida",
+                grade: "eight",
+                pages: "120页",
+                difficulty: "medium",
+                updated: "2023-10-18",
+                isNew: false
+            }
+        ];
+
+        const difficultyMap = {
+            "easy": "基础题",
+            "medium": "中等题",
+            "hard": "难题"
+        };
+
+        const gradeMap = {
+            "seven": "七年级",
+            "eight": "八年级",
+            "nine": "九年级"
+        };
+
+        // 渲染答案卡片
+        function renderAnswerCards(data) {
+            const grid = document.getElementById('answersGrid');
+            grid.innerHTML = '';
+
+            if (data.length === 0) {
+                grid.innerHTML = '<p class="no-results">没有找到匹配的练习册答案</p>';
+                return;
+            }
+
+            data.forEach((answer, index) => {
+                // 添加简单的动画延迟效果
+                const delay = (index % 6) * 0.1;
+
+                const cardEl = document.createElement('div');
+                cardEl.className = 'answer-card';
+                cardEl.style.animation = `fadeInUp 0.5s ease-out ${delay}s both`;
+                cardEl.dataset.id = answer.id;
+
+                cardEl.innerHTML = `
+                    <div class="card-top">
+                        <img src="https://picsum.photos/id/${answer.id + 100}/300/200" class="book-img" alt="${answer.title}">
+                        ${answer.isNew ? '<div class="new-tag">NEW</div>' : ''}
+                    </div>
+                    <div class="card-details">
+                        <h3 class="card-title"><i class="fas fa-book"></i>${answer.title}</h3>
+                        <ul class="card-info">
+                            <li><i class="fas fa-layer-group"></i>${gradeMap[answer.grade] || answer.grade}</li>
+                            <li><i class="fas fa-copy"></i>${answer.pages}</li>
+                            <li><i class="fas fa-signal"></i>难度: ${difficultyMap[answer.difficulty] || answer.difficulty}</li>
+                            <li><i class="far fa-calendar"></i>更新: ${answer.updated}</li>
+                        </ul>
+                        <div class="view-action">查看答案 <i class="fas fa-arrow-right"></i></div>
+                    </div>
+                `;
+
+                cardEl.addEventListener('click', () => {
+                    fetchAnswerDetails(answer.id);
+                });
+
+                grid.appendChild(cardEl);
+            });
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始渲染全部答案
+            renderAnswerCards(answersData);
+            document.getElementById('totalCount').textContent = answersData.length;
+
+            // 设置筛选器事件
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', filterAnswers);
+            });
+
+            // 设置图片预览相关事件
+            setupImagePreview();
+
+            // 卡片动画延迟
+            const cards = document.querySelectorAll('.answer-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = index % 6 * 0.1 + 's';
+            });
+        });
+
+        // 筛选答案
+        function filterAnswers() {
+            const bookVersion = document.getElementById('bookVersion').value;
+            const gradeLevel = document.getElementById('gradeLevel').value;
+            const difficulty = document.getElementById('difficultyFilter').value;
+
+            const filtered = answersData.filter(answer => {
+                let match = true;
+
+                if (bookVersion !== 'all' && answer.version !== bookVersion) match = false;
+                if (gradeLevel !== 'all' && answer.grade !== gradeLevel) match = false;
+                if (difficulty !== 'all' && answer.difficulty !== difficulty) match = false;
+
+                return match;
+            });
+
+            renderAnswerCards(filtered);
+            document.getElementById('totalCount').textContent = filtered.length;
+        }
+
+        // 图片预览功能
+        function setupImagePreview() {
+            const overlay = document.querySelector('.overlay');
+            const closeBtn = document.querySelector('.close-btn');
+            const enlargedImg = document.querySelector('.enlarged-img');
+            const loadingEl = document.querySelector('.loading-large');
+
+            function showEnlargedImage(imgSrc) {
+                overlay.classList.add('active');
+                loadingEl.style.display = 'block';
+                enlargedImg.classList.remove('loaded');
+                document.body.style.overflow = 'hidden';
+
+                // 模拟加载延迟
+                setTimeout(() => {
+                    enlargedImg.src = imgSrc;
+                    enlargedImg.onload = function() {
+                        loadingEl.style.display = 'none';
+                        enlargedImg.classList.add('loaded');
+                    };
+                }, 300);
+            }
+
+            function closeOverlay() {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                // 重置缩放
+                enlargedImg.style.transform = 'scale(1)';
+            }
+
+            // 点击关闭按钮
+            closeBtn.addEventListener('click', closeOverlay);
+
+            // 点击蒙层关闭
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeOverlay();
+            });
+
+            // ESC键关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeOverlay();
+            });
+
+            // 缩放按钮
+            document.getElementById('zoom-in').addEventListener('click', () => {
+                const scale = parseFloat(enlargedImg.style.transform.split('(')[1]) || 1;
+                const newScale = Math.min(scale + 0.2, 3);
+                enlargedImg.style.transform = `scale(${newScale})`;
+            });
+
+            document.getElementById('zoom-out').addEventListener('click', () => {
+                const scale = parseFloat(enlargedImg.style.transform.split('(')[1]) || 1;
+                const newScale = Math.max(scale - 0.2, 0.1);
+                enlargedImg.style.transform = `scale(${newScale})`;
+            });
+
+            document.getElementById('zoom-reset').addEventListener('click', () => {
+                enlargedImg.style.transform = 'scale(1)';
+            });
+
+            // 用于卡片点击展示详情
+            window.fetchAnswerDetails = function(answerId) {
+                const imgSrc = `https://picsum.photos/id/${answerId + 100}/1200/800`;
+                showEnlargedImage(imgSrc);
+            }
+        }
+    </script>
+</body>
+</html>

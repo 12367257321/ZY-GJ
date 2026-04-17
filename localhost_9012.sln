@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35425.106
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "http://localhost:9012", "http://localhost:9012", "{C16D3620-FEA1-4657-9CCF-87604FD15E87}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "false"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_9012"
+		Debug.AspNetCompiler.PhysicalPath = "..\huganqi\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_9012\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_9012"
+		Release.AspNetCompiler.PhysicalPath = "..\huganqi\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_9012\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "..\huganqi\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C16D3620-FEA1-4657-9CCF-87604FD15E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C16D3620-FEA1-4657-9CCF-87604FD15E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66144863-6519-4510-85DA-9444BCF3D69B}
+	EndGlobalSection
+EndGlobal

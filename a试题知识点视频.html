@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>试题知识点视频播放系统（优化版）</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4ecfb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 0 20px;
+            background: linear-gradient(120deg, #2a5a85 0%, #3498db 100%);
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            header h1 {
+                font-size: 2.6rem;
+                margin-bottom: 8px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }
+
+            header p {
+                max-width: 700px;
+                margin: 0 auto;
+                opacity: 0.9;
+                font-size: 1.1rem;
+            }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .selectors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            background: white;
+            padding: 22px 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .selector-group label {
+                margin-bottom: 12px;
+                font-weight: 600;
+                color: #2a5a85;
+                display: flex;
+                align-items: center;
+                font-size: 1.1rem;
+            }
+
+                .selector-group label .material-icons {
+                    margin-right: 10px;
+                    font-size: 1.3rem;
+                    color: #3498db;
+                }
+
+            .selector-group select {
+                padding: 14px 15px;
+                border: 2px solid #d6e4f0;
+                border-radius: 10px;
+                font-size: 1rem;
+                background: white;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                color: #3a6b96;
+                font-weight: 500;
+            }
+
+                .selector-group select:focus {
+                    border-color: #3498db;
+                    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+                }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-4px);
+            }
+
+        .card-header {
+            background: linear-gradient(90deg, #2a5a85, #3f7cb3);
+            color: white;
+            padding: 20px 25px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-card .card-body {
+            padding: 28px;
+            line-height: 1.7;
+            height: 100%;
+        }
+
+        .question-title {
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #2a5a85;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaeef5;
+        }
+
+            .question-title .material-icons {
+                color: #3498db;
+            }
+
+        .question-content {
+            font-size: 18px;
+            margin-bottom: 30px;
+            background: #f8fbfe;
+            padding: 22px;
+            border-left: 4px solid #3498db;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.8;
+            min-height: 150px;
+            overflow: auto;
+        }
+
+        .question-info {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        .info-badge {
+            padding: 10px 20px;
+            background: #e8f4fc;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #2c607e;
+        }
+
+        .knowledge-points {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .knowledge-list {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .knowledge-item {
+            padding: 18px 25px;
+            border-bottom: 1px solid #f0f4f9;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.25s ease;
+        }
+
+            .knowledge-item:hover {
+                background: rgba(42, 90, 133, 0.05);
+            }
+
+            .knowledge-item.active {
+                background: rgba(52, 152, 219, 0.08);
+                border-left: 4px solid #3498db;
+            }
+
+        .knowledge-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #3498db, #2a5a85);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 18px;
+            flex-shrink: 0;
+        }
+
+        .knowledge-info {
+            flex-grow: 1;
+        }
+
+        .knowledge-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: #2a5a85;
+        }
+
+        .knowledge-duration {
+            font-size: 0.95rem;
+            color: #5c7c9c;
+        }
+
+        .knowledge-tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .knowledge-tag {
+            background: #e8f4fc;
+            color: #2a5a85;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .player-container {
+            margin-bottom: 25px;
+            border-radius: 0 0 12px 12px;
+            position: relative;
+        }
+
+        .player-header {
+            background: linear-gradient(90deg, #2a5a85, #3f7cb3);
+            color: white;
+            padding: 20px 25px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #header-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 80%;
+        }
+
+        .video-container {
+            border-radius: 0 0 0 0;
+            overflow: hidden;
+            background: #000;
+            height: 800px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #video-player {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        .player-controls {
+            background: white;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .control-btn {
+            padding: 12px 22px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(135deg, #3498db, #2a5a85);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+            .control-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(42, 90, 133, 0.25);
+            }
+
+            .control-btn:active {
+                transform: translateY(0);
+            }
+
+        .secondary-btn {
+            background: #f0f4f9;
+            color: #2a5a85;
+        }
+
+        .progress-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            height: 8px;
+            background: #e6edf5;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2a5a85, #3498db);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            min-width: 100px;
+            text-align: center;
+            color: #2a5a85;
+            font-weight: 500;
+        }
+
+        .video-title {
+            flex-grow: 1;
+            font-weight: 600;
+            color: #2a5a85;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 10px;
+        }
+
+        /* 新增：全屏按钮样式 */
+        .fullscreen-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s;
+        }
+
+            .fullscreen-btn:hover {
+                background: rgba(0, 0, 0, 0.7);
+            }
+
+        /* 视频控制栏 */
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+
+        .video-container:hover .video-controls {
+            opacity: 1;
+        }
+
+        .video-control-btn {
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.3s;
+        }
+
+            .video-control-btn:hover {
+                background: rgba(255, 255, 255, 0.4);
+            }
+
+        /* 新增：全屏提示 */
+        .fullscreen-instruction {
+            position: absolute;
+            top: 10px;
+            right: 60px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .hide-instruction {
+            opacity: 0;
+        }
+
+        .init-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loader-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2a5a85;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .answer-block {
+            margin-top: 25px;
+            border-top: 1px solid #eaeef5;
+            padding-top: 20px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .selectors {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            #header-title {
+                max-width: 70%;
+            }
+
+            header h1 {
+                font-size: 2rem;
+                padding: 0 15px;
+            }
+
+            .video-container {
+                height: 250px;
+            }
+
+            .player-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .control-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .video-title {
+                padding: 10px 0;
+                text-align: center;
+                font-size: 1.1rem;
+            }
+
+            .progress-controls {
+                margin-top: 10px;
+            }
+
+            .knowledge-icon {
+                width: 36px;
+                height: 36px;
+                margin-right: 12px;
+            }
+
+            .knowledge-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="init-loader">
+            <div class="loader"></div>
+            <div class="loader-text">系统初始化中...</div>
+        </div>
+
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="material-icons">live_tv</i>
+                </div>
+                <span>智慧教育</span>
+            </div>
+            <h1 id="biaoti">试题知识点视频播放系统</h1>
+            <p>精准选择、智能推荐、高效学习</p>
+        </header>
+
+        <!-- 下拉选择器 -->
+        <div class="selectors">
+            <div class="selector-group">
+                <label><i class="material-icons">menu_book</i> 章节选择</label>
+                <select id="chapter-select">
+                    <option value="" disabled selected>- 请选择章 -</option>
+                    <!--<option value="1">第一章 有理数</option>
+                    <option value="2">第二章 整式加减</option>
+                    <option value="3">第三章 一元一次方程</option>
+                    <option value="4">第四章 几何图形初步</option>-->
+                </select>
+            </div>
+
+            <div class="selector-group">
+                <label><i class="material-icons">list_alt</i> 小节选择</label>
+                <select id="section-select" disabled>
+                    <option value="" disabled selected>- 请先选择章 -</option>
+                </select>
+            </div>
+
+            <div class="selector-group">
+                <label><i class="material-icons">description</i> 页码选择</label>
+                <select id="page-select" disabled>
+                    <option value="" disabled selected>- 请先选择小节 -</option>
+                </select>
+            </div>
+
+            <div class="selector-group">
+                <label><i class="material-icons">assignment</i> 题目选择</label>
+                <select id="question-select" disabled>
+                    <option value="" disabled selected>- 请先选择页码 -</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="card question-card">
+                <div class="card-header">
+                    <i class="material-icons">description</i> 题目详情
+                </div>
+                <div class="card-body">
+                    <div class="question-title">
+                        <i class="material-icons">label_important</i>
+                        题目： <span id="question-number">第一章 有理数</span>
+                    </div>
+                    <div class="question-content" id="question-content">
+                        请选择题目查看详情...
+                    </div>
+
+                    <div class="answer-block">
+                        <div class="question-title">
+                            <i class="material-icons">label_important</i>
+                            答案解析：
+                        </div>
+                        <div class="question-content" id="answer-content">
+                            所选题目答案将显示在这里...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 知识点列表 -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="material-icons">collections_bookmark</i> 本题关联知识点
+                </div>
+                <div class="card-body knowledge-points">
+                    <ul class="knowledge-list" id="knowledge-list">
+                        <li class="knowledge-placeholder">
+                            <div class="empty-state">
+                                <div class="material-icons" style="font-size: 60px; color: #d6e4f0; text-align: center;">playlist_add</div>
+                                <p style="text-align: center; color: #7fa3ca; margin-top: 10px;">选择题目后，相关知识点将在这里显示</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 视频播放区域 -->
+        <div class="player-container">
+            <div class="player-header">
+                <i class="material-icons">ondemand_video</i>
+                <span id="header-title">知识点视频讲解</span>
+            </div>
+            <div class="video-container" id="video-container">
+                <video id="video-player" poster="https://img.freepik.com/free-photo/abstract-grunge-decorative-relief-navy-blue-stucco-wall-texture-wide-angle-rough-colored-background_1258-28311.jpg">
+                    <source src="http://tcyc.vip:9013/绝对值.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放
+                </video>
+
+                <!-- 全屏提示 -->
+                <div id="fullscreen-instruction" class="fullscreen-instruction">
+                    双击可全屏显示，单击恢复
+                </div>
+
+                <!-- 视频控制栏 -->
+                <div class="video-controls">
+                    <div class="video-control-btn" id="video-play-btn">
+                        <i class="material-icons">play_arrow</i>
+                    </div>
+                    <div class="video-control-btn" id="volume-btn">
+                        <i class="material-icons">volume_up</i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 播放器控制栏 -->
+            <div class="player-controls">
+                <button id="play-btn" class="control-btn">
+                    <i id="play-icon" class="material-icons">play_arrow</i>
+                    <span id="play-text">播放</span>
+                </button>
+                <button class="control-btn secondary-btn">
+                    <i class="material-icons">cloud_download</i> 学习资料
+                </button>
+                <div >
+                    <button class="control-btn secondary-btn" id="zsdlx">
+                        <i class="material-icons">assignment</i> 知识点练习
+                    </button>
+                </div>
+            </div>
+
+            <div class="progress-controls">
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-info">
+                    <span id="current-time">00:00</span> /
+                    <span id="total-time">18:22</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer>
+            <p>© 2025 智慧教育平台 - 试题知识点视频系统 | 打造高效学习体验</p>
+        </footer>
+    </div>
+
+    <script>
+        // 扩展试题数据集，包含更多样本数据
+        var dataSet =
+        {
+            "1": {
+                "name": "第1章  有理数",
+                "sections": {
+                    "1": {
+                        "name": "1.1  正数和负数",
+                        "pages": {
+                            "1": {
+                                "name": "p1",
+                                "questions": [
+                                    {
+                                        "id": 1,
+                                        "title": "p1-1-题目",
+                                        "shitiid": "1132"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "title": "p1-10-题目",
+                                        "shitiid": "1133"
+                                    } 
+                                ],
+                                "knowledgePoints": [
+                                    {
+                                        "id": "K-1",
+                                        "title": "示例知识点",
+                                        "duration": "10:45"
+                                    }
+                                ]
+                            },
+                            "2": {
+                                "name": "p2",
+                                "questions": [
+                                    {
+                                        "id": 1,
+                                        "title": "p2-12-题目",
+                                        "shitiid": "1143"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "title": "p2-13-题目",
+                                        "shitiid": "1144"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "title": "p2-14-题目",
+                                        "shitiid": "1145"
+                                    },
+                                    {
+                                        "id": 4,
+                                        "title": "p2-15-题目",
+                                        "shitiid": "1146"
+                                    },
+                                    {
+                                        "id": 5,
+                                        "title": "p2-16-题目",
+                                        "shitiid": "1147"
+                                    }
+                                ],
+                                "knowledgePoints": [
+                                    {
+                                        "id": "K-2",
+                                        "title": "示例知识点",
+                                        "duration": "10:45"
+                                    }
+                                ]
+                            }
+                        }
+                    } 
+                }
+            }
+        }
+
+        // DOM元素获取
+        const chapterSelect = document.getElementById('chapter-select');
+        const sectionSelect = document.getElementById('section-select');
+        const pageSelect = document.getElementById('page-select');
+        const questionSelect = document.getElementById('question-select');
+        const questionContent = document.getElementById('question-content');
+        const answerContent = document.getElementById('answer-content');
+        const questionNumber = document.getElementById('question-number');
+        const knowledgeList = document.getElementById('knowledge-list');
+        const headerTitle = document.getElementById('header-title');
+
+        // 视频播放器相关元素
+        const biaoti = document.getElementById('biaoti');
+        const zsdlx = document.getElementById('zsdlx');
+
+        const videoPlayer = document.getElementById('video-player');
+        const playBtn = document.getElementById('play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const playText = document.getElementById('play-text');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const currentTimeElem = document.getElementById('current-time');
+        const totalTimeElem = document.getElementById('total-time');
+        const videoContainer = document.getElementById('video-container');
+        const fullscreenInstruction = document.getElementById('fullscreen-instruction');
+        const videoPlayBtn = document.getElementById('video-play-btn');
+        const initLoader = document.querySelector('.init-loader');
+
+        // 双击触发计数器
+        let lastClick = 0;
+
+        // 播放/暂停控制函数
+        function togglePlayPause() {
+            if (videoPlayer.paused || videoPlayer.ended) {
+                videoPlayer.play();
+                playIcon.textContent = 'pause';
+                playText.textContent = '暂停';
+                videoPlayBtn.innerHTML = '<i class="material-icons">pause</i>';
+            } else {
+                videoPlayer.pause();
+                playIcon.textContent = 'play_arrow';
+                playText.textContent = '播放';
+                videoPlayBtn.innerHTML = '<i class="material-icons">play_arrow</i>';
+            }
+        }
+
+        // 全屏切换函数
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    videoContainer.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // 隐藏全屏提示
+        function hideFullscreenInstruction() {
+            fullscreenInstruction.classList.add('hide-instruction');
+        }
+
+        // 单击视频容器：播放/暂停
+        videoContainer.addEventListener('click', function (e) {
+            const now = Date.now();
+            // 检测双击（300ms内两次点击）
+            if (now - lastClick < 300) {
+                toggleFullScreen();
+                lastClick = 0;
+            } else {
+                togglePlayPause();
+                lastClick = now;
+            }
+        });
+
+        // 双击时关闭双击菜单（系统默认行为）
+        videoContainer.ondblclick = function (e) {
+            e.preventDefault();
+        };
+
+        // 视频播放按钮点击事件
+        videoPlayBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            togglePlayPause();
+        });
+
+        // 播放/暂停控制
+        playBtn.addEventListener('click', togglePlayPause);
+
+        // 进度条点击跳转
+        progressContainer.addEventListener('click', function (e) {
+            const pos = (e.pageX - this.getBoundingClientRect().left) / this.offsetWidth;
+            videoPlayer.currentTime = pos * videoPlayer.duration;
+        });
+
+        // 视频时间更新事件
+        videoPlayer.addEventListener('timeupdate', function () {
+            const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+            progressBar.style.width = `${percent}%`;
+            currentTimeElem.textContent = formatTime(videoPlayer.currentTime);
+        });
+
+        // 初始化视频时长显示
+        videoPlayer.addEventListener('loadedmetadata', function () {
+            totalTimeElem.textContent = formatTime(videoPlayer.duration);
+            setTimeout(hideFullscreenInstruction, 5000);
+        });
+
+        // 格式化时间显示 (秒 -> mm:ss)
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // 章节改变事件
+        chapterSelect.addEventListener('change', function () {
+            const chapterId = this.value;
+            const sections = dataSet[chapterId]?.sections;
+
+            // 清空并禁用后续下拉框
+            sectionSelect.innerHTML = '<option value="" disabled selected>- 请选择小节 -</option>';
+            pageSelect.innerHTML = '<option value="" disabled selected>- 请选择页码 -</option>';
+            questionSelect.innerHTML = '<option value="" disabled selected>- 请选择题目 -</option>';
+            pageSelect.disabled = true;
+            questionSelect.disabled = true;
+
+            // 填充小节
+            if (sections) {
+                sectionSelect.disabled = false;
+                Object.keys(sections).forEach(sectionId => {
+                    const option = document.createElement('option');
+                    option.value = sectionId;
+                    option.textContent = `${sections[sectionId].name}`;
+                    sectionSelect.appendChild(option);
+                });
+
+                // 自动选择第一小节并触发事件
+                if (Object.keys(sections).length > 0) {
+                    sectionSelect.value = Object.keys(sections)[0];
+                    sectionSelect.dispatchEvent(new Event('change'));
+                }
+            } else {
+                sectionSelect.disabled = true;
+            }
+        });
+
+        // 小节改变事件
+        sectionSelect.addEventListener('change', function () {
+            const chapterId = chapterSelect.value;
+            const sectionId = this.value;
+            const pages = dataSet[chapterId]?.sections?.[sectionId]?.pages;
+
+            // 清空后续下拉框
+            pageSelect.innerHTML = '<option value="" disabled selected>- 请选择页码 -</option>';
+            questionSelect.innerHTML = '<option value="" disabled selected>- 请选择题目 -</option>';
+            questionSelect.disabled = true;
+
+            // 填充页码
+            if (pages) {
+                pageSelect.disabled = false;
+                Object.keys(pages).forEach(pageId => {
+                    const option = document.createElement('option');
+                    option.value = pageId;
+                    
+                    option.textContent = `${pages[pageId].name}`;// `页码 ${pageId}`;
+                    pageSelect.appendChild(option);
+                });
+
+                // 自动选择第一页并触发事件
+                if (Object.keys(pages).length > 0) {
+                    pageSelect.value = Object.keys(pages)[0];
+                    pageSelect.dispatchEvent(new Event('change'));
+                }
+            } else {
+                pageSelect.disabled = true;
+            }
+        });
+
+        // 页码改变事件
+        pageSelect.addEventListener('change', function () {
+            const chapterId = chapterSelect.value;
+            const sectionId = sectionSelect.value;
+            const pageId = this.value;
+            const questions = dataSet[chapterId]?.sections?.[sectionId]?.pages?.[pageId]?.questions;
+
+            // 清空题目下拉框
+            questionSelect.innerHTML = '<option value="" disabled selected>- 请选择题目 -</option>';
+
+            // 填充题目
+            if (questions && questions.length > 0) {
+                questionSelect.disabled = false;
+                questions.forEach((q, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;  // 修改为使用索引值，解决之前无法正确获取第一个选项的问题
+                    option.textContent = `${q.title.substring(0, 12)}`;// `题目 ${index + 1}: ${q.title.substring(0, 12)}${q.title.length > 12 ? '...' : ''}`;
+                    questionSelect.appendChild(option);
+                });
+
+                // 自动选择第一题并触发事件
+                questionSelect.value = "0"; // 注意这里使用索引值0而非ID
+                questionSelect.dispatchEvent(new Event('change'));
+            } else {
+                questionSelect.disabled = true;
+            }
+        });
+         
+        // 题目选择事件
+        questionSelect.addEventListener('change', async function () {
+            const chapterId = chapterSelect.value;
+            const sectionId = sectionSelect.value;
+            const pageId = pageSelect.value;
+            const questionId = this.value  ; // 转为索引
+
+            var  urlParams = new URLSearchParams(window.location.search);
+            var k=  urlParams.get('k')
+            if (k != 1 && questionId > 0) {
+                alert("第1题试看，如需其它试题，请联系管理员！");
+                return;
+            }
+            var id1 = dataSet[chapterId].sections[sectionId].pages[pageId].questions[questionId].shitiid;
+             
+            // 调用API获取题目详情和答案
+            const apiUrl = ` zygj.ashx?action=zygj-shitizhishidian&id=${id1}`;
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                throw new Error(`API请求失败: ${response.status}`);
+            } 
+            const data = await response.json(); 
+      
+            // 重置知识点列表
+            knowledgeList.innerHTML = '<div class="material-icons" style="font-size: 60px; color: #d6e4f0; text-align: center;">hourglass_top</div>' +
+                '<p style="text-align: center; color: #7fa3ca; margin-top: 10px;">加载知识点中...</p>';
+
+            // 添加延迟模拟数据加载
+            //setTimeout(() => {
+                // 显示题目内容
+                const question = dataSet[chapterId].sections[sectionId].pages[pageId].questions[questionId];
+                questionNumber.textContent = "";// `${chapterSelect.options[chapterSelect.selectedIndex].text}-${sectionSelect.options[sectionSelect.selectedIndex].text}`;
+                //questionContent.textContent = data.tm;// question.content;
+                //answerContent.textContent = data.daan;// question.answer;
+
+                // 显示题目内容（使用iframe）
+                questionContent.innerHTML = '';
+                const questionIframe = document.createElement('iframe');
+                questionIframe.src = data.tm;
+                questionIframe.style.width = '100%';
+                questionIframe.style.height = '200px';
+                questionIframe.style.border = 'none';
+                questionIframe.style.padding = '0';
+                questionIframe.onload = function () {
+                    // 滚动到顶部确保内容可见
+                    questionContent.scrollTop = 0;
+                };
+                questionContent.appendChild(questionIframe);
+
+                // 显示答案解析（使用iframe）
+                answerContent.innerHTML = '';
+                const answerIframe = document.createElement('iframe');
+                answerIframe.src = data.daan;
+                answerIframe.style.width = '100%';
+                answerIframe.style.height = '200px';
+                answerIframe.style.border = 'none';
+                answerIframe.style.padding = '0';
+                answerIframe.onload = function () {
+                    // 滚动到顶部确保内容可见
+                    answerContent.scrollTop = 0;
+                };
+                answerContent.appendChild(answerIframe);
+                // 生成知识点列表
+                const kps = data.zhishidian;// dataSet[chapterId].sections[sectionId].pages[pageId].knowledgePoints;
+                knowledgeList.innerHTML = '';
+                 
+                kps.forEach((kp, idx) => {
+                    
+                    const tagsHtml = "";// kp.tags.map(tag => `<span class="knowledge-tag">${tag}</span>`).join('');
+                    
+                    const li = document.createElement('li');
+                    li.className = 'knowledge-item';
+                    if (idx === 0) li.classList.add('active');
+
+                    li.innerHTML = `
+                            <div class="knowledge-icon">
+                                <i class="material-icons">play_lesson</i>
+                            </div>
+                            <div class="knowledge-info">
+                                <div class="knowledge-title">${kp.title}</div>
+                                <div class="knowledge-duration">时长: ${kp.duration}</div>
+                               
+                            </div>
+                        `;
+/*                    <div class="knowledge-tags">${tagsHtml}</div>*/
+                    li.addEventListener('click', function () {
+                        document.querySelectorAll('.knowledge-item').forEach(el => {
+                            el.classList.remove('active');
+                        });
+                        this.classList.add('active');
+
+                        // 更新视频区域标题为知识点名称
+                        headerTitle.textContent = kp.title;
+
+                        // 重置播放器
+                        videoPlayer.pause();
+                        var strkp = "";
+
+
+                        var position = kp.title.indexOf(  "-",0);
+
+                        if (position != -1) {
+                            strkp = kp.title.split("-")[1];
+                        } else {
+                            strkp = kp.title;
+                        } 
+                        videoPlayer.src = "http://tcyc.vip:9013/zsdsp/" + data.kemu + "知识点/" + strkp + ".mp4";
+                        playIcon.textContent = 'play_arrow';
+                        playText.textContent = '播放';
+                        videoPlayBtn.innerHTML = '<i class="material-icons">play_arrow</i>';
+                        progressBar.style.width = '0%';
+                        currentTimeElem.textContent = '00:00';
+                        totalTimeElem.textContent = kp.duration;
+
+                        zsdlx.addEventListener('click', function () {                            
+                            // 创建隐藏的下载链接
+                            const a = document.createElement('a');
+                            a.href = "http://tcyc.vip:9013/zsdsp/" + data.kemu + "知识点/" + strkp + ".docx";
+                            //a.download = filename;
+                            document.body.appendChild(a);
+                            // 触发下载
+                            a.click();
+
+                            // 清理资源
+                            setTimeout(() => {
+                                document.body.removeChild(a);
+                                //URL.revokeObjectURL(url);
+                            }, 100);
+                        });
+                        // 显示全屏提示
+                        fullscreenInstruction.classList.remove('hide-instruction');
+                        setTimeout(hideFullscreenInstruction, 5000);
+                    });
+
+                    knowledgeList.appendChild(li);
+                });
+
+                // 自动选择第一个知识点
+                if (kps.length > 0) {
+                    const firstKnowledge = knowledgeList.querySelector('.knowledge-item');
+                    firstKnowledge.click();
+                }
+            //}, 800);
+        });
+        // 从URL中获取图书ID
+        function getBookIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('bookId') || 0;
+        }
+        // 初始化页面和数据加载
+        async function initializeSystem() {
+            var bookid = getBookIdFromUrl();
+
+            var urlParams = new URLSearchParams(window.location.search);
+            biaoti.textContent= urlParams.get('name');
+            // 调用API获取题目详情和答案
+            const apiUrl = ` zygj.ashx?action=zygj-bookid&bookid=${bookid}`;
+          
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                throw new Error(`API请求失败: ${response.status}`);
+            }
+            dataSet = await response.json();
+
+            // 填充章节下拉框
+            for (const chapterId in dataSet) {
+                const option = document.createElement('option');
+                option.value = chapterId;
+                option.textContent = dataSet[chapterId].name;
+                chapterSelect.appendChild(option);
+            }
+
+            // 默认选择第一章
+            chapterSelect.value = '1';
+            chapterSelect.dispatchEvent(new Event('change'));
+
+            // 默认选择第一节
+            setTimeout(() => {
+                sectionSelect.value = '1';
+                sectionSelect.dispatchEvent(new Event('change'));
+
+                // 默认选择第一页
+                setTimeout(() => {
+                    pageSelect.value = '1';
+                    pageSelect.dispatchEvent(new Event('change'));
+                }, 200);
+            }, 200);
+
+            // 隐藏加载动画
+            setTimeout(() => {
+                initLoader.style.opacity = '0';
+                setTimeout(() => {
+                    initLoader.style.display = 'none';
+                }, 500);
+            }, 1500);
+        }
+
+        // 页面加载完成后初始化系统
+        window.addEventListener('DOMContentLoaded', initializeSystem);
+    </script>
+</body>
+</html>

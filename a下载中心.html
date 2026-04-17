@@ -1,0 +1,852 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的数据库</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f3f9ff 0%, #e1ecff 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin: 30px 0;
+            padding: 0 10px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #4a6bff, #0c2bc2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            background: #4a6bff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 8px 16px rgba(74, 107, 255, 0.3);
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: #556;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(74, 107, 255, 0.15);
+            padding: 25px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 0 5px;
+            flex-wrap: wrap;
+            flex: 1;
+            width: 100%;
+        }
+
+        .filter-item {
+            position: relative;
+            min-width: 180px;
+            flex: 1;
+        }
+
+            .filter-item label {
+                display: block;
+                margin-bottom: 8px;
+                color: #556;
+                font-weight: 600;
+            }
+
+            .filter-item input, .filter-item select {
+                width: 100%;
+                padding: 14px 15px 14px 50px;
+                border: 1px solid #e1e6f0;
+                border-radius: 12px;
+                background: #f9faff;
+                font-size: 1rem;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+                transition: all 0.3s ease;
+                color: #334;
+                font-weight: 500;
+            }
+
+                .filter-item input:focus, .filter-item select:focus {
+                    outline: none;
+                    border-color: #4a6bff;
+                    box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+                    background: white;
+                }
+
+            .filter-item i {
+                position: absolute;
+                left: 17px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #4a6bff;
+                font-size: 18px;
+            }
+
+            .filter-item select {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a6bff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                background-size: 16px;
+            }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-7px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .stat-card .stat {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin: 10px 0;
+                color: #4a6bff;
+            }
+
+        .stat-title {
+            color: #7a8bc8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+            .stat-title i {
+                background: #f0f3ff;
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a6bff;
+                font-size: 20px;
+                transition: all 0.3s;
+            }
+
+        .file-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 7px 30px rgba(74, 107, 255, 0.15);
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .list-header {
+            display: grid;
+            grid-template-columns: 25% 10% 15% 40% 10%;
+            padding: 20px 25px;
+            background: #f0f3ff;
+            color: #5c6bc9;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .file-item {
+            display: grid;
+            grid-template-columns: 25% 10% 15% 40% 10%;
+            padding: 25px;
+            border-bottom: 1px solid #edf1ff;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+            .file-item:hover {
+                background: #f8f9ff;
+                transform: translateY(-3px);
+                box-shadow: 0 7px 20px rgba(74, 107, 255, 0.15);
+            }
+
+        .file-info, .file-date, .file-description, .file-subject, .file-actions {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+            .file-icon.math {
+                background: #ff6b6b;
+            }
+
+            .file-icon.chinese {
+                background: #4ecdc4;
+            }
+
+            .file-icon.english {
+                background: #45b7d1;
+            }
+
+            .file-icon.physics {
+                background: #ffa94d;
+            }
+
+            .file-icon.chemistry {
+                background: #69db7c;
+            }
+
+            .file-icon.biology {
+                background: #20c997;
+            }
+
+            .file-icon.history {
+                background: #b197fc;
+            }
+
+            .file-icon.politics {
+                background: #ff8787;
+            }
+
+            .file-icon.geography {
+                background: #74c0fc;
+            }
+
+            .file-icon.other {
+                background: #adb5bd;
+            }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.15rem;
+            color: #2b3c7a;
+        }
+
+        .file-meta {
+            color: #7a8bc8;
+            font-size: 0.9rem;
+        }
+
+        .file-date {
+            color: #5c6bc9;
+        }
+
+        .file-description {
+            color: #556;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .file-subject span {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .file-math span {
+            background: #ffe9e9;
+            color: #ff6b6b;
+        }
+
+        .file-chinese span {
+            background: #e7f7f6;
+            color: #4ecdc4;
+        }
+
+        .file-english span {
+            background: #e7f6fa;
+            color: #45b7d1;
+        }
+
+        .file-physics span {
+            background: #fff4e6;
+            color: #ffa94d;
+        }
+
+        .file-chemistry span {
+            background: #ebfbee;
+            color: #2f9e44;
+        }
+
+        .file-biology span {
+            background: #d3f9d8;
+            color: #087f5b;
+        }
+
+        .file-history span {
+            background: #f0e9ff;
+            color: #7950f2;
+        }
+
+        .file-politics span {
+            background: #ffe3e3;
+            color: #f03e3e;
+        }
+
+        .file-geography span {
+            background: #d0ebff;
+            color: #1971c2;
+        }
+
+        .file-other span {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-download {
+            background: #20c997;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(32, 201, 151, 0.3);
+        }
+
+            .btn-download:hover {
+                background: #199c76;
+                transform: translateY(-2px);
+                box-shadow: 0 7px 18px rgba(32, 201, 151, 0.4);
+            }
+
+            .btn-download:active {
+                transform: translateY(0);
+                box-shadow: 0 3px 10px rgba(32, 201, 151, 0.4);
+            }
+
+        .btn-view {
+            background: #4a6bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(74, 107, 255, 0.3);
+        }
+
+            .btn-view:hover {
+                background: #3451d8;
+                transform: translateY(-2px);
+                box-shadow: 0 7px 18px rgba(74, 107, 255, 0.4);
+            }
+
+            .btn-view:active {
+                transform: translateY(0);
+                box-shadow: 0 3px 10px rgba(74, 107, 255, 0.4);
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+
+            .empty-state i {
+                font-size: 5rem;
+                margin-bottom: 20px;
+                color: #edf1ff;
+            }
+
+            .empty-state p {
+                font-size: 1.3rem;
+                color: #7a8bc8;
+                margin-bottom: 10px;
+            }
+
+        .system-message {
+            background: #e3f2fd;
+            border-left: 4px solid #4a6bff;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #f0f3ff;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 5px 0;
+            color: #4a6bff;
+            font-weight: 500;
+        }
+
+            .status-indicator .dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #4a6bff;
+            }
+
+        footer {
+            text-align: center;
+            margin: 40px 0 20px;
+            color: #7a8bc8;
+            font-size: 0.95rem;
+        }
+
+        .update-notice {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 新增样式 */
+        .filter-highlight {
+            position: relative;
+            height: 4px;
+            width: 0;
+            display: block;
+            background: #4a6bff;
+            margin-top: 8px;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .filter-item:hover .filter-highlight {
+            width: 100%;
+        }
+
+        /* 移动端样式 */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.3rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-item {
+                min-width: auto;
+            }
+
+            .stat-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.9rem;
+            }
+
+            .list-header {
+                display: none;
+            }
+
+            .file-item {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto auto;
+                padding: 20px;
+                gap: 15px;
+            }
+
+                .file-item > div {
+                    padding: 0;
+                }
+
+            .file-date {
+                padding: 10px 0;
+                border-top: 1px dashed #edf1ff;
+                border-bottom: 1px dashed #edf1ff;
+                margin: 5px 0;
+            }
+
+            .btn-download, .btn-view {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .system-message {
+                margin: 10px 0;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <h1>我的数据库</h1>
+            </div>
+            <p class="subtitle">高效的作业管理与资源下载平台，帮助学生便捷地获取学习资源与作业文档</p>
+        </header>
+
+        <div class="controls">
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label for="start-date">起始日期</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="start-date" class="date-picker">
+                    </div>
+                    <span class="filter-highlight"></span>
+                </div>
+
+                <div class="filter-item">
+                    <label for="end-date">结束日期</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" id="end-date" class="date-picker">
+                    </div>
+                    <span class="filter-highlight"></span>
+                </div>
+
+                <div class="filter-item">
+                    <label for="subject-filter">学科</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-book"></i>
+                        <select id="subject-filter">
+                            <option value="all">全部科目</option>
+                            <option value="数学">数学</option>
+                            <option value="语文">语文</option>
+                            <option value="英语">英语</option>
+                            <option value="物理">物理</option>
+                            <option value="化学">化学</option>
+                            <option value="生物">生物</option>
+                            <option value="历史">历史</option>
+                            <option value="政治">政治</option>
+                            <option value="地理">地理</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <span class="filter-highlight"></span>
+                </div>
+            </div>
+        </div>
+
+         
+
+        <div class="file-list">
+            <div class="list-header">
+                <div class="file-info">作业名称</div>
+                <div class="file-date">提交日期</div>
+                <div class="file-subject">学科</div>
+                <div class="file-description">作业描述</div>
+                <div class="file-actions">操作</div>
+            </div>
+            <div id="filesContainer">
+                <!-- JavaScript动态生成文件列表 -->
+            </div>
+        </div>
+        <a href="/download/1/a.docx" style="color:white">下载</a>
+        <footer>
+            <p>© 2025 元亨智联教育平台</p>
+        </footer>
+    </div>
+
+    <script>
+        // 作业数据 - 模拟已提交的作业
+        var files = [
+            {
+                "id": 5,
+                "type": "word",
+                "name": "刷题",
+                "subject": "数学",
+                "date": "2025-10-25",
+                "status": 1,
+                "description": ""
+            },
+            {
+                "id": 9,
+                "type": "word",
+                "name": "刷题",
+                "subject": "数学",
+                "date": "2025-10-25 18:19:24",
+                "status": 1,
+                "description": ""
+            }
+        ];
+
+        // 获取DOM元素
+        const filesContainer = document.getElementById('filesContainer');
+        const subjectFilter = document.getElementById('subject-filter');
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        //const visibleCountEl = document.getElementById('visibleCount');
+        var myUserID = localStorage.getItem('zygjUserID');
+
+
+        async function fetchAnswerData() {
+            try {
+                var apiUrl = "zygj.ashx?n=1&action=zygj-download&userID=" + myUserID;
+                //alert(apiUrl);
+                const response = await fetch(apiUrl, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`网络请求失败 (${response.status})`);
+                }
+                const responseText = await response.text();
+
+
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+
+                } catch (e) {
+                    try {
+                        responseData = JSON.parse(responseText.replace(/^"|"$/g, ''));
+                    } catch (finalError) {
+                        throw new Error(`API响应格式错误: ${responseText}`);
+                    }
+                }
+                return responseData;
+            } catch (error) {
+                console.error('加载答案失败:', error);
+                throw new Error('无法加载答案数据。请稍后重试。');
+            }
+        }
+        // 初始化并渲染文件
+        async function init() {
+            // 设置默认日期范围
+            const now = new Date();
+            const twoWeeksAgo = new Date();
+            twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+            // 格式化为YYYY-MM-DD
+            const formatDate = (date) => date.toISOString().split('T')[0];
+
+            startDateInput.value = formatDate(twoWeeksAgo);
+            endDateInput.value = formatDate(now);
+
+            files = await fetchAnswerData();//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            //alert(files);
+            // 初始渲染
+            applyFilter();
+
+            // 添加事件监听器
+            setupEventListeners();
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 添加事件监听器以自动更新
+            startDateInput.addEventListener('change', applyFilter);
+            endDateInput.addEventListener('change', applyFilter);
+            subjectFilter.addEventListener('change', applyFilter);
+        }
+
+        // 渲染文件列表
+        function renderFiles(filesToRender) {
+            filesContainer.innerHTML = '';
+
+            if (filesToRender.length === 0) {
+                filesContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-file-excel"></i>
+                                <p>没有找到匹配的作业</p>
+                                <p style="margin-top:15px;font-size:1rem;">请调整筛选条件后重试</p>
+                            </div>
+                        `;
+                return;
+            }
+
+            filesToRender.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = `file-item file-${file.subject}`;
+
+                const fileIconClass = `file-icon ${file.subject}`;
+                const subjectName = {
+                    数学: "数学",
+                    语文: "语文",
+                    英语: "英语",
+                    物理: "物理",
+                    化学: "化学",
+                    生物: "生物",
+                    历史: "历史",
+                    政治: "政治",
+                    地理: "地理",
+                    其他: "其他"
+                }[file.subject] || file.subject;
+                //var path1 = file.path; 
+                //let val = file.description.indexOf("全对") === -1 ? false : true;
+                //if (val && file.description.length < 6) path1 = "";
+                fileItem.innerHTML = `
+                            <div class="file-info">
+                                <div class="file-text">
+                                    <div class="file-name">${file.name}</div>
+                                </div>
+                            </div>
+                            <div class="file-date">
+                                ${file.date}
+                            </div>
+                            <div class="file-subject">
+                                <span>${subjectName}</span>
+                            </div>
+                            <div class="file-description">
+                                ${file.description}
+                            </div>
+                            <div class="file-actions">
+                                <a href="${file.path}" style="color:white">
+                                    <button class="btn-view" data-id="${file.id}"  >
+                                        <i class="fas fa-download"></i> 下载
+                                    </button>
+                                </a>
+                            </div>
+                        `;
+
+                filesContainer.appendChild(fileItem);
+            });
+
+            // 更新显示的文件数量
+            //visibleCountEl.textContent = filesToRender.length;
+        }
+
+        // 应用筛选条件（自动触发） - 修改了过滤逻辑
+        function applyFilter() {
+            const subject = subjectFilter.value;
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            const filteredFiles = files.filter(file => {
+              
+                const fileDate = String(file.date).split(' ')[0]; 
+
+                // 科目筛选
+                if (subject !== 'all' && file.subject !== subject) return false;
+              
+                // 日期范围筛选（仍然保留但会受上述限制）
+                if (startDate && fileDate < startDate) return false;
+                if (endDate && fileDate > endDate) return false;
+               
+                return true;
+            }); 
+            renderFiles(filteredFiles);
+        }
+
+        // 初始化日期选择器
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!endDateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                endDateInput.value = today;
+            }
+
+            // 初始化页面
+            init();
+        });
+
+        // 查看按钮事件 - 跳转到作业详情页
+        document.addEventListener('click', function (e) {
+            //if (e.target.matches('.btn-view') || e.target.matches('.btn-view *')) {
+            //    const btn = e.target.closest('.btn-view');
+            //    const fileId = btn.dataset.id;
+            //    window.location.href = "a作业回看.html?id=" + fileId;
+            //}
+        });
+    </script>
+</body>
+</html>

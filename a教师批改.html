@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧批改 - 专业作业批改系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入外部CSS文件 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 首页 - 作业列表 -->
+    <div id="homePage" class="home-page">
+        <header>
+            <div class="logo">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h1>智慧批改</h1>
+            </div>
+            <div class="subtitle">专业作业批改系统 - 支持多种批注方式</div>
+        </header>
+
+        <div class="container">
+            <div class="info-card">
+                <div class="student-info">
+                    <div class="student-avatar">L</div>
+                    <div class="student-details">
+                        <h2>李晓明</h2>
+                        <p>三年级二班 | 学号: SH20230317</p>
+                        <p>最近提交: 数学作业 - 一课一练</p>
+                    </div>
+                </div>
+
+                <div class="meta-container">
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>书籍名称</h3>
+                            <p>一课一练 - 三年级下册</p>
+                        </div>
+                    </div>
+
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>提交时间</h3>
+                            <p>2023年6月20日 17:08</p>
+                        </div>
+                    </div>
+
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>作业状态</h3>
+                            <p>批改中</p>
+                        </div>
+                    </div>
+
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>完成进度</h3>
+                            <p>第1页/共2页</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-file-alt"></i>
+                        <h2>学生作业</h2>
+                    </div>
+                </div>
+
+                <div class="work-grid">
+                    <div class="work-card" data-page="1">
+                        <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1000" alt="数学作业第一页">
+                        <div class="work-overlay">
+                            <div class="work-title">
+                                <span>数学作业 - 第1页</span>
+                                <i class="fas fa-sticky-note"></i>
+                            </div>
+                            <div class="work-progress">
+                                <div class="progress-bar" id="progress-page1" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="work-card" data-page="2">
+                        <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1000" alt="数学作业第二页">
+                        <div class="work-overlay">
+                            <div class="work-title">
+                                <span>数学作业 - 第2页</span>
+                                <i class="fas fa-sticky-note"></i>
+                            </div>
+                            <div class="work-progress">
+                                <div class="progress-bar" id="progress-page2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 评语区域 -->
+            <div class="review-section">
+                <div class="review-title">
+                    <i class="fas fa-comment-alt"></i>
+                    <h2>作业总评</h2>
+                </div>
+                <textarea class="review-text" id="reviewText" placeholder="请在此处填写对本次作业的总体评语...">学生解题思路清晰，大部分题目正确。但在最后两道应用题中存在计算错误，建议加强复杂问题的训练。</textarea>
+                <div class="review-actions">
+                    <button class="review-btn review-save" id="saveReview">
+                        <i class="fas fa-save"></i> 保存评语
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全屏批改页面 -->
+    <div id="annotationPage" class="annotation-page">
+        <div class="annotation-header">
+            <div class="header-left">
+                <div class="annotation-title">
+                    <div class="main-title" id="annotationTitle">数学作业 - 第一页</div>
+                    <div class="sub-title" id="annotationSubtitle">铅笔模式 - 红色批注</div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="header-btn" id="undoBtn">
+                    <i class="fas fa-undo"></i>
+                </div>
+
+                <div class="header-btn" id="markerBtn">
+                    <i class="fas fa-highlighter"></i>
+                    <div class="marker-dot"></div>
+                </div>
+
+                <div class="header-btn" id="closeEditBtn">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="annotation-body">
+            <div class="annotation-container">
+                <div class="canvas-wrapper" id="canvasWrapper">
+                    <canvas id="annotationCanvas"></canvas>
+                </div>
+
+                <div class="zoom-controls">
+                    <div class="zoom-btn" id="zoomOut">
+                        <i class="fas fa-search-minus"></i>
+                    </div>
+                    <div class="scale-display" id="scaleDisplay">100%</div>
+                    <div class="zoom-btn" id="zoomIn">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                    <div class="zoom-btn" id="resetZoom">
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                </div>
+
+                <div class="rotation-controls">
+                    <div class="rotate-btn" id="rotateLeft">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <div class="rotate-btn" id="rotateRight">
+                        <i class="fas fa-redo"></i>
+                    </div>
+                    <div class="rotate-btn" id="resetRotation">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation-toolbar">
+                <div class="tool-group">
+                    <div class="tool-btn active" id="penTool">
+                        <i class="fas fa-pen"></i>
+                        <div class="tool-tip">铅笔</div>
+                    </div>
+                    <div class="tool-btn" id="eraserTool">
+                        <i class="fas fa-eraser"></i>
+                        <div class="tool-tip">橡皮擦</div>
+                    </div>
+                    <div class="tool-btn toggle" id="markerToggle">
+                        <i class="fas fa-highlighter"></i>
+                        <div class="tool-tip">荧光笔</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="width-control">
+                <div class="width-value" id="widthValue">3px</div>
+                <input type="range" min="1" max="20" value="3" id="widthSlider" class="width-slider">
+            </div>
+
+            <div class="action-bar">
+                <div class="action-btn secondary" id="clearBtn">
+                    <i class="fas fa-trash-alt"></i>
+                    清除批注
+                </div>
+                <div class="action-btn primary" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    保存批注
+                </div>
+                <div class="action-btn" id="saveAndExitBtn">
+                    <i class="fas fa-check-circle"></i>
+                    完成批改
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保存通知 -->
+    <div class="notification" id="saveNotification">
+        <div class="notif-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="notif-content">批注已成功保存！</div>
+        <div class="notif-close" id="closeNotif"><i class="fas fa-times"></i></div>
+    </div>
+
+    <!-- 页面过渡效果 -->
+    <div class="page-overlay" id="pageOverlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 与原始代码相同的JavaScript逻辑...
+            // DOM 元素引用
+            const homePage = document.getElementById('homePage');
+            const annotationPage = document.getElementById('annotationPage');
+            const canvas = document.getElementById('annotationCanvas');
+            const ctx = canvas.getContext('2d');
+            const saveNotification = document.getElementById('saveNotification');
+            const canvasWrapper = document.getElementById('canvasWrapper');
+            const pageOverlay = document.getElementById('pageOverlay');
+            const progressPage1 = document.getElementById('progress-page1');
+            const progressPage2 = document.getElementById('progress-page2');
+
+            // 工具按钮
+            const penTool = document.getElementById('penTool');
+            const eraserTool = document.getElementById('eraserTool');
+            const markerToggle = document.getElementById('markerToggle');
+
+            // 功能按钮
+            const saveBtn = document.getElementById('saveBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const saveAndExitBtn = document.getElementById('saveAndExitBtn');
+            const closeEditBtn = document.getElementById('closeEditBtn');
+            const undoBtn = document.getElementById('undoBtn');
+            const saveReview = document.getElementById('saveReview');
+
+            // 旋转控制
+            const rotateLeft = document.getElementById('rotateLeft');
+            const rotateRight = document.getElementById('rotateRight');
+            const resetRotation = document.getElementById('resetRotation');
+
+            // 缩放控制
+            const zoomInBtn = document.getElementById('zoomIn');
+            const zoomOutBtn = document.getElementById('zoomOut');
+            const resetZoomBtn = document.getElementById('resetZoom');
+
+            // 宽度控制
+            const widthSlider = document.getElementById('widthSlider');
+            const widthValue = document.getElementById('widthValue');
+
+            // 变量初始化
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let scale = 1;
+            let rotation = 0; // 旋转角度
+            let currentColor = '#e74c3c';
+            let currentStrokeWidth = 3;
+            let currentTool = 'pen';
+            let isMarker = false;
+            let currentPage = 1;
+            let drawingHistory = [];
+            let currentStep = -1;
+            let image = new Image();
+            let originalWidth = 0;
+            let originalHeight = 0;
+
+            // 页面批注状态记录
+            const pageAnnotations = {
+                1: {
+                    annotationsCount: 2,
+                    progress: 65,
+                    annotations: [],
+                    imageSrc: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1000'
+                },
+                2: {
+                    annotationsCount: 0,
+                    progress: 0,
+                    annotations: [],
+                    imageSrc: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1000'
+                }
+            };
+
+            // 初始化画笔
+            function initPen() {
+                currentTool = 'pen';
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                penTool.classList.add('active');
+                setStrokeStyle();
+            }
+
+            // 初始化画布
+            function initCanvas() {
+                // 设置高质量的线条渲染
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                // 设置初始样式
+                setStrokeStyle();
+
+                // 记录原始尺寸
+                originalWidth = image.width;
+                originalHeight = image.height;
+
+                // 设置画布尺寸为图像尺寸
+                canvas.width = originalWidth;
+                canvas.height = originalHeight;
+
+                // 绘制图片
+                redrawCanvas();
+
+                // 保存初始状态
+                saveDrawingState();
+            }
+
+            // 重绘画布
+            function redrawCanvas() {
+                // 清除画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 绘制图片
+                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+
+            // 加载指定页的图片
+            function loadImage(page) {
+                currentPage = page;
+                document.getElementById('annotationTitle').textContent = `数学作业 - ${page === 1 ? '第一页' : '第二页'}`;
+
+                // 从状态对象中获取图片源
+                image.onload = initCanvas;
+                image.src = page === 1 ?
+                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1000' :
+                    'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1000';
+
+                // 重置旋转角度和缩放比例
+                rotation = 0;
+                scale = 1;
+                canvasWrapper.style.transform = `scale(${scale})`;
+                canvas.style.transform = `rotate(${rotation}deg)`;
+                document.getElementById('scaleDisplay').textContent = '100%';
+
+                // 显示进度
+                document.querySelectorAll('.progress-bar').forEach((el, index) => {
+                    el.style.width = (index + 1 === page ?
+                        pageAnnotations[page].progress :
+                        pageAnnotations[index + 1].progress) + '%';
+                });
+            }
+
+            // 保存当前画布状态
+            function saveDrawingState() {
+                currentStep++;
+                if (currentStep < drawingHistory.length) {
+                    drawingHistory.length = currentStep;
+                }
+                drawingHistory.push(canvas.toDataURL());
+
+                // 保存批注数量
+                pageAnnotations[currentPage].annotationsCount = currentStep;
+                pageAnnotations[currentPage].progress = Math.min(100, Math.max(0, currentStep * 20 + 30));
+
+                // 更新进度显示
+                document.querySelectorAll('.progress-bar').forEach((el, index) => {
+                    el.style.width = pageAnnotations[index + 1].progress + '%';
+                });
+            }
+
+            // 转换坐标（处理旋转）
+            function transformCoordinate(event) {
+                const rect = canvas.getBoundingClientRect();
+                let x, y;
+
+                if (event.touches && event.touches.length > 0) {
+                    x = event.touches[0].clientX - rect.left;
+                    y = event.touches[0].clientY - rect.top;
+                } else {
+                    x = event.clientX - rect.left;
+                    y = event.clientY - rect.top;
+                }
+
+                // 修正缩放（CSS缩放改变了坐标系统）
+                x /= scale;
+                y /= scale;
+
+                // 修正旋转（核心修正）
+                const radians = rotation * Math.PI / 180;
+                const centerX = rect.width / (2 * scale);
+                const centerY = rect.height / (2 * scale);
+
+                // 将坐标相对于中心点平移
+                const transX = x - centerX;
+                const transY = y - centerY;
+
+                // 应用旋转的逆变换
+                const rotatedX = transX * Math.cos(-radians) -
+                    transY * Math.sin(-radians);
+                const rotatedY = transX * Math.sin(-radians) +
+                    transY * Math.cos(-radians);
+
+                // 将坐标平移回原位置
+                const finalX = rotatedX + centerX;
+                const finalY = rotatedY + centerY;
+
+                return {
+                    x: Math.max(0, Math.min(originalWidth, finalX)),
+                    y: Math.max(0, Math.min(originalHeight, finalY))
+                };
+            }
+
+            // 设置工具样式
+            function setStrokeStyle() {
+                if (isMarker) {
+                    ctx.strokeStyle = 'rgba(231, 76, 60, 0.4)';
+                    ctx.lineWidth = currentStrokeWidth * 3;
+                } else if (currentTool === 'eraser') {
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = currentStrokeWidth;
+                } else {
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = currentStrokeWidth;
+                }
+
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
+            }
+
+            // 开始绘制
+            function startDrawing(e) {
+                isDrawing = true;
+                const { x, y } = transformCoordinate(e);
+                lastX = x;
+                lastY = y;
+
+                if (currentTool === 'pen' || currentTool === 'eraser') {
+                    saveDrawingState();
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                }
+            }
+
+            // 绘制中
+            function draw(e) {
+                if (!isDrawing) return;
+
+                const { x, y } = transformCoordinate(e);
+
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                [lastX, lastY] = [x, y];
+            }
+
+            // 停止绘制
+            function stopDrawing() {
+                if (!isDrawing) return;
+                isDrawing = false;
+            }
+
+            // 显示通知
+            function showNotification() {
+                saveNotification.classList.add('active', 'success');
+                setTimeout(() => {
+                    saveNotification.classList.remove('active');
+                }, 3000);
+            }
+
+            // 清空画布（保留原始图片）
+            function clearCanvas() {
+                if (confirm('确定要清除所有批注吗？')) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    redrawCanvas();
+
+                    // 清空批注记录
+                    drawingHistory = [];
+                    currentStep = -1;
+
+                    saveDrawingState();
+                }
+            }
+
+            // 撤销操作
+            function undoDrawing() {
+                if (currentStep <= 0) return;
+
+                currentStep--;
+
+                const img = new Image();
+                img.onload = function () {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = drawingHistory[currentStep];
+            }
+
+            // 更新缩放比例
+            function updateZoom(zoomIn) {
+                if (zoomIn) {
+                    scale = Math.min(3, scale * 1.1);
+                } else {
+                    scale = Math.max(0.5, scale * 0.9);
+                }
+
+                canvasWrapper.style.transform = `scale(${scale})`;
+                document.getElementById('scaleDisplay').textContent = `${Math.round(scale * 100)}%`;
+
+                // 显示反馈效果
+                (zoomIn ? zoomInBtn : zoomOutBtn).style.backgroundColor = '#3498db';
+                setTimeout(() => {
+                    (zoomIn ? zoomInBtn : zoomOutBtn).style.backgroundColor = '';
+                }, 300);
+            }
+
+            // 旋转画布（但保证绘制方向不变）
+            function rotateCanvas(angle) {
+                rotation = (rotation + angle + 360) % 360;
+                canvas.style.transform = `rotate(${rotation}deg)`;
+
+                // 更新旋转角度显示
+                const degrees = rotation;
+                document.getElementById('scaleDisplay').textContent = `${Math.round(scale * 100)}% | ${degrees}°`;
+
+                // 显示反馈效果
+                const btn = angle > 0 ? rotateRight : rotateLeft;
+                btn.style.backgroundColor = '#3498db';
+                setTimeout(() => {
+                    btn.style.backgroundColor = '';
+                }, 300);
+            }
+
+            // 重置旋转和缩放
+            function resetTransform() {
+                rotation = 0;
+                scale = 1;
+                canvasWrapper.style.transform = `scale(${scale})`;
+                canvas.style.transform = `rotate(0deg)`;
+                document.getElementById('scaleDisplay').textContent = '100%';
+
+                // 显示反馈效果
+                resetRotation.style.backgroundColor = '#3498db';
+                resetZoomBtn.style.backgroundColor = '#3498db';
+                setTimeout(() => {
+                    resetRotation.style.backgroundColor = '';
+                    resetZoomBtn.style.backgroundColor = '';
+                }, 300);
+            }
+
+            // 打开全屏批改页面
+            function openAnnotationPage(page) {
+                pageOverlay.classList.add('active');
+                setTimeout(() => {
+                    homePage.style.display = 'none';
+                    annotationPage.style.display = 'flex';
+                    pageOverlay.classList.remove('active');
+
+                    loadImage(page);
+                    initPen(); // 初始化画笔工具
+
+                    // 初始化事件监听器（只需执行一次）
+                    setupEventListeners();
+
+                    console.log(`成功进入批改页面，页面编号: ${page}`);
+                }, 300);
+            }
+
+            // 返回首页
+            function closeAnnotationPage() {
+                pageOverlay.classList.add('active');
+                setTimeout(() => {
+                    annotationPage.style.display = 'none';
+                    homePage.style.display = 'block';
+                    document.body.style.overflow = 'auto';
+                    pageOverlay.classList.remove('active');
+                }, 300);
+            }
+
+            // 保存评语
+            function saveOverallReview() {
+                const reviewText = document.getElementById('reviewText').value;
+                console.log('保存评语:', reviewText);
+
+                // 显示保存反馈
+                saveReview.innerHTML = '<i class="fas fa-check"></i> 已保存';
+                saveReview.style.backgroundColor = '#27ae60';
+
+                setTimeout(() => {
+                    saveReview.innerHTML = '<i class="fas fa-save"></i> 保存评语';
+                    saveReview.style.backgroundColor = '';
+                }, 2000);
+            }
+
+            // 工具按钮事件监听器
+            function setupToolListeners() {
+                // 工具按钮监听器
+                penTool.addEventListener('click', initPen);
+
+                eraserTool.addEventListener('click', () => {
+                    currentTool = 'eraser';
+                    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                    eraserTool.classList.add('active');
+                    setStrokeStyle();
+                });
+
+                // 荧光笔切换
+                markerToggle.addEventListener('click', () => {
+                    isMarker = !isMarker;
+                    markerToggle.classList.toggle('active', isMarker);
+                    setStrokeStyle();
+
+                    document.getElementById('annotationSubtitle').textContent =
+                        isMarker ? "荧光笔模式 - 半透明红色" : "铅笔模式 - 红色批注";
+                });
+            }
+
+            // 初始化作业卡片点击监听
+            function setupWorkCardListeners() {
+                // 绑定作业卡片点击事件
+                document.querySelectorAll('.work-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const page = parseInt(card.getAttribute('data-page'));
+                        console.log(`点击了卡片，页面编号: ${page}`);
+                        openAnnotationPage(page);
+                    });
+                });
+            }
+
+            // 批改页面功能按钮监听
+            function setupAnnotationPageListeners() {
+                // 绘制事件监听器
+                canvas.addEventListener('mousedown', startDrawing);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopDrawing);
+                canvas.addEventListener('mouseout', stopDrawing);
+                canvas.addEventListener('touchstart', e => {
+                    e.preventDefault(); // 防止页面滚动
+                    startDrawing(e);
+                }, { passive: false });
+                canvas.addEventListener('touchmove', e => {
+                    e.preventDefault(); // 防止页面滚动
+                    draw(e);
+                }, { passive: false });
+                canvas.addEventListener('touchend', stopDrawing);
+
+                // 功能按钮监听
+                clearBtn.addEventListener('click', clearCanvas);
+                undoBtn.addEventListener('click', undoDrawing);
+                closeEditBtn.addEventListener('click', closeAnnotationPage);
+
+                // 宽度控制
+                widthSlider.addEventListener('input', function () {
+                    currentStrokeWidth = parseInt(this.value);
+                    widthValue.textContent = `${currentStrokeWidth}px`;
+                    setStrokeStyle();
+
+                    // 显示当前笔触大小的视觉反馈
+                    widthValue.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        widthValue.style.transform = '';
+                    }, 300);
+                });
+
+                // 缩放控制
+                zoomInBtn.addEventListener('click', () => updateZoom(true));
+                zoomOutBtn.addEventListener('click', () => updateZoom(false));
+                resetZoomBtn.addEventListener('click', resetTransform);
+
+                // 旋转控制
+                rotateLeft.addEventListener('click', () => rotateCanvas(-90));
+                rotateRight.addEventListener('click', () => rotateCanvas(90));
+                resetRotation.addEventListener('click', resetTransform);
+
+                // 保存操作
+                saveBtn.addEventListener('click', function () {
+                    saveDrawingState();
+                    showNotification();
+
+                    // 按钮反馈效果
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 300);
+                });
+
+                saveAndExitBtn.addEventListener('click', function () {
+                    saveDrawingState();
+                    showNotification();
+
+                    setTimeout(closeAnnotationPage, 1200);
+                });
+
+                // 通知关闭
+                document.getElementById('closeNotif').addEventListener('click', () => {
+                    saveNotification.classList.remove('active');
+                });
+            }
+
+            // 页面初始化函数
+            function init() {
+                setupWorkCardListeners(); // 作业卡片监听
+                setupToolListeners();     // 工具按钮监听
+
+                // 评语保存按钮
+                saveReview.addEventListener('click', saveOverallReview);
+
+                // 批改页面事件监听
+                setupAnnotationPageListeners();
+
+                // 显示初始进度
+                progressPage1.style.width = '65%';
+            }
+
+            // 启动应用
+            init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,666 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人脸识别注册系统 | 安全认证</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f4b6a, #2a1368);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 70%, rgba(255,255,255,0.05) 0%, transparent 30%);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            padding: 40px 30px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeef5;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #246fe8, #2a1368);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .logo-icon i {
+            color: white;
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #246fe8, #2a1368);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .slogan {
+            color: #596a96;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: #2c3e50;
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 22px;
+            font-weight: 600;
+        }
+        
+        .section-title i {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #246fe8;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .image-upload {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .upload-card {
+            border: 2px dashed #d0d7e7;
+            border-radius: 14px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafe;
+        }
+        
+        .upload-card:hover {
+            border-color: #246fe8;
+            background: #f0f6ff;
+            transform: translateY(-3px);
+        }
+        
+        .upload-card.active {
+            border-color: #246fe8;
+            background: #e6f0ff;
+        }
+        
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #246fe8;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .upload-subtext {
+            color: #7a859e;
+            font-size: 14px;
+        }
+        
+        #imageInput {
+            display: none;
+        }
+        
+        .image-preview {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        #imagePreview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        label i {
+            color: #246fe8;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e53935;
+        }
+        
+        input[type="text"], 
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #d6deee;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #fff;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        
+        input:focus, 
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #246fe8;
+            box-shadow: 0 0 0 3px rgba(36, 111, 232, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            padding-top: 5px;
+        }
+        
+        .radio-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: all 0.15s;
+            cursor: pointer;
+            background: #f8fafe;
+            border: 1px solid #d6deee;
+        }
+        
+        .radio-option:hover {
+            background: #eef4ff;
+            border-color: #246fe8;
+        }
+        
+        .radio-option.active {
+            background: #e6f0ff;
+            border-color: #246fe8;
+        }
+        
+        .radio-option input {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            accent-color: #246fe8;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(90deg, #246fe8, #2244c4);
+            color: white;
+            border: none;
+            padding: 18px 24px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 15px rgba(36, 111, 232, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 20px rgba(36, 111, 232, 0.45);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 10px rgba(36, 111, 232, 0.45);
+        }
+        
+        .response-container {
+            margin: 25px 0 5px;
+            padding: 0;
+        }
+        
+        .response-card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            font-weight: 600;
+            font-size: 16px;
+            animation: fadeIn 0.5s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .success {
+            background: rgba(72, 201, 100, 0.1);
+            color: #138e3a;
+            border: 1px solid #2ecc71;
+        }
+        
+        .error {
+            background: rgba(255, 91, 91, 0.1);
+            color: #d62c2c;
+            border: 1px solid #ff6b6b;
+        }
+        
+        .loading {
+            background: rgba(36, 111, 232, 0.1);
+            color: #246fe8;
+            border: 1px solid #246fe8;
+        }
+        
+        .privacy-notice {
+            text-align: center;
+            color: #7a8aa8;
+            font-size: 13px;
+            line-height: 1.55;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeef5;
+        }
+        
+        .privacy-notice a {
+            color: #246fe8;
+            text-decoration: none;
+        }
+        
+        .privacy-notice a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 580px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .upload-card {
+                padding: 25px 15px;
+            }
+            
+            .upload-icon {
+                font-size: 44px;
+            }
+            
+            .upload-text {
+                font-size: 16px;
+            }
+            
+            .logo-text {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="logo-text">安全认证系统</div>
+            </div>
+            <div class="slogan">面部识别身份验证平台</div>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">
+                <i class="fas fa-1"></i>面部信息采集
+            </div>
+            
+            <div class="image-upload">
+                <div id="uploadCard" class="upload-card">
+                    <div class="upload-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="upload-text" id="uploadText">上传面部照片</div>
+                    <div class="upload-subtext">支持 JPG, PNG 格式 (小于15MB)</div>
+                </div>
+                
+                <input type="file" id="imageInput" accept="image/*" />
+                
+                <div class="image-preview" id="imagePreviewContainer">
+                    <img id="imagePreview" alt="人脸识别预览">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">
+                <i class="fas fa-2"></i>个人信息
+            </div>
+            
+            <div class="form-group">
+                <label for="name" class="required"><i class="fas fa-user-tag"></i>姓名</label>
+                <input type="text" id="name" placeholder="您的姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="required"><i class="fas fa-mobile-alt"></i>手机号</label>
+                <input type="tel" id="phone" placeholder="11位手机号码">
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-venus-mars"></i>性别</label>
+                <div class="radio-group">
+                    <div class="radio-option" id="maleOption">
+                        <input type="radio" id="male" name="gender" value="男" checked>
+                        <label for="male">男</label>
+                    </div>
+                    <div class="radio-option" id="femaleOption">
+                        <input type="radio" id="female" name="gender" value="女">
+                        <label for="female">女</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">
+                <i class="fas fa-3"></i>账户设置
+            </div>
+            
+            <div class="form-group">
+                <label for="role" class="required"><i class="fas fa-briefcase"></i>职务</label>
+                <select id="role">
+                    <option value="">-- 请选择职务 --</option>
+                    <option value="管理员">管理员</option>
+                    <option value="员工">普通员工</option>
+                    <!--<option value="主管">部门主管</option>
+                    <option value="技术">技术支持</option>
+                    <option value="安全">安全专员</option>-->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="remarks"><i class="fas fa-sticky-note"></i>备注信息</label>
+                <textarea id="remarks" placeholder="其他补充信息（如特殊权限、使用场景等）"></textarea>
+            </div>
+        </div>
+        
+        <button id="submitBtn" class="submit-btn">
+            <i class="fas fa-cloud-upload-alt"></i> 提交认证
+        </button>
+        
+        <div class="response-container">
+            <div id="responseCard" class="response-card"></div>
+        </div>
+        
+        <div class="privacy-notice">
+            提交信息即表示您同意我们的 <a href="#">隐私政策</a> 和 <a href="#">服务条款</a>。您的面部数据将被加密存储，仅用于身份识别目的。
+            <div style="margin-top: 12px;">
+                &copy; 2025 安全认证系统 &middot; 所有权利保留
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const uploadCard = document.getElementById('uploadCard');
+            const imageInput = document.getElementById('imageInput');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const submitBtn = document.getElementById('submitBtn');
+            const responseCard = document.getElementById('responseCard');
+            const uploadText = document.getElementById('uploadText');
+            const phoneInput = document.getElementById('phone');
+            const maleOption = document.getElementById('maleOption');
+            const femaleOption = document.getElementById('femaleOption');
+            
+            // 点击上传区域触发文件选择
+            uploadCard.addEventListener('click', function() {
+                imageInput.click();
+            });
+            
+            // 性别选择UI效果
+            maleOption.addEventListener('click', function() {
+                maleOption.classList.add('active');
+                femaleOption.classList.remove('active');
+            });
+            
+            femaleOption.addEventListener('click', function() {
+                femaleOption.classList.add('active');
+                maleOption.classList.remove('active');
+            });
+            
+            // 文件选择变化时显示预览
+            imageInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    
+                    // 简单文件类型验证
+                    if (!file.type.match('image.*')) {
+                        showResponse('❌ 请上传有效的图片文件', 'error');
+                        return;
+                    }
+                    
+                    // 验证文件大小（最大15MB）
+                    if (file.size > 15 * 1024 * 1024) {
+                        showResponse('❌ 图片文件不能超过15MB', 'error');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                        uploadCard.classList.add('active');
+                        uploadText.textContent = '更换照片';
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 手机号码输入限制
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length > 11) {
+                    this.value = this.value.slice(0, 11);
+                }
+            });
+            
+            // 提交按钮事件
+            submitBtn.addEventListener('click', function() {
+                // 收集表单数据
+                const name = document.getElementById('name').value.trim();
+                const phone = phoneInput.value.trim();
+                const gender = document.querySelector('input[name="gender"]:checked').value;
+                const role = document.getElementById('role').value;
+                const remarks = document.getElementById('remarks').value;
+                const image = imageInput.files[0];
+                
+                // 表单验证
+                if (!name) {
+                    showResponse('❌ 请输入您的姓名', 'error');
+                    return;
+                }
+                
+                if (!phone || phone.length !== 11) {
+                    showResponse('❌ 请输入有效的11位手机号码', 'error');
+                    return;
+                }
+                
+                if (!role) {
+                    showResponse('❌ 请选择您的职务', 'error');
+                    return;
+                }
+                
+                if (!image) {
+                    showResponse('❌ 请上传面部照片完成识别', 'error');
+                    return;
+                }
+                
+                // 构建FormData对象
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('phone', phone);
+                formData.append('gender', gender);
+                formData.append('role', role);
+                formData.append('remarks', remarks);
+                formData.append('imageFile', image);
+                
+                // 显示处理状态
+                showResponse('<i class="fas fa-spinner fa-spin"></i> 正在进行人脸识别验证...', 'loading');
+                
+                // 禁用提交按钮
+                submitBtn.disabled = true;
+                
+                // 显示处理动画
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+                
+                // 使用Fetch API调用.ashx文件
+                fetch('FaceRecognition.ashx', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络请求失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // 成功反馈
+                        showResponse(`✅ ${data.message}<hr class="divider"><div class="response-detail">姓名: ${data.userData.name}<br>手机号: ${data.userData.phone}<br>认证时间: ${new Date().toLocaleString()}</div>`, 'success');
+                        
+                        // 重置按钮状态
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> 认证完成';
+                        submitBtn.style.background = 'linear-gradient(90deg, #28a745, #2e8b57)';
+                        submitBtn.style.boxShadow = '0 6px 15px rgba(40, 167, 69, 0.35)';
+                        
+                        // 禁用上传区域
+                        uploadCard.style.cursor = 'default';
+                        uploadCard.classList.add('active');
+                        uploadCard.onclick = null;
+                    } else {
+                        // 失败处理
+                        showResponse(`❌ 认证失败: ${data.message}`, 'error');
+                        
+                        // 重置按钮状态
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                })
+                .catch(error => {
+                    // 网络错误处理
+                    showResponse(`❌ 网络错误: 请检查您的连接或稍后再试`, 'error');
+                    
+                    // 重置按钮状态
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                });
+            });
+            
+            // 显示响应消息
+            function showResponse(message, type) {
+                responseCard.innerHTML = message;
+                responseCard.className = `response-card ${type}`;
+                responseCard.style.display = 'block';
+                
+                // 滚动到消息位置
+                responseCard.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业管家 - 作业上传</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary: #0CA678;
+            --primary-light: #20c997;
+            --primary-dark: #087f5b;
+            --primary-extra-light: rgba(12, 166, 120, 0.08);
+            --secondary: #4C71F3;
+            --accent: #FF9A8C;
+            --success: #6FD08C;
+            --light: #ffffff;
+            --dark: #2D334A;
+            --gray-100: #f8fafc;
+            --gray-200: #f1f5f9;
+            --gray-300: #e2e8f0;
+            --gray-400: #CBD5E1;
+            --gray-500: #94a3b8;
+            --gray-600: #64748B;
+            --gray-700: #334155;
+            --light-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --card-radius: 16px;
+        }
+
+        /* 顶部导航栏 - 与作业回看页面统一 */
+        .top-nav {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-button i {
+                margin-right: 5px;
+            }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+            .logo i {
+                font-size: 24px;
+            }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .user-info img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                border: 2px solid white;
+                object-fit: cover;
+            }
+
+        body {
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+            body::before {
+                content: "";
+                position: fixed;
+                top: -50px;
+                left: -50px;
+                right: -50px;
+                height: 300px;
+                background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+                border-radius: 0 0 50% 50%;
+                z-index: -1;
+            }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            padding-top: 20px; /* Added for space below header */
+        }
+
+        /* 作业上传标题区域 */
+        .upload-header {
+            text-align: center;
+            margin: 40px 0 20px;
+        }
+
+            .upload-header h1 {
+                font-size: 28px;
+                color: var(--dark);
+                margin-bottom: 15px;
+                font-weight: 700;
+            }
+
+            .upload-header p {
+                font-size: 18px;
+                color: var(--gray-600);
+                max-width: 600px;
+                margin: 0 auto;
+                line-height: 1.5;
+            }
+
+        /* 内容卡片 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+        }
+
+        /* 表单区域样式 */
+        .form-section {
+            margin: 20px 0 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .section-title i {
+                width: 34px;
+                height: 34px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: var(--primary-extra-light);
+                border-radius: 50%;
+                color: var(--primary);
+                font-size: 16px;
+            }
+
+        .form-row {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--gray-300);
+            background: var(--gray-100);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+            .form-input:focus,
+            .form-select:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(12, 166, 120, 0.2);
+            }
+
+            .form-input:hover,
+            .form-select:hover {
+                border-color: var(--gray-400);
+            }
+
+        /* 图片上传区域 */
+        .image-upload {
+            margin-top: 32px;
+        }
+
+        #uploadCard {
+            background: var(--gray-100);
+            border: 2px dashed var(--gray-400);
+            border-radius: var(--card-radius);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+            #uploadCard:hover {
+                border-color: var(--primary);
+                background-color: var(--primary-extra-light);
+            }
+
+            #uploadCard.dragover {
+                background: rgba(12, 166, 120, 0.15);
+                border-color: var(--primary);
+            }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            color: var(--primary);
+            font-size: 28px;
+            transition: transform 0.3s;
+        }
+
+        #uploadCard:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: var(--gray-500);
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .image-count {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        #imageInput {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* 照片预览区域 */
+        .gallery-section {
+            margin-top: 35px;
+        }
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .gallery-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-extra-light);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .image-item {
+            position: relative;
+            height: 150px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+            .image-item:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .image-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+        .placeholder-img {
+            width: 100%;
+            height: 100%;
+            background: var(--gray-100);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+            border-radius: 12px;
+        }
+
+            .placeholder-img i {
+                font-size: 24px;
+                margin-bottom: 8px;
+                color: var(--gray-300);
+            }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            color: #f43f5e;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+            .delete-btn:hover {
+                background: #f43f5e;
+                color: white;
+            }
+
+        .upload-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(12, 166, 120, 0.3);
+        }
+
+            .btn-primary:hover {
+                background: #087f5b;
+                transform: translateY(-2px);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 8px rgba(12, 166, 120, 0.3);
+            }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+            .btn-outline:hover {
+                border-color: var(--gray-500);
+                background: var(--gray-100);
+            }
+
+            .btn-outline:active {
+                background: var(--gray-200);
+            }
+
+        .loading-spinner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            z-index: 20;
+            display: none;
+            border-radius: var(--card-radius);
+        }
+
+            .loading-spinner i {
+                animation: spin 1s infinite linear;
+                margin-right: 10px;
+            }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .message-bar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+        }
+
+        .message-success {
+            background: var(--success);
+            color: white;
+            opacity: 1;
+        }
+
+        .message-error {
+            background: #f43f5e;
+            color: white;
+            opacity: 1;
+        }
+
+        .required::after {
+            content: " *";
+            color: #f43f5e;
+        }
+
+        .drop-instructions {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--card-radius);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            padding: 20px;
+            text-align: center;
+            z-index: 5;
+        }
+
+        #uploadCard.dragover .drop-instructions {
+            opacity: 1;
+        }
+
+        .drop-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature-box {
+            background: rgba(12, 166, 120, 0.05);
+            border-radius: 12px;
+            padding: 18px 15px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 700px) {
+            .card {
+                padding: 25px 20px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .upload-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+                .upload-actions .btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+            .form-row {
+                margin-bottom: 18px;
+            }
+
+            .form-label {
+                margin-bottom: 6px;
+            }
+
+            .top-nav {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 - 与作业回看页面统一 -->
+  
+
+    <nav class="top-nav">
+        <a href="#" class="back-button">
+            <i class="fas fa-arrow-left"></i>返回
+        </a>
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <span class="page-title">作业管家 - 作业上传</span>
+        </div>
+        <div class="user-info">
+            <span>张小明同学</span>
+            <img src="https://randomuser.me/api/portraits/lego/1.jpg" alt="用户头像">
+        </div>
+    </nav>
+
+    <div class="message-bar" id="messageBar"></div>
+
+    <div class="container">
+        <!--<div class="upload-header">
+            <h1>作业上传</h1>
+            <p>使用作业管家快速提交作业，提高学习效率</p>
+        </div>-->
+
+        <div class="card">
+            <!-- 表单区域 -->
+            <section class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        作业信息
+
+                    </h2> <h4 style="color:red"> 上传作业必须与所选图书相一致</h4>
+                </div>
+
+                <div class="form-row">
+                    <select class="form-select" id="subject" required>
+                        <option value="">请选择图书</option>
+                        <option value="语文">语文</option>
+                        <option value="数学">数学</option>
+                       
+                    </select>
+                </div>
+            </section>
+
+            <!-- 图片上传区域 -->
+            <section class="image-upload">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-camera"></i>
+                        拍照上传作业
+                    </h2>
+                </div>
+
+                <div class="image-upload">
+                    <div id="uploadCard" class="upload-card">
+                        <div class="upload-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="upload-text" id="uploadText">点击拍照或拖拽文件到此处</div>
+                        <div class="upload-subtext">
+                            支持 JPG, PNG, PDF 格式 (最大15MB)<br>
+                            可上传多个作业图片
+                        </div>
+                        <span class="image-count">最多8个文件</span>
+
+                        <div class="drop-instructions">
+                            <div class="drop-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">松开上传</div>
+                            <div class="upload-subtext">将文件拖拽到此处进行上传</div>
+                        </div>
+
+                        <input type="file" id="imageInput" multiple accept="image/*,.pdf" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- 照片预览区域 -->
+            <section class="gallery-section">
+                <div class="gallery-header">
+                    <h3 class="gallery-title">
+                        <i class="fas fa-images"></i>
+                        已上传文件
+                    </h3>
+                    <div class="upload-count">
+                        <i class="fas fa-file-image"></i>
+                        <span id="countDisplay">0</span>/8
+                    </div>
+                </div>
+
+                <div class="gallery-grid" id="galleryGrid">
+                    <!-- 初始显示占位符 -->
+                    <div class="image-item">
+                        <div class="placeholder-img">
+                            <i class="far fa-image"></i>
+                            <small>无文件</small>
+                        </div>
+                    </div>
+                    <div class="image-item">
+                        <div class="placeholder-img">
+                            <i class="far fa-file-pdf"></i>
+                            <small>无PDF</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-actions">
+                    <button class="btn btn-outline" id="clearBtn">
+                        <i class="fas fa-trash-alt"></i>
+                        清空全部
+                    </button>
+                    <button class="btn btn-primary" id="uploadBtn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        提交作业
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        //alert(1);
+        // 返回按钮功能
+        document.querySelector('.back-button').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.history.back();
+        });
+
+        var myUserID = localStorage.getItem('zygjUserID');
+
+        // 从ASHX接口获取答案数据       
+        async function fetchAnswerData() {
+            try { 
+                var apiUrl = `zygj.ashx?action=zygj-mybooks&userID=` + myUserID; 
+                const response = await fetch(apiUrl, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`网络请求失败 (${response.status})`);
+                }
+                const responseText = await response.text();
+
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+
+                } catch (e) {
+                    try {
+                        responseData = JSON.parse(responseText.replace(/^"|"$/g, ''));
+                    } catch (finalError) {
+                        throw new Error(`API响应格式错误: ${responseText}`);
+                    }
+                }
+                return responseData;
+            } catch (error) {
+                console.error('加载答案失败:', error);
+                throw new Error('无法加载答案数据。请稍后重试。');
+            }
+        }
+    
+        var bookid = "";
+        var bookname = "";
+        var subjectdata = [
+            { "id": "123", "title": "数学练习册" }, 
+            { "id": "161", "title": "地理图册" }
+        ];
+
+        // 初始化图书选择下拉列表
+        document.addEventListener('DOMContentLoaded', async function () {
+            subjectdata = await fetchAnswerData();
+            const subjectSelect = document.getElementById('subject');
+
+            // 清空默认选项（除了第一项）
+            while (subjectSelect.options.length > 1) {
+                subjectSelect.remove(1);
+            }
+            // 填充图书数据
+            subjectdata.forEach(book => {
+                const option = document.createElement('option');
+                option.value = book.id;
+                option.textContent = book.title;
+                subjectSelect.appendChild(option);
+            });
+            //// 自动选择第一项图书（如果有）
+            //if (subjectdata.length > 0) {
+            //    subjectSelect.value = subjectdata[0].id;
+            //    bookid = subjectdata[0].id;
+            //    bookname = subjectdata[0].title;                 
+            //}
+            // 添加选择更改事件
+            subjectSelect.addEventListener('change', function () {
+                // 获取选择的图书ID和名称
+                const selectedOption = subjectSelect.options[subjectSelect.selectedIndex];
+
+                if (selectedOption.value) {
+                    // 更新全局变量
+                    bookid = selectedOption.value;
+                    bookname = selectedOption.text;                     
+                }
+            });
+        //document.addEventListener('DOMContentLoaded', async function () {
+            // DOM元素
+            const uploadCard = document.querySelector('#uploadCard');
+            const imageInput = document.getElementById('imageInput');
+            const clearBtn = document.getElementById('clearBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const galleryGrid = document.getElementById('galleryGrid');
+            const countDisplay = document.getElementById('countDisplay');
+            const messageBar = document.getElementById('messageBar');
+            const studentName = document.getElementById('studentName');
+            const className = document.getElementById('className');
+            const subject = document.getElementById('subject');
+
+            // 其他变量
+            let capturedPhotos = [];
+            let selectedFiles = []; // 存储用户选择的文件数组
+
+            // 最大文件数量
+            const MAX_FILES = 8;
+
+            // 初始化事件监听器
+            initUploadEvents();
+            updateGallery();
+
+            // 上传事件监听器
+            function initUploadEvents() {
+                // 点击上传卡片
+                uploadCard.addEventListener('click', function (e) {
+                    if (e.target !== imageInput) {
+                        imageInput.click();
+                    }
+                });
+
+                // 文件选择
+                imageInput.addEventListener('change', handleFileSelect);
+
+                // 拖拽事件
+                uploadCard.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                    uploadCard.classList.add('dragover');
+                });
+
+                uploadCard.addEventListener('dragleave', function () {
+                    uploadCard.classList.remove('dragover');
+                });
+
+                uploadCard.addEventListener('drop', function (e) {
+                    e.preventDefault();
+                    uploadCard.classList.remove('dragover');
+
+                    const fileList = e.dataTransfer.files;
+                    if (fileList.length > 0) {
+                        handleFileSelect({ target: { files: fileList } });
+                    }
+                });
+            }
+
+            // 处理文件选择
+            function handleFileSelect(e) {
+                const files = e.target.files || e.dataTransfer.files;
+                if (!files) return;
+
+                let filesAdded = 0;
+
+                // 计算剩余可添加文件数
+                const remaining = MAX_FILES - capturedPhotos.length;
+                if (remaining <= 0) {
+                    showMessage(`最多只能添加${MAX_FILES}个文件`, false);
+                    return;
+                }
+
+                // 遍历选中的文件
+                for (let i = 0; i < Math.min(files.length, remaining); i++) {
+                    const file = files[i];
+
+                    // 验证文件类型
+                    if (!file.type.match('image.*') && file.type !== 'application/pdf') {
+                        showMessage('只支持图片和PDF文件', false);
+                        continue;
+                    }
+
+                    // 验证文件大小
+                    if (file.size > 15 * 1024 * 1024) {
+                        showMessage(`${file.name} 文件大小超过15MB`, false);
+                        continue;
+                    }
+
+                    // 添加到文件数组
+                    selectedFiles.push(file);
+
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        capturedPhotos.push({
+                            src: e.target.result,
+                            type: file.type.includes('image') ? 'image' : 'pdf',
+                            name: file.name
+                        });
+                        updateGallery();
+
+                        // 反馈文件已添加
+                        filesAdded++;
+                        if (filesAdded <= 3) {
+                            showMessage(`${file.name} 已添加`, true);
+                        } else if (filesAdded === 4) {
+                            showMessage(`已添加4个文件！`, true);
+                        }
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+
+                // 重置input
+                if (e.target && e.target.id === 'imageInput') {
+                    imageInput.value = '';
+                }
+            }
+
+            // 清空所有文件
+            clearBtn.addEventListener('click', function () {
+                if (capturedPhotos.length === 0) {
+                    showMessage("还没有添加文件", false);
+                    return;
+                }
+
+                // 确认对话框
+                const confirmed = confirm(`确定要清空所有 ${capturedPhotos.length} 个文件吗？`);
+                if (confirmed) {
+                    capturedPhotos = [];
+                    selectedFiles = [];
+                    updateGallery();
+                    showMessage("文件已清空", true);
+                }
+            });
+
+            // 提交作业到服务器
+            uploadBtn.addEventListener('click', async function () {
+                if (capturedPhotos.length === 0) {
+                    showMessage("请先添加文件", false);
+                    return;
+                }
+
+                if (!subject.value) {
+                    showMessage("请选择科目", false);
+                    return;
+                }
+
+                // 上传按钮状态
+                const originalBtnHTML = uploadBtn.innerHTML;
+                uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上传中...';
+                uploadBtn.disabled = true;
+
+                try {
+                    // 创建FormData对象
+                    const formData = new FormData();
+
+                    // 添加基础信息
+                    formData.append('myUserID', myUserID);
+                    formData.append('bookid', bookid);
+                    formData.append('subject', subject.value);
+                    formData.append('action', "zygj-uploadHomework");
+
+                    // 添加文件
+                    selectedFiles.forEach((file, index) => {
+                        formData.append(`file${index}`, file, file.name);
+                        
+                    }); 
+                    // 发送到服务器
+                    const response = await fetch('zygj.ashx', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.text();
+                    //alert(result);
+                    if (response.ok) {
+                        showMessage("作业上传成功！服务器返回: " + result, true);
+                        uploadBtn.innerHTML = '<i class="fas fa-check"></i> 上传成功！';
+
+                        // 清空表单
+                        //setTimeout(() => {
+                            subject.value = '';
+                            capturedPhotos = [];
+                            selectedFiles = [];
+                            updateGallery();
+                            uploadBtn.innerHTML = originalBtnHTML;
+                            uploadBtn.disabled = false;
+                        //}, 2000);
+                    } else {
+                        throw new Error(result || '服务器错误');
+                    }
+                } catch (error) { 
+                    console.error('上传失败:', error);
+                    showMessage('上传失败: ' + error.message, false);
+                    uploadBtn.innerHTML = originalBtnHTML;
+                    uploadBtn.disabled = false;
+                }
+            });
+
+            // 更新文件预览区
+            function updateGallery() {
+                const count = capturedPhotos.length;
+                countDisplay.textContent = count;
+                galleryGrid.innerHTML = '';
+
+                // 显示所有文件
+                capturedPhotos.forEach((file, index) => {
+                    const imageItem = document.createElement('div');
+                    imageItem.className = 'image-item';
+
+                    if (file.type === 'image') {
+                        imageItem.innerHTML = `
+                                        <img src="${file.src}" alt="${file.name}">
+                                        <button class="delete-btn" data-index="${index}">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    `;
+                    } else {
+                        imageItem.innerHTML = `
+                                        <div class="placeholder-img">
+                                            <i class="fas fa-file-pdf" style="color:#f56565; font-size:42px;"></i>
+                                            <small style="color:#f56565">${file.name}</small>
+                                            <button class="delete-btn" data-index="${index}">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    `;
+                    }
+
+                    galleryGrid.appendChild(imageItem);
+                });
+
+                // 添加更多按钮
+                if (count < MAX_FILES) {
+                    const numPlaceholders = MAX_FILES - count;
+                    for (let i = 0; i < numPlaceholders; i++) {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'image-item';
+                        placeholder.innerHTML = `
+                                        <div class="placeholder-img">
+                                            <i class="fas fa-plus" style="color:var(--gray-500)"></i>
+                                            <small style="color:var(--gray-500)">添加文件</small>
+                                        </div>
+                                    `;
+                        placeholder.addEventListener('click', function () {
+                            imageInput.click();
+                        });
+                        galleryGrid.appendChild(placeholder);
+                    }
+                }
+
+                // 添加删除事件
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const index = parseInt(this.dataset.index);
+                        const fileName = capturedPhotos[index].name;
+
+                        // 从数组中删除
+                        capturedPhotos.splice(index, 1);
+                        selectedFiles.splice(index, 1);
+
+                        updateGallery();
+                        showMessage(`文件 "${fileName}" 已删除`, true);
+                    });
+                });
+            }
+
+            // 显示消息
+            function showMessage(message, success = true) {
+                messageBar.textContent = message;
+                messageBar.className = 'message-bar ' + (success ? 'message-success' : 'message-error');
+                messageBar.style.display = "block";
+                messageBar.style.opacity = "1";
+
+                // 3秒后消失
+                setTimeout(() => {
+                    messageBar.style.opacity = '0';
+                    setTimeout(() => {
+                        messageBar.style.display = 'none';
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

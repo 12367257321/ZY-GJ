@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多文件上传处理系统 | 专业文件处理解决方案</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(45deg, #0a192f, #172a45);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #e6f7ff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 15%, rgba(29, 78, 216, 0.07) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(101, 163, 13, 0.05) 0%, transparent 25%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(80, 110, 220, 0.25);
+        }
+        
+        .page-header {
+            padding: 30px;
+            text-align: center;
+            background: rgba(9, 14, 33, 0.8);
+            border-bottom: 1px solid rgba(90, 122, 250, 0.2);
+        }
+        
+        .page-header h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #38bdf8, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .page-header p {
+            color: #a3b3d6;
+            font-size: 18px;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.7;
+            padding: 0 10px;
+        }
+        
+        .page-header h2 {
+            margin-top: 25px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #22d3ee, #0ea5e9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            padding: 35px 30px;
+        }
+        
+        .upload-section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            height: 55px;
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.15), rgba(96, 165, 250, 0.15));
+            padding: 0 20px;
+            border-radius: 12px;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .upload-container {
+            border: 3px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s;
+            background: rgba(10, 17, 40, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-container:hover {
+            border-color: #60a5fa;
+            background: rgba(15, 25, 50, 0.7);
+        }
+        
+        .upload-icon {
+            font-size: 64px;
+            color: #38bdf8;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .upload-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #e0f2fe;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #e0f2fe, #c7d2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .upload-hint {
+            color: #819bf0;
+            font-size: 17px;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .file-list-container {
+            max-height: 280px;
+            overflow-y: auto;
+            margin-top: 25px;
+            border-radius: 14px;
+            background: rgba(10, 17, 40, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 5px;
+        }
+        
+        .file-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+        }
+        
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        
+        .file-icon {
+            font-size: 28px;
+            color: #60a5fa;
+            margin-right: 18px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 12px;
+        }
+        
+        .file-info {
+            flex-grow: 1;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 6px;
+            word-break: break-all;
+            color: #e0f2fe;
+        }
+        
+        .file-size {
+            color: #819bf0;
+            font-size: 15px;
+        }
+        
+        .remove-btn {
+            color: #f87171;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.2s;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .remove-btn:hover {
+            opacity: 1;
+            background: rgba(239, 68, 68, 0.2);
+        }
+        
+        .upload-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #93a8d8;
+            padding: 0 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 14px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #e0f2fe;
+            display: flex;
+            align-items: center;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #f87171;
+            margin-left: 4px;
+        }
+        
+        .input-label i {
+            color: #60a5fa;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .input-hint {
+            color: #819bf0;
+            font-size: 15px;
+            margin-top: 10px;
+            padding: 0 5px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 18px 22px;
+            border-radius: 14px;
+            background: rgba(10, 17, 40, 0.8);
+            border: 1px solid rgba(43, 120, 239, 0.35);
+            color: #e0f2fe;
+            font-size: 17px;
+            min-height: 150px;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+        
+        textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+            background: rgba(10, 17, 40, 0.9);
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .input-column {
+            flex: 1;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 17px 20px;
+            border-radius: 12px;
+            background: rgba(10, 17, 40, 0.8);
+            border: 1px solid rgba(43, 120, 239, 0.35);
+            color: #e0f2fe;
+            font-size: 17px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+            background: rgba(10, 17, 40, 0.9);
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 21px;
+            background: linear-gradient(90deg, #0ea5e9, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 19px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+        
+        .submit-btn i {
+            margin-right: 12px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(37, 99, 235, 0.45);
+            background: linear-gradient(90deg, #0ea5e9, #1d4ed8);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+        }
+        
+        .submit-btn.working {
+            background: linear-gradient(90deg, #64748b, #475569);
+        }
+        
+        .response-container {
+            display: none;
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 16px;
+            background: rgba(25, 32, 60, 0.8);
+            border: 1px solid rgba(80, 110, 220, 0.4);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .response-container.success {
+            display: block;
+            background: rgba(25, 32, 60, 0.8);
+        }
+        
+        .response-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+        
+        .success-icon {
+            background: linear-gradient(135deg, #22c55e, #10b981);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            margin-right: 18px;
+        }
+        
+        .response-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e0e9ff;
+        }
+        
+        .process-info {
+            background: rgba(30, 40, 70, 0.8);
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(80, 110, 220, 0.25);
+        }
+        
+        .process-row {
+            display: flex;
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(80, 110, 220, 0.15);
+        }
+        
+        .process-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .process-label {
+            width: 120px;
+            color: #a2b1dc;
+            font-weight: 500;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+        
+        .process-value {
+            flex-grow: 1;
+            color: #e0e9ff;
+            font-weight: 500;
+            word-break: break-all;
+            font-size: 17px;
+        }
+        
+        .result-box {
+            background: linear-gradient(to right, rgba(18, 23, 42, 0.8), rgba(28, 35, 63, 0.8));
+            border: 1px solid rgba(43, 120, 239, 0.4);
+            padding: 25px;
+            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-box::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, rgba(37, 99, 235, 0.15), rgba(37, 99, 235, 0.2));
+            border-radius: 50%;
+        }
+        
+        .link-title {
+            font-size: 18px;
+            color: #a2b1dc;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .result-link {
+            display: block;
+            padding: 18px;
+            background: rgba(8, 12, 26, 0.7);
+            border-radius: 10px;
+            color: #60a5fa;
+            font-weight: 600;
+            font-size: 18px;
+            text-decoration: none;
+            word-break: break-all;
+            border: 1px solid rgba(66, 128, 255, 0.3);
+            margin-top: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        
+        .result-link:hover {
+            background: rgba(8, 12, 26, 0.9);
+            color: #38bdf8;
+            border-color: rgba(66, 128, 255, 0.6);
+        }
+        
+        .link-copy {
+            color: #38bdf8;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            background: rgba(56, 189, 248, 0.1);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .link-copy:hover {
+            background: rgba(56, 189, 248, 0.2);
+        }
+        
+        .response-footer {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #93a5d1;
+            text-align: center;
+            padding-top: 18px;
+            border-top: 1px solid rgba(90, 122, 250, 0.1);
+        }
+        
+        .file-count-box {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 15px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 25px 20px;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .file-item {
+                padding: 12px 15px;
+            }
+            
+            .page-header {
+                padding: 25px 20px;
+            }
+            
+            .upload-container {
+                padding: 25px 15px;
+            }
+            
+            .upload-icon {
+                font-size: 50px;
+            }
+            
+            .upload-text {
+                font-size: 22px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 17, 40, 0.4);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.4);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>多文件上传处理系统</h1>
+            <p>上传多个文件，输入您的处理需求，我们将利用先进的AI技术处理您的文件并返回结果</p>
+            <h2>安全 | 高效 | 智能化</h2>
+        </div>
+        
+        <div class="main-content">
+            <div class="upload-section">
+                <div class="section-title">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>上传需要处理的文件</span>
+                </div>
+                
+                <div class="upload-container" id="uploadBox">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="upload-text">点击或拖放文件到此处上传</div>
+                    <div class="upload-hint">支持上传多个文件（PDF，Word，Excel，图像等），单个文件最大100MB</div>
+                    
+                    <!-- 隐藏的文件输入框 -->
+                    <input type="file" id="fileInput" multiple>
+                </div>
+                
+                <div class="upload-stats">
+                    <span>已选择 <strong id="fileCount">0</strong> 个文件</span>
+                    <span id="totalSize">总大小: 0 MB</span>
+                </div>
+                
+                <div class="file-list-container">
+                    <ul class="file-list" id="fileList">
+                        <div class="empty-text" style="text-align: center; padding: 30px 20px; color: #819bf0;">
+                            <i class="fas fa-file-alt" style="font-size: 50px; margin-bottom: 15px; display: block; opacity: 0.7;"></i>
+                            请上传您的处理文件
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="fas fa-tasks"></i>
+                    <span class="required">请描述处理需求</span>
+                </label>
+                <textarea id="processRequirement" placeholder="请详细描述您需要对这些文件完成的任务（例如：合并PDF文件、提取表格数据、格式转换、智能分析等）"></textarea>
+                <div class="input-hint">此任务将由AI智能处理，请尽可能详细说明要求（必填）</div>
+            </div>
+            
+            <div class="input-row">
+                <div class="input-column">
+                    <label class="input-label">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span class="required">手机号</span>
+                    </label>
+                    <input type="text" id="phoneNumber" placeholder="请输入11位手机号码" maxlength="11">
+                </div>
+            </div>
+            
+            <button class="submit-btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> 提交处理
+            </button>
+            
+            <div class="response-container" id="responseContainer">
+                <div class="response-header">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="response-title">文件处理成功完成</h3>
+                </div>
+                
+                <div class="file-count-box">
+                    <i class="fas fa-file-alt" style="margin-right: 8px;"></i>
+                    已处理 <span id="processedFileCount">0</span> 个文件
+                </div>
+                
+                <div class="process-info">
+                    <div class="process-row">
+                        <span class="process-label">处理需求：</span>
+                        <span class="process-value" id="requirementSummary"></span>
+                    </div>
+                    <div class="process-row">
+                        <span class="process-label">手机号：</span>
+                        <span class="process-value" id="resultPhone"></span>
+                    </div>
+                    <div class="process-row">
+                        <span class="process-label">完成时间：</span>
+                        <span class="process-value" id="completeTime"></span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <div class="link-title">处理结果链接（24小时内有效）：</div>
+                    <a href="#" class="result-link" id="resultLink" target="_blank">
+                        <span>http://www.tcyc.vip:9010/results/</span>
+                        <span class="link-copy" id="copyLinkBtn">
+                            <i class="fas fa-copy" style="margin-right: 5px;"></i>复制链接
+                        </span>
+                    </a>
+                </div>
+                
+                <div class="response-footer">
+                    您的文件已安全存储并处理，您可以通过上面的链接随时访问处理结果
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM元素引用
+            const uploadBox = document.getElementById('uploadBox');
+            const fileInput = document.getElementById('fileInput');
+            const fileList = document.getElementById('fileList');
+            const submitBtn = document.getElementById('submitBtn');
+            const responseContainer = document.getElementById('responseContainer');
+            const requirementSummary = document.getElementById('requirementSummary');
+            const resultLink = document.getElementById('resultLink');
+            const fileCountElement = document.getElementById('fileCount');
+            const totalSizeElement = document.getElementById('totalSize');
+            const processedFileCount = document.getElementById('processedFileCount');
+            const resultPhone = document.getElementById('resultPhone');
+            const completeTime = document.getElementById('completeTime');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            
+            const requirementInput = document.getElementById('processRequirement');
+            const phoneInput = document.getElementById('phoneNumber');
+            
+            // 文件数组
+            let files = [];
+            
+            // 上传区域点击事件
+            uploadBox.addEventListener('click', function(e) {
+                e.stopPropagation();
+                fileInput.click();
+            });
+            
+            // 拖拽事件处理
+            uploadBox.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadBox.style.borderColor = '#60a5fa';
+                uploadBox.style.backgroundColor = 'rgba(15, 25, 50, 0.7)';
+            });
+            
+            uploadBox.addEventListener('dragleave', function() {
+                uploadBox.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+                uploadBox.style.backgroundColor = 'rgba(10, 17, 40, 0.6)';
+            });
+            
+            uploadBox.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadBox.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+                uploadBox.style.backgroundColor = 'rgba(10, 17, 40, 0.6)';
+                
+                // 处理拖放文件
+                if (e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+            
+            // 文件选择变化事件
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    handleFiles(fileInput.files);
+                }
+            });
+            
+            // 处理文件函数
+            function handleFiles(newFiles) {
+                for (let i = 0; i < newFiles.length; i++) {
+                    const file = newFiles[i];
+                    
+                    // 检查文件是否已存在
+                    if (!fileAlreadyExists(files, file)) {
+                        // 文件唯一标识
+                        file.fileId = Date.now() + '-' + i;
+                        files.push(file);
+                    }
+                }
+                
+                renderFileList();
+                updateStats();
+            }
+            
+            // 检查文件是否已存在
+            function fileAlreadyExists(fileList, newFile) {
+                return fileList.some(existingFile => 
+                    existingFile.name === newFile.name && 
+                    existingFile.size === newFile.size
+                );
+            }
+            
+            // 渲染文件列表
+            function renderFileList() {
+                // 清空文件列表
+                fileList.innerHTML = '';
+                
+                if (files.length === 0) {
+                    const emptyHtml = `
+                        <div class="empty-text" style="text-align: center; padding: 30px 20px; color: #819bf0;">
+                            <i class="fas fa-file-alt" style="font-size: 50px; margin-bottom: 15px; display: block; opacity: 0.7;"></i>
+                            请上传您的处理文件
+                        </div>
+                    `;
+                    fileList.innerHTML = emptyHtml;
+                    return;
+                }
+                
+                // 渲染每个文件
+                files.forEach(file => {
+                    const fileSize = formatFileSize(file.size);
+                    const fileNameShort = truncateFileName(file.name, 36);
+                    
+                    const fileItem = document.createElement('li');
+                    fileItem.className = 'file-item';
+                    fileItem.dataset.id = file.fileId;
+                    fileItem.innerHTML = `
+                        <div class="file-icon">
+                            <i class="fas ${getFileIcon(file.name)}"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name" title="${file.name}">${fileNameShort}</div>
+                            <div class="file-size">${fileSize}</div>
+                        </div>
+                        <div class="remove-btn">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    `;
+                    
+                    fileList.appendChild(fileItem);
+                    
+                    // 添加删除事件
+                    const removeBtn = fileItem.querySelector('.remove-btn');
+                    removeBtn.addEventListener('click', function() {
+                        const fileId = this.closest('.file-item').dataset.id;
+                        files = files.filter(f => f.fileId !== fileId);
+                        renderFileList();
+                        updateStats();
+                    });
+                });
+            }
+            
+            // 更新统计信息
+            function updateStats() {
+                fileCountElement.textContent = files.length;
+                
+                // 计算总大小
+                const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+                totalSizeElement.textContent = `总大小: ${formatFileSize(totalBytes, 1)}`;
+            }
+            
+            // 截取文件名
+            function truncateFileName(name, maxLength) {
+                if (name.length <= maxLength) return name;
+                
+                const half = Math.floor(maxLength / 2);
+                return `${name.substring(0, half)}...${name.substring(name.length - half)}`;
+            }
+            
+            // 获取文件图标
+            function getFileIcon(fileName) {
+                const ext = fileName.split('.').pop().toLowerCase();
+                if (ext === 'pdf') return 'fa-file-pdf';
+                if (['doc', 'docx'].includes(ext)) return 'fa-file-word';
+                if (['xls', 'xlsx'].includes(ext)) return 'fa-file-excel';
+                if (['ppt', 'pptx'].includes(ext)) return 'fa-file-powerpoint';
+                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'fa-file-image';
+                if (['zip', 'rar', '7z', 'gz'].includes(ext)) return 'fa-file-archive';
+                if (['txt', 'csv', 'log'].includes(ext)) return 'fa-file-alt';
+                return 'fa-file';
+            }
+            
+            // 格式化文件大小
+            function formatFileSize(bytes, decimalPlaces = 1) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimalPlaces < 0 ? 0 : decimalPlaces;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+            
+            // 手机号验证
+            function isValidPhone(phone) {
+                const phoneRegex = /^1[3-9]\d{9}$/;
+                return phoneRegex.test(phone);
+            }
+            
+            // 提交按钮事件
+            submitBtn.addEventListener('click', async function() {
+                // 验证处理需求
+                const requirement = requirementInput.value.trim();
+                if (!requirement) {
+                    alert('请填写处理需求');
+                    requirementInput.focus();
+                    return;
+                }
+                
+                // 验证手机号
+                const phone = phoneInput.value.trim();
+                if (!phone) {
+                    alert('请输入手机号码');
+                    phoneInput.focus();
+                    return;
+                }
+                
+                if (!isValidPhone(phone)) {
+                    alert('请输入有效的11位手机号');
+                    phoneInput.focus();
+                    return;
+                }
+                
+                // 检查文件
+                if (files.length === 0) {
+                    alert('请至少上传一个文件');
+                    return;
+                }
+                
+                // 显示加载状态
+                const originalBtnHTML = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+                submitBtn.classList.add('working');
+                submitBtn.disabled = true;
+                
+                try {
+                    // 构建表单数据
+                    const formData = new FormData();
+                    formData.append('phone', phone);
+                    formData.append('requirement', requirement);
+                    
+                    // 添加所有文件
+                    files.forEach((file, index) => {
+                        formData.append(`file${index}`, file);
+                    });
+                    
+                    // 调用后端服务
+                    const response = await fetch('FileProcessor.ashx', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // 显示结果
+                        responseContainer.className = 'response-container success';
+                        
+                        // 设置结果信息
+                        requirementSummary.textContent = requirement.substring(0, 120);
+                        if (requirement.length > 120) {
+                            requirementSummary.textContent += '...';
+                        }
+                        
+                        processedFileCount.textContent = files.length;
+                        resultPhone.textContent = phone;
+                        
+                        const now = new Date();
+                        completeTime.textContent = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                        
+                        // 设置结果链接
+                        const resultUrl = 'http://www.tcyc.vip:9010/results/' + generateUniqueId();
+                        resultLink.href = resultUrl;
+                        resultLink.innerHTML = `<span>${resultUrl}</span><span class="link-copy" id="copyLinkBtn"><i class="fas fa-copy" style="margin-right: 5px;"></i>复制链接</span>`;
+                        
+                        // 重新绑定复制事件
+                        document.getElementById('copyLinkBtn').addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            copyToClipboard(resultUrl);
+                            this.innerHTML = '<i class="fas fa-check" style="margin-right: 5px;"></i>已复制';
+                            setTimeout(() => {
+                                this.innerHTML = '<i class="fas fa-copy" style="margin-right: 5px;"></i>复制链接';
+                            }, 2000);
+                        });
+                        
+                        // 滚动到结果部分
+                        responseContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        alert(result.message || '文件处理失败');
+                    }
+                } catch (error) {
+                    console.error('提交过程中出错:', error);
+                    alert('处理过程中发生错误，请稍后再试');
+                } finally {
+                    // 重置提交按钮
+                    submitBtn.innerHTML = originalBtnHTML;
+                    submitBtn.classList.remove('working');
+                    submitBtn.disabled = false;
+                }
+            });
+            
+            // 生成唯一ID
+            function generateUniqueId() {
+                const timestamp = Date.now().toString(36);
+                const randomPart = Math.random().toString(36).substr(2, 9);
+                return `${timestamp}-${randomPart}`;
+            }
+            
+            // 复制到剪贴板功能
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+        });
+    </script>
+</body>
+</html>

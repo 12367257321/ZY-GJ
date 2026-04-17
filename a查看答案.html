@@ -1,0 +1,1324 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧学习平台 - 参考答案库（分页版）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --primary: #4A98CF;
+            --secondary: #6AB8E6;
+            --accent: #FF9EA7;
+            --success: #66C291;
+            --light: #FFFEFC;
+            --dark-text: #1E293B;
+            --dark-bg: #2D334A;
+            --warning: #FFD699;
+            --gray: #9CA3AF;
+            --card-radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --text-medium: #475569;
+            --text-light: #f8fafc;
+            --background-gradient: linear-gradient(135deg, #4A98CF 0%, #6AB8E6 100%);
+            --download-gradient: linear-gradient(135deg, #66C291 0%, #4AAA7D 100%);
+            --construction-gradient: linear-gradient(135deg, #FFD072 0%, #FFB45A 100%);
+            /* 卡片专用颜色 */
+            --card-blue: #4A98CF;
+            --card-light-blue: #45ACB6;
+            --card-yellow: #FFB45A;
+            --card-purple: #9768D0;
+            --card-orange: #FF9658;
+            --card-pink: #E6769C;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: #f7faff;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(74, 152, 207, 0.1) 0%, transparent 50%), radial-gradient(ellipse at 90% 80%, rgba(101, 171, 246, 0.08) 0%, transparent 50%);
+            color: var(--text-medium);
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 75px 0 60px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 顶部导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            background: var(--background-gradient);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(74, 152, 207, 0.35);
+        }
+
+            .logo-icon i {
+                font-size: 20px;
+                color: white;
+            }
+
+        .logo h1 {
+            font-weight: 700;
+            color: var(--dark-text);
+            letter-spacing: 1px;
+            font-size: 1.4rem;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+            .user-actions i {
+                font-size: 20px;
+                color: var(--card-blue);
+                opacity: 0.85;
+                transition: var(--transition);
+                cursor: pointer;
+            }
+
+                .user-actions i:hover {
+                    opacity: 1;
+                    transform: scale(1.15);
+                    color: var(--primary);
+                }
+
+        /* Hero部分 */
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto 30px;
+        }
+
+            .hero h2 {
+                font-size: 2.4rem;
+                font-weight: 800;
+                color: var(--dark-text);
+                line-height: 1.3;
+                margin-bottom: 15px;
+                letter-spacing: -0.5px;
+            }
+
+            .hero p {
+                font-size: 1.15rem;
+                color: var(--text-medium);
+                margin: 0 auto 20px;
+                line-height: 1.7;
+                max-width: 700px;
+            }
+
+        /* 筛选区样式 */
+        .filters-container {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .filters-container:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 8px;
+                background: var(--card-light-blue);
+                z-index: 1;
+            }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+            .filters-header i {
+                background: var(--card-light-blue);
+                color: white;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.4rem;
+                box-shadow: 0 5px 15px rgba(69, 172, 182, 0.3);
+            }
+
+            .filters-header h3 {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: var(--dark-text);
+            }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+            .filter-item label {
+                display: block;
+                margin-bottom: 10px;
+                font-weight: 600;
+                color: var(--text-medium);
+                padding-left: 5px;
+            }
+
+            .filter-item select {
+                width: 100%;
+                padding: 14px 18px;
+                font-size: 1rem;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                outline: none;
+                background: white;
+                transition: var(--transition);
+                cursor: pointer;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+                background-size: 20px;
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                font-weight: 500;
+            }
+
+                .filter-item select:focus {
+                    border-color: var(--card-light-blue);
+                    box-shadow: 0 0 0 4px rgba(69, 172, 182, 0.2);
+                }
+
+        /* 图书网格 */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: card-fade 0.5s ease forwards;
+        }
+
+        @keyframes card-fade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-cover {
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+            background: #f8fafc;
+        }
+
+            .book-cover img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                transition: var(--transition);
+            }
+
+        .book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-info {
+            padding: 24px 20px;
+        }
+
+        .book-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark-text);
+            font-size: 1.15rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .book-subject {
+            text-align: center;
+            color: var(--text-medium);
+            font-size: 0.95rem;
+        }
+
+        .book-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--card-light-blue);
+            color: white;
+            font-size: 0.85rem;
+            padding: 5px 15px;
+            font-weight: 600;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(69, 172, 182, 0.3);
+        }
+
+        .book-count {
+            text-align: center;
+            margin: 15px 0 25px;
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            padding: 15px;
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary);
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .no-results-icon {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .no-results p {
+            margin-bottom: 30px;
+        }
+
+        .retry-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .retry-button:hover {
+                background: var(--secondary);
+            }
+
+        /* 分页控件 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #fff;
+            color: var(--dark-text);
+            border: 1px solid rgba(106, 184, 230, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+            .pagination-btn.page-nav {
+                padding: 0 15px;
+                width: auto;
+                gap: 8px;
+            }
+
+            .pagination-btn:hover,
+            .pagination-btn.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+            .pagination-btn.disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .page-info {
+            margin: 0 15px;
+            font-size: 1rem;
+            color: var(--text-medium);
+        }
+
+        /* 阅读器界面 */
+        .reader-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .reader-header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+            .reader-header h2 {
+                font-size: 1.6rem;
+                font-weight: 600;
+            }
+
+        .close-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .close-btn:hover {
+                transform: rotate(90deg);
+            }
+
+        .book-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .book-image {
+            max-height: calc(100vh - 150px);
+            max-width: 90%;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .reader-controls {
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        .page-navigation {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+            .nav-btn:hover {
+                background: var(--secondary);
+            }
+
+            .nav-btn:disabled {
+                background: var(--gray);
+                cursor: not-allowed;
+            }
+
+        .page-info {
+            font-size: 1.2rem;
+            font-weight: 500;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 底部区域 */
+        .footer-note {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--text-medium);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 40px auto 0;
+            line-height: 1.7;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* 装饰元素 */
+        .decoration {
+            position: fixed;
+            top: -150px;
+            right: -150px;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(136deg, rgba(74, 152, 207, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .dots-decoration {
+            position: fixed;
+            bottom: 50px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background-image: radial-gradient(circle at 10px 10px, rgba(74, 152, 207, 0.1) 2px, transparent 5px), radial-gradient(circle at 30px 40px, rgba(74, 152, 207, 0.08) 2px, transparent 4px), radial-gradient(circle at 80px 120px, rgba(74, 152, 207, 0.06) 1px, transparent 3px);
+            background-size: 50px 50px;
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .filters {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .filters-container {
+                padding: 20px;
+            }
+
+            .filters-header h3 {
+                font-size: 1.4rem;
+            }
+
+            .book-grid {
+                gap: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-cover {
+                height: 240px;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .logo h1 {
+                display: none;
+            }
+
+            .pagination-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+                .pagination-btn.page-nav {
+                    font-size: 0.9rem;
+                    padding: 0 12px;
+                }
+        }
+
+        @media (max-width: 576px) {
+            .book-grid {
+                gap: 15px;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .book-cover {
+                height: 200px;
+            }
+
+            .book-title {
+                font-size: 1rem;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .filters-header h3 {
+                font-size: 1.2rem;
+            }
+
+            .reader-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .progress-container {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .page-navigation {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .pagination-container {
+                overflow-x: auto;
+                width: 100%;
+            }
+
+            .pagination {
+                min-width: 420px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 装饰元素 -->
+    <div class="decoration"></div>
+    <div class="dots-decoration"></div>
+
+    <!-- 顶部导航栏 -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h1>参考答案库</h1>
+        </div>
+        <div class="user-actions">
+            <a href="index.html"><i class="fas fa-home"></i></a>
+            <a href="#"><i class="fas fa-search"></i></a>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero部分 -->
+        <section class="hero">
+            <h2>优质教学参考答案资源库</h2>
+            <p>精选各类学科参考答案，高效辅助教师教学与学生学习</p>
+        </section>
+
+        <!-- 筛选区块 -->
+        <div class="filters-container">
+            <div class="filters-header">
+                <i class="fas fa-filter"></i>
+                <h3>筛选图书资源</h3>
+            </div>
+            <div class="filters">
+                <div class="filter-item">
+                    <label for="subject-filter"><i class="fas fa-book me-2"></i>科目选择</label>
+                    <select id="subject-filter">
+                        <option value="all">全部科目</option>
+                        <option value="数学">数学</option>
+                        <option value="语文">语文</option>
+                        <option value="英语">英语</option>
+                        <option value="物理">物理</option>
+                        <option value="化学">化学</option>
+                        <option value="生物">生物</option>
+                        <option value="历史">历史</option>
+                        <option value="政治">政治</option>
+                        <option value="地理">地理</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="level-filter"><i class="fas fa-graduation-cap me-2"></i>学段筛选</label>
+                    <select id="level-filter">
+                        <option value="all">全部学段</option>
+                        <option value="初中">初中</option>
+                        <option value="高中">高中</option>
+                        <option value="小学">小学</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="sort-filter"><i class="fas fa-sort me-2"></i>排序方式</label>
+                    <select id="sort-filter">
+                        <option value="default">默认排序</option>
+                        <option value="popular">人气优先</option>
+                        <option value="new">最新发布</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-count">
+            <i class="fas fa-book me-2"></i>共发现 <span id="book-total">0</span> 本图书资源，其中 <span id="book-count">0</span> 本符合筛选条件
+        </div>
+
+        <!-- 图书网格 -->
+        <div class="book-grid" id="book-container">
+            <!-- 加载状态 -->
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- 分页容器 -->
+        <div class="pagination-container">
+            <div class="pagination" id="pagination-container">
+                <!-- 分页动态生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 阅读器模态框 -->
+    <div class="reader-modal" id="reader-modal">
+        <div class="reader-header">
+            <h2 id="active-book-title">图书名称</h2>
+            <button class="close-btn" id="close-reader">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="book-content">
+            <img id="book-page-img" class="book-image" src="" alt="图书页面">
+        </div>
+        <div class="reader-controls">
+            <div class="page-navigation">
+                <button class="nav-btn" id="prev-page">
+                    <i class="fas fa-chevron-left"></i> 上一页
+                </button>
+                <span class="page-info">第 <span id="current-page">1</span> 页 / 共 <span id="total-pages">10</span> 页</span>
+                <button class="nav-btn" id="next-page">
+                    下一页 <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="progress-container">
+                <span>阅读进度</span>
+                <div class="progress-bar">
+                    <div class="progress" id="reading-progress"></div>
+                </div>
+                <span id="progress-percent">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部区域 -->
+    <footer class="footer-note">
+        <p>智慧学习平台 © 2025<br>专业教育资源服务平台</p>
+        <div class="copyright">吉ICP备12345678号 | 服务热线：400-123-4567</div>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            const bookContainer = $("#book-container");
+            const subjectFilter = $("#subject-filter");
+            const levelFilter = $("#level-filter");
+            const sortFilter = $("#sort-filter");
+            const bookTotalElement = $("#book-total");
+            const bookCountElement = $("#book-count");
+            const paginationContainer = $("#pagination-container");
+
+            // 阅读器元素
+            const readerModal = $("#reader-modal");
+            const bookPageImg = $("#book-page-img");
+            const currentPageSpan = $("#current-page");
+            const totalPagesSpan = $("#total-pages");
+            const activeBookTitle = $("#active-book-title");
+            const prevPageBtn = $("#prev-page");
+            const nextPageBtn = $("#next-page");
+            const closeReaderBtn = $("#close-reader");
+            const progressBar = $("#reading-progress");
+            const progressPercent = $("#progress-percent");
+
+            // 分页变量
+            const booksPerPage = 10;
+            let currentBooksPage = 1;
+            let totalPages = 0;
+            let booksData = [];
+            let filteredBooks = [];
+
+            // 当前阅读状态
+            let currentBook = null;
+            let currentPage = 0;
+
+            // 存储当前筛选状态
+            let currentSubject = "all";
+            let currentLevel = "all";
+            let currentSort = "default";
+
+            // 从API获取图书数据
+            async function fetchBooks() {
+                try { 
+                    const response = await fetch('http://tcyc.vip:9012/zygj.ashx?action=zygj-chakandaan');
+                    const data = await response.json();
+                    //alert(data);
+                    return data;     
+                } catch (error) {
+                    console.error("获取图书数据失败:", error);
+                    throw error;
+                }
+            }
+
+            // 显示加载状态
+            function showLoading() {
+                bookContainer.html('<div class="loader"><div class="spinner"></div></div>');
+                bookTotalElement.text('0');
+                bookCountElement.text('0');
+                paginationContainer.empty();
+            }
+
+            // 显示加载失败界面
+            function showError() {
+                bookContainer.html(`
+                        <div class="no-results">
+                            <i class="fas fa-exclamation-triangle no-results-icon"></i>
+                            <h3>数据加载失败</h3>
+                            <p>无法连接到服务器，请检查网络连接后重试</p>
+                            <button class="retry-button" id="retry-loading">
+                                <i class="fas fa-redo"></i> 重新加载
+                            </button>
+                        </div>
+                    `);
+
+                $("#retry-loading").click(initPage);
+            }
+
+            // 初始化页面
+            async function initPage() {
+                showLoading();
+
+                try {
+                    booksData = await fetchBooks();
+                    bookTotalElement.text(booksData.length);
+
+                    if (booksData.length > 0) {
+                        filteredBooks = [...booksData];
+                        renderBooks(filteredBooks);
+                    } else {
+                        renderNoResults();
+                    }
+                } catch (error) {
+                    console.error("初始化页面失败:", error);
+                    showError();
+                }
+            }
+
+            // 渲染图书列表
+            function renderBooks(books) {
+                bookContainer.empty();
+
+                if (!books || books.length === 0) {
+                    renderNoResults();
+                    return;
+                }
+
+                // 计算总页数
+                totalPages = Math.ceil(books.length / booksPerPage);
+
+                // 更新显示的图书数量
+                bookCountElement.text(books.length);
+
+                // 计算当前页的起始索引
+                const startIndex = (currentBooksPage - 1) * booksPerPage;
+                const endIndex = Math.min(startIndex + booksPerPage, books.length);
+                const booksToShow = books.slice(startIndex, endIndex);
+
+                booksToShow.forEach((book, index) => {
+                    // 设置动画延迟
+                    const delay = index * 0.1 + 's';
+
+                    const bookCard = $(`<div class="book-card" data-id="${book.id}" style="animation-delay: ${delay}">
+                                <div class="book-cover">
+                                    <img src="${book.cover}" alt="${book.title}">
+                                    <div class="book-tag" style="background-color: ${book.color};">${book.subject}</div>
+                                </div>
+                                <div class="book-info">
+                                    <h3 class="book-title">${book.title}</h3>
+                                    <div class="book-subject">${book.level} · ${book.pages}页</div>
+                                </div>
+                            </div>`);
+
+                    bookCard.click(function (e) {
+                        // 只处理封面图片外的元素点击
+                        if (!$(e.target).is('img')) {
+                            openBookReader(book);
+                        }
+                    });
+
+                    // 单独为图片添加点击事件，执行页面跳转
+                    bookCard.find('img').click(function () {
+                        // 跳转到新页面，参数n为图书ID
+                        window.location.href = `a单册答案.html?id=${book.id}`;
+                    });
+
+                    bookContainer.append(bookCard);
+                });
+
+                // 渲染分页控件
+                renderPagination(books.length);
+            }
+
+            // 显示无结果
+            function renderNoResults() {
+                bookContainer.html(`
+                        <div class="no-results">
+                            <i class="fas fa-search no-results-icon"></i>
+                            <h3>没有找到符合条件的图书</h3>
+                            <p>请尝试修改您的筛选条件</p>
+                        </div>
+                    `);
+                paginationContainer.empty();
+            }
+
+            // 渲染分页控件
+            function renderPagination(totalBooks) {
+                const totalPagesCount = Math.ceil(totalBooks / booksPerPage);
+
+                // 如果只有一页或没有内容，不显示分页
+                if (totalPagesCount <= 1) {
+                    paginationContainer.empty();
+                    return;
+                }
+
+                let paginationContent = '';
+
+                // 上一页按钮
+                paginationContent += `
+                            <button class="pagination-btn page-nav ${currentBooksPage === 1 ? 'disabled' : ''}" id="prev-page-btn">
+                                <i class="fas fa-chevron-left"></i> 上一页
+                            </button>
+                        `;
+
+                // 页码按钮（最多显示7个）
+                const maxVisiblePages = 7;
+                const startPage = Math.max(1, currentBooksPage - Math.floor(maxVisiblePages / 2));
+                const endPage = Math.min(totalPagesCount, startPage + maxVisiblePages - 1);
+
+                // 如果当前页太靠前
+                if (startPage > 1) {
+                    paginationContent += `
+                                <button class="pagination-btn ${1 === currentBooksPage ? 'active' : ''}" data-page="1">
+                                    1
+                                </button>
+                            `;
+                    if (startPage > 2) {
+                        paginationContent += `<span class="pagination-btn disabled" style="border: none; background: transparent;">...</span>`;
+                    }
+                }
+
+                // 中间的页码
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationContent += `
+                                <button class="pagination-btn ${i === currentBooksPage ? 'active' : ''}" data-page="${i}">
+                                    ${i}
+                                </button>
+                            `;
+                }
+
+                // 如果当前页太靠后
+                if (endPage < totalPagesCount) {
+                    if (endPage < totalPagesCount - 1) {
+                        paginationContent += `<span class="pagination-btn disabled" style="border: none; background: transparent;">...</span>`;
+                    }
+                    paginationContent += `
+                                <button class="pagination-btn ${totalPagesCount === currentBooksPage ? 'active' : ''}" data-page="${totalPagesCount}">
+                                    ${totalPagesCount}
+                                </button>
+                            `;
+                }
+
+                // 下一页按钮
+                paginationContent += `
+                            <button class="pagination-btn page-nav ${currentBooksPage === totalPagesCount ? 'disabled' : ''}" id="next-page-btn">
+                                下一页 <i class="fas fa-chevron-right"></i>
+                            </button>
+                        `;
+
+                // 当前页/总页数
+                paginationContent += `
+                            <span class="page-info">
+                                第 ${currentBooksPage} 页/总 ${totalPagesCount} 页
+                            </span>
+                        `;
+
+                paginationContainer.html(paginationContent);
+
+                // 绑定分页事件
+                $("#prev-page-btn").click(goToPrevPage);
+                $("#next-page-btn").click(goToNextPage);
+                $(".pagination-btn[data-page]").click(function () {
+                    const page = parseInt($(this).data("page"));
+                    goToPage(page);
+                });
+            }
+
+            // 分页导航函数
+            function goToPage(page) {
+                currentBooksPage = page;
+                updateView();
+                scrollToBooks();
+            }
+
+            function goToPrevPage() {
+                if (currentBooksPage > 1) {
+                    currentBooksPage--;
+                    updateView();
+                    scrollToBooks();
+                }
+            }
+
+            function goToNextPage() {
+                const total = Math.ceil(filteredBooks.length / booksPerPage);
+                if (currentBooksPage < total) {
+                    currentBooksPage++;
+                    updateView();
+                    scrollToBooks();
+                }
+            }
+
+            function scrollToBooks() {
+                $('html, body').animate({
+                    scrollTop: $(".book-grid").offset().top - 100
+                }, 500);
+            }
+
+            // 打开图书阅读器
+            function openBookReader(book) {
+                currentBook = book;
+                currentPage = 0;
+
+                // 更新阅读器内容
+                activeBookTitle.text(book.title);
+                bookPageImg.attr("src", book.pageImages[0]);
+                updateBookPage();
+
+                // 显示阅读器
+                readerModal.fadeIn(300);
+                $("body").css("overflow", "hidden");
+            }
+
+            // 更新页面内容
+            function updateBookPage() {
+                if (!currentBook) return;
+
+                //bookPageImg.attr("src", currentBook.pageImages[currentPage]);
+                currentPageSpan.text(currentPage + 1);
+                //totalPagesSpan.text(currentBook.pageImages.length);
+
+                // 更新进度条
+                //const progress = ((currentPage + 1) / currentBook.pageImages.length) * 100;
+                progressBar.css("width", `${progress}%`);
+                progressPercent.text(`${Math.round(progress)}%`);
+
+                // 更新按钮状态
+                prevPageBtn.prop("disabled", currentPage === 0);
+                //nextPageBtn.prop("disabled", currentPage === currentBook.pageImages.length - 1);
+            }
+
+            // 关闭阅读器
+            function closeReader() {
+                readerModal.fadeOut(300);
+                $("body").css("overflow", "");
+                currentBook = null;
+                currentPage = 0;
+            }
+
+            // 下一页
+            function nextPage() {
+                //if (currentPage < currentBook.pageImages.length - 1) {
+                //    currentPage++;
+                //    updateBookPage();
+                //}
+            }
+
+            // 上一页
+            function prevPage() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    updateBookPage();
+                }
+            }
+
+            // 筛选与排序逻辑
+            function filterBooks() {
+                let filtered = [...booksData];
+
+                // 应用科目过滤
+                if (currentSubject !== "all") {
+                    filtered = filtered.filter(book => book.subject === currentSubject);
+                }
+
+                // 应用学段过滤
+                if (currentLevel !== "all") {
+                    // 使用mapObject确保正确的过滤
+                    const levelMap = {
+                        "小学": [1, 2, 3, 4, 5, 6],
+                        "初中": [7, 8, 9],
+                        "高中": [1, 2, 3] // 高中1,2,3年级
+                    };
+
+                    filtered = filtered.filter(book => {
+                        if (!levelMap[currentLevel]) return false;
+                        return levelMap[currentLevel].includes(book.grade) ||
+                            (currentLevel === "高中" && book.level === "高中");
+                    });
+                }
+
+                // 应用排序
+                if (currentSort === "popular") {
+                    filtered = filtered.sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0));
+                } else if (currentSort === "new") {
+                    filtered = filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+                }
+
+                // 保存筛选后的数组
+                filteredBooks = filtered;
+
+                return filtered;
+            }
+
+            // 更新视图
+            function updateView() {
+                if (booksData.length === 0) {
+                    showError();
+                    return;
+                }
+
+                const filteredBooks = filterBooks();
+                renderBooks(filteredBooks);
+            }
+
+            // 事件监听
+            subjectFilter.change(function () {
+                currentSubject = this.value;
+                currentBooksPage = 1; // 重置当前页码
+                updateView();
+            });
+
+            levelFilter.change(function () {
+                currentLevel = this.value;
+                currentBooksPage = 1; // 重置当前页码
+                updateView();
+            });
+
+            sortFilter.change(function () {
+                currentSort = this.value;
+                currentBooksPage = 1; // 重置当前页码
+                updateView();
+            });
+
+            // 阅读器事件监听
+            prevPageBtn.click(prevPage);
+            nextPageBtn.click(nextPage);
+            closeReaderBtn.click(closeReader);
+
+            // 键盘导航
+            $(document).keydown(function (e) {
+                if (readerModal.is(":visible")) {
+                    if (e.key === "ArrowRight") {
+                        nextPage();
+                    } else if (e.key === "ArrowLeft") {
+                        prevPage();
+                    } else if (e.key === "Escape") {
+                        closeReader();
+                    }
+                    e.preventDefault();
+                }
+            });
+
+            // 添加悬浮动画
+            $(document).on('mouseenter', '.book-card', function () {
+                $(this).find('img').css('transform', 'scale(1.05)');
+            }).on('mouseleave', '.book-card', function () {
+                $(this).find('img').css('transform', 'scale(1)');
+            });
+
+            // 滚动视差效果
+            $(window).on('scroll', function () {
+                const scrollPosition = $(this).scrollTop();
+                $('.decoration').css({
+                    transform: `rotate(${scrollPosition * 0.1}deg)`
+                });
+                $('.dots-decoration').css({
+                    transform: `translateX(${scrollPosition * 0.02}px)`
+                });
+            });
+
+            // 初始化页面
+            initPage();
+        });
+    </script>
+</body>
+</html>

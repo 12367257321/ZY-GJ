@@ -1,0 +1,1148 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伴学书库 - 学习资源中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary: #4C71F3;
+            --primary-light: #8ebcff;
+            --primary-extra-light: rgba(76, 113, 243, 0.08);
+            --secondary: #6FC8F9;
+            --accent: #3583db;
+            --success: #6FD08C;
+            --light: #ffffff;
+            --dark: #2D334A;
+            --gray-100: #f8fafc;
+            --gray-200: #f1f5f9;
+            --gray-300: #e2e8f0;
+            --gray-400: #CBD5E1;
+            --gray-500: #94a3b8;
+            --gray-600: #64748B;
+            --gray-700: #334155;
+            --light-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --card-radius: 16px;
+            --share-color: rgba(76, 175, 80, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f4f9 100%);
+            min-height: 100vh;
+            padding-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+            .back-button:hover {
+                background: var(--primary-light);
+                color: white;
+                transform: translateX(-3px);
+            }
+
+            .back-button:active {
+                transform: scale(0.95);
+            }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-left: 60px;
+            margin-right: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .logo i {
+                font-size: 28px;
+                color: var(--primary);
+                background: rgba(79, 151, 249, 0.1);
+                padding: 12px;
+                border-radius: 50%;
+            }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--gray-600);
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-200);
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+            }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+            .section-title::before {
+                content: '';
+                display: block;
+                width: 4px;
+                height: 20px;
+                background: var(--primary);
+                border-radius: 10px;
+            }
+
+            .section-title i {
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: var(--primary-extra-light);
+                border-radius: 50%;
+                color: var(--primary);
+                font-size: 16px;
+            }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+            .filter-item label {
+                font-weight: 600;
+                color: var(--gray-700);
+                font-size: 14px;
+                margin-bottom: 2px;
+            }
+
+            .filter-item select {
+                padding: 12px 16px;
+                border-radius: 12px;
+                border: 2px solid var(--gray-200);
+                background: white;
+                font-size: 15px;
+                color: var(--gray-700);
+                cursor: pointer;
+                transition: all 0.3s;
+                font-weight: 500;
+            }
+
+                .filter-item select:hover {
+                    border-color: var(--primary-light);
+                }
+
+                .filter-item select:focus {
+                    outline: none;
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(76, 113, 243, 0.1);
+                }
+
+        .video-books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .video-book-card {
+            background: white;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--gray-200);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            /* 移除固定高度，改为自适应 */
+        }
+
+        .book-cover {
+            position: relative;
+            overflow: hidden;
+            /* 关键修改：使用 padding 技巧维护 330x500 的比例 */
+            height: 0;
+            padding-top: 151.515%; /* 500/330 = 1.51515 */
+        }
+
+            .book-cover img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+        .video-book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+            .book-badge.free {
+                background: var(--success);
+            }
+
+        .book-content {
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .book-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            text-align: center;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 按钮样式优化 */
+        .book-buttons {
+            display: flex;
+            gap: 8px;
+            padding-top: 5px;
+        }
+
+        .btn {
+            padding: 8px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            height: 36px;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+
+            .btn-primary:hover {
+                background: #3556d7;
+                border-color: #3556d7;
+                transform: translateY(-1px);
+            }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray-300);
+            color: var(--gray-700);
+            height: 36px;
+        }
+
+            .btn-outline:hover {
+                border-color: var(--gray-500);
+                background: var(--gray-100);
+            }
+
+        .btn-secondary {
+            background: var(--primary-extra-light);
+            color: var(--primary);
+            border: 2px solid var(--primary-light);
+        }
+
+            .btn-secondary:hover {
+                background: var(--primary-light);
+                color: white;
+            }
+
+        .btn.btn-share {
+            background: var(--share-color);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            height: 36px;
+        }
+
+            .btn.btn-share:hover {
+                background: rgba(76, 175, 80, 0.25);
+            }
+
+        .book-category {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+            .book-category.junior-high {
+                background-color: #3d8ec9;
+            }
+
+            .book-category.senior-high {
+                background-color: #e84c3d;
+            }
+
+        /* 分享课程弹窗样式 */
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .share-modal.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .share-modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .share-modal.active .share-modal-content {
+            transform: scale(1);
+        }
+
+        .share-modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .share-modal-header h3 {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--dark);
+                margin: 0;
+            }
+
+        .share-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            color: var(--gray-500);
+        }
+
+            .share-close:hover {
+                background: var(--gray-300);
+                color: var(--gray-700);
+            }
+
+        .share-modal-body {
+            padding: 25px;
+        }
+
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .share-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .share-option:hover {
+                background: var(--gray-100);
+                transform: translateY(-3px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+        .share-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+            .share-icon.wechat {
+                background: #4CAF50;
+            }
+
+            .share-icon.weibo {
+                background: #FF5722;
+            }
+
+            .share-icon.qq {
+                background: #2196F3;
+            }
+
+            .share-icon.link {
+                background: #9C27B0;
+            }
+
+        .share-label {
+            font-size: 14px;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 18px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: transform 0.5s ease-out;
+            z-index: 1000;
+            border-left: 4px solid var(--success);
+        }
+
+            .notification.show {
+                transform: translateX(0);
+            }
+
+            .notification i {
+                font-size: 20px;
+                color: var(--success);
+                background: rgba(111, 208, 140, 0.15);
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+
+        @media (max-width: 900px) {
+            .video-books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .filter-item {
+                flex-direction: row;
+                align-items: center;
+                gap: 15px;
+            }
+
+                .filter-item select {
+                    flex: 1;
+                }
+
+            .header-content {
+                margin-left: 50px;
+                margin-right: 20px;
+            }
+
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .section-title {
+                font-size: 20px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            header {
+                padding: 12px 0;
+            }
+
+            .header-content {
+                margin-left: 45px;
+                margin-right: 15px;
+            }
+
+            .back-button {
+                top: 12px;
+                left: 15px;
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .card {
+                padding: 20px 15px;
+                margin-bottom: 15px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .filter-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+                .filter-item select {
+                    width: 100%;
+                    padding: 10px 12px;
+                }
+
+            .video-books-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .book-title {
+                font-size: 13px;
+                min-height: 38px;
+            }
+
+            .btn {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .video-books-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 通知组件 -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <div class="notification-title">分享成功</div>
+            <div class="notification-text">课程链接已复制到剪贴板！</div>
+        </div>
+    </div>
+
+    <header>
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div>
+                <h1>伴学书库</h1>
+                <div class="subtitle">提供优质学习视频，提升学习效率</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- 筛选器 -->
+        <div class="card">
+            <div class="section-title">
+                <i class="fas fa-filter"></i>
+                <span>筛选伴学书</span>
+            </div>
+            <div class="filters">
+                <div class="filter-item">
+                    <label for="subject-filter">科目：</label>
+                    <select id="subject-filter">
+                        <option value="all">全部科目</option>
+                        <option value="math">数学</option>
+                        <option value="chinese">语文</option>
+                        <option value="english">英语</option>
+                        <option value="physics">物理</option>
+                        <option value="chemistry">化学</option>
+                        <option value="biology">生物</option>
+                        <option value="history">历史</option>
+                        <option value="politics">政治</option>
+                        <option value="geography">地理</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="level-filter">学段：</label>
+                    <select id="level-filter">
+                        <option value="all">全部学段</option>
+                        <option value="junior">初中</option>
+                        <option value="senior">高中</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="type-filter">类型：</label>
+                    <select id="type-filter">
+                        <option value="all">全部</option>
+                        <option value="free">免费</option>
+                        <option value="premium">精品</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 视频书列表 -->
+        <div class="card">
+            <div class="section-title" style="background-color:whitesmoke">
+                <i class="fas fa-th-large"></i>
+                <span>推荐伴学书</span>
+            </div>
+            <div class="video-books-grid">
+                <!-- 视频书卡片将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享课程弹窗 -->
+    <div class="share-modal" id="share-modal">
+        <div class="share-modal-content">
+            <div class="share-modal-header">
+                <h3>分享课程</h3>
+                <button class="share-close" id="share-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="share-modal-body">
+                <div class="share-options">
+                    <div class="share-option" data-platform="wechat">
+                        <div class="share-icon wechat">
+                            <i class="fab fa-weixin"></i>
+                        </div>
+                        <span class="share-label">微信链接</span>
+                    </div>
+                    <div class="share-option" data-platform="weibo">
+                        <div class="share-icon weibo">
+                            <i class="fab fa-weibo"></i>
+                        </div>
+                        <span class="share-label">微博</span>
+                    </div>
+                    <div class="share-option" data-platform="qq">
+                        <div class="share-icon qq">
+                            <i class="fab fa-qq"></i>
+                        </div>
+                        <span class="share-label">QQ</span>
+                    </div>
+                    <div class="share-option" data-platform="link">
+                        <div class="share-icon link">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <span class="share-label">复制链接</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 视频库数据
+        var videoBooks = {
+            1: {
+                id: 1,
+                title: "数学基础精讲",
+                category: "初中",
+                type: "premium",
+                image: "http://tcyc.vip:9012//books/练闯考数学7年级上/bookbmp.png",
+
+            },
+            2: {
+                id: 2,
+                title: "英语听力提升",
+                category: "初中",
+                type: "premium",
+                image: "http://tcyc.vip:9012//books/胜券在握物理8年级上/bookbmp.png",
+
+            }
+        };
+
+        // 从ASHX接口获取答案数据
+        async function fetchAnswerData() {
+            try {
+                var apiUrl = `http://tcyc.vip:9012/zygj.ashx?action=zygj-shipinshuku`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`网络请求失败 (${response.status})`);
+                }
+                const responseText = await response.text();
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    try {
+                        responseData = JSON.parse(responseText.replace(/^"|"$/g, ''));
+                    } catch (finalError) {
+                        throw new Error(`API响应格式错误: ${responseText}`);
+                    }
+                }
+                return responseData;
+            } catch (error) {
+                console.error('加载答案失败:', error);
+                throw new Error('无法加载答案数据。请稍后重试。');
+            }
+        }
+
+        async function initPage() {
+            // 获取DOM元素
+            videoBooks = await fetchAnswerData();
+            const videoBooksGrid = document.querySelector('.video-books-grid');
+            const notification = document.getElementById('notification');
+            const shareModal = document.getElementById('share-modal');
+            let currentShareBookId = null;
+
+            // 生成视频书卡片
+            function generateVideoBookCards() {
+                videoBooksGrid.innerHTML = '';
+
+                // 遍历所有视频书
+                Object.values(videoBooks).forEach(book => {
+
+                    // 创建卡片元素
+                    const card = document.createElement('div');
+                    card.className = 'video-book-card';
+                    card.setAttribute('data-book-id', book.id);
+                    card.setAttribute('data-book-type', book.type);
+
+                    // 为卡片添加内容（去除详细说明）
+                    card.innerHTML = `
+                                <div class="book-cover">
+                                    <img src="${book.image}" alt="${book.title}">
+                                    <div class="book-category ${book.category === '初中' ? 'junior-high' : 'senior-high'}">
+                                        ${book.category}
+                                    </div>
+                                    <div class="book-badge ${book.type === 'free' ? 'free' : ''}">
+                                        ${book.type === 'free' ? '免费' : '精品'}
+                                    </div>
+                                </div>
+                                <div class="book-content" style="background-color:floralwhite">
+                                    <h3 class="book-title">${book.title}</h3>
+                                    <div class="book-buttons">
+                                        <button class="btn btn-primary">视频</button>
+                                        <button class="btn btn-share"><i class="fas fa-share-alt"></i> 分享</button>
+                                    </div>
+                                </div>
+                            `;
+
+                    videoBooksGrid.appendChild(card);
+
+                    // 添加事件监听器
+                    const watchBtn = card.querySelector('.btn-primary');
+                    const shareBtn = card.querySelector('.btn-share');
+
+                    watchBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.href = `a试题知识点视频.html?bookId=${book.id}&k=0&name=` + book.title;
+                    });
+
+                    shareBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openShareModal(book.id);
+                    });
+
+                    card.addEventListener('click', (e) => {
+                        if (e.target !== watchBtn && e.target !== shareBtn &&
+                            !watchBtn.contains(e.target) && !shareBtn.contains(e.target)) {
+                            window.location.href = `a试题知识点视频.html?bookId=${book.id}&k=0&name=` + book.title;
+                        }
+                    });
+                });
+            }
+
+            // 显示通知
+            function showNotification(title, message) {
+                notification.querySelector('.notification-title').textContent = title;
+                notification.querySelector('.notification-text').textContent = message;
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            // 打开分享弹窗
+            function openShareModal(bookId) {
+                currentShareBookId = bookId;
+                shareModal.classList.add('active');
+            }
+
+            // 关闭分享弹窗
+            function closeShareModal() {
+                shareModal.classList.remove('active');
+            }
+
+            // 关闭分享弹窗按钮
+            document.getElementById('share-close').addEventListener('click', closeShareModal);
+
+            // 点击分享弹窗外部关闭
+            shareModal.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeShareModal();
+                }
+            });
+
+            // 分享选项点击事件
+            document.querySelectorAll('.share-option').forEach(option => {
+
+                option.addEventListener('click', function () {
+                    const platform = this.getAttribute('data-platform');
+                    if (currentShareBookId) {
+
+                        shareToPlatform(platform, currentShareBookId);
+                    }
+                });
+            });
+
+            // 根据平台分享课程
+            function shareToPlatform(platform, bookId) {
+
+                const book = Object.values(videoBooks).find(book1 => book1.id === bookId);
+                //alert(book.title);
+               
+                if (!book) return;
+
+                const shareUrl = window.location.origin + `/a试题知识点视频.html?bookId=${bookId}&k=0&name=` + book.title;
+                let successMsg = '';
+
+                switch (platform) {
+                    case 'wechat':
+                        //successMsg = '内容已准备好分享到微信';
+                        navigator.clipboard.writeText(`${shareUrl}`).then(() => {
+                            successMsg = '课程链接已复制到剪贴板';
+                        }).catch(err => {
+                            console.error('复制失败:', err);
+                            successMsg = '请手动复制链接';
+                        });
+                        break;
+                    case 'weibo':
+                        const weiboShareUrl = `http://service.weibo.com/share/share.php?title=${encodeURIComponent(book.title)}&url=${encodeURIComponent(shareUrl)}`;
+                        window.open(weiboShareUrl, '_blank');
+                        successMsg = '微博分享页面已打开';
+                        break;
+                    case 'qq':
+                        const qqShareUrl = `http://connect.qq.com/widget/shareqq/index.html?title=${encodeURIComponent(book.title)}&url=${encodeURIComponent(shareUrl)}`;
+                        window.open(qqShareUrl, '_blank');
+                        successMsg = 'QQ分享页面已打开';
+                        break;
+                    case 'link':
+                        
+                        navigator.clipboard.writeText(`${shareUrl}`).then(() => {
+                            successMsg = '课程链接已复制到剪贴板';
+                        }).catch(err => {
+                            console.error('复制失败:', err);
+                            successMsg = '请手动复制链接';
+                        });
+                        break;
+                    default:
+                        break;
+                }
+
+                if (successMsg) {
+                    showNotification('分享成功', successMsg);
+                }
+                closeShareModal();
+            }
+
+            // 筛选功能实现
+            const subjectFilter = document.getElementById('subject-filter');
+            const levelFilter = document.getElementById('level-filter');
+            const typeFilter = document.getElementById('type-filter');
+
+            subjectFilter.addEventListener('change', applyFilters);
+            levelFilter.addEventListener('change', applyFilters);
+            typeFilter.addEventListener('change', applyFilters);
+
+            function applyFilters() {
+                const subject = subjectFilter.value;
+                const level = levelFilter.value;
+                const type = typeFilter.value;
+
+                const filteredBooks = Object.values(videoBooks).filter(book => {
+                    // 科目筛选
+                    if (subject !== 'all') {
+                        const subjectKeywords = {
+                            'math': ['数学', '代数', '几何'],
+                            'chinese': ['语文'],
+                            'english': ['英语', '听力', '口语'],
+                            'physics': ['物理', '力学'],
+                            'chemistry': ['化学', '元素', '反应'],
+                            'biology': ['生物', '细胞', '遗传'],
+                            'history': ['历史', '朝代'],
+                            'politics': ['政治', '经济'],
+                            'geography': ['地理', '地形', '气候'],
+                            'other': ['其他', '综合', '素养', '通识']
+                        };
+
+                        let subjectMatched = false;
+                        if (subjectKeywords[subject]) {
+                            subjectMatched = subjectKeywords[subject].some(
+                                keyword => book.title.includes(keyword)
+                            );
+                        }
+
+                        if (!subjectMatched) return false;
+                    }
+
+                    // 学段筛选
+                    if (level !== 'all') {
+                        if ((level === 'junior' && !book.category.includes('初中')) ||
+                            (level === 'senior' && !book.category.includes('高中'))) {
+                            return false;
+                        }
+                    }
+
+                    // 类型筛选
+                    if (type !== 'all') {
+                        if ((type === 'free' && book.type !== 'free') ||
+                            (type === 'premium' && book.type === 'free')) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                // 显示过滤后的视频书卡片
+                videoBooksGrid.innerHTML = '';
+                filteredBooks.forEach(book => {
+                    const card = document.createElement('div');
+                    card.className = 'video-book-card';
+                    card.setAttribute('data-book-id', book.id);
+                    card.setAttribute('data-book-type', book.type);
+
+                    card.innerHTML = `
+                                <div class="book-cover">
+                                    <img src="${book.image}" alt="${book.title}">
+                                    <div class="book-category ${book.category === '初中' ? 'junior-high' : 'senior-high'}">
+                                        ${book.category}
+                                    </div>
+                                    <div class="book-badge ${book.type === 'free' ? 'free' : ''}">
+                                        ${book.type === 'free' ? '免费' : '精品'}
+                                    </div>
+                                </div>
+                                <div class="book-content">
+                                    <h3 class="book-title">${book.title}</h3>
+                                    <div class="book-buttons">
+                                        <button class="btn btn-primary">视频</button>
+                                        <button class="btn btn-share"><i class="fas fa-share-alt"></i> 分享</button>
+                                    </div>
+                                </div>
+                            `;
+
+                    videoBooksGrid.appendChild(card);
+
+                    // 添加事件监听器
+                    const watchBtn = card.querySelector('.btn-primary');
+                    const shareBtn = card.querySelector('.btn-share');
+
+                    watchBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.href = `a试题知识点视频.html?bookId=${book.id}&k=0&name=` + book.title;
+                    });
+
+                    shareBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openShareModal(book.id);
+                    });
+
+                    card.addEventListener('click', (e) => {
+                        if (e.target !== watchBtn && e.target !== shareBtn &&
+                            !watchBtn.contains(e.target) && !shareBtn.contains(e.target)) {
+                            window.location.href = `a试题知识点视频.html?bookId=${book.id}&k=0&name=` + book.title;
+                        }
+                    });
+                });
+
+                showNotification('筛选已应用', `显示 ${filteredBooks.length} 本视频书`);
+            }
+
+            // 初始化页面
+            generateVideoBookCards();
+        }
+        document.addEventListener('DOMContentLoaded', initPage());
+    </script>
+</body>
+</html>

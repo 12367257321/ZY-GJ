@@ -1,0 +1,923 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师作业批改系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5fdff 0%, #f0f9fc 100%);
+            min-height: 100vh;
+            color: #2c5042;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+
+        .logo-section {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.96);
+            padding: 12px 30px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(82, 169, 145, 0.15);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(45deg, #5bc2b0, #4a8a9b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #2c5042;
+            letter-spacing: 0.2px;
+        }
+
+            .logo-text span {
+                color: #5bc2b0;
+                font-weight: 700;
+            }
+
+        .title-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 22px 35px;
+            backdrop-filter: blur(5px);
+            position: relative;
+            box-shadow: 0 8px 25px rgba(82, 169, 145, 0.1);
+        }
+
+        .page-title {
+            margin: 10px 0;
+            color: #2c5042;
+            font-size: 2.0rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        .subtitle {
+            color: #517567;
+            line-height: 1.7;
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .deco {
+            height: 180px;
+            background: linear-gradient(45deg, #d8f7f2, #c0f1e6);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: -1;
+            border-bottom-left-radius: 80% 30%;
+            border-bottom-right-radius: 80% 30%;
+        }
+
+        .image-control-section {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 18px 30px;
+            border-radius: 20px;
+            margin: 25px auto;
+            box-shadow: 0 10px 30px rgba(82, 169, 145, 0.1);
+            border: 1px solid #d8f5ea;
+            max-width: 1000px;
+        }
+
+        .controls-info {
+            max-width: 850px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .controls-title {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #3a8b7a;
+            font-weight: 650;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .controls-description {
+            color: #517567;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            opacity: 0.9;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 30px;
+            padding: 0 20px 40px;
+        }
+
+        .image-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(82, 169, 145, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid #d8f2e6;
+            padding-bottom: 20px;
+        }
+
+            .image-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 25px 50px rgba(82, 169, 145, 0.2);
+            }
+
+        .card-header {
+            background: linear-gradient(45deg, #ecfbf9, #e1f6f2);
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #bfebe0;
+        }
+
+        .image-title {
+            font-weight: 650;
+            color: #2c5042;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .image-title i {
+                color: #5bc2b0;
+                font-size: 1.3rem;
+                width: 36px;
+                height: 36px;
+                background: rgba(91, 194, 176, 0.15);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        .image-status {
+            background: #ffd66e;
+            color: #2c5042;
+            font-size: 0.92rem;
+            padding: 7px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .canvas-container {
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #f9fffe, #f4fdfb);
+            border-bottom: 1px solid #d8f5ea;
+        }
+
+            .canvas-container canvas {
+                max-width: 100%;
+                max-height: 100%;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+                border: 1px solid #c1dfda;
+                background: white;
+            }
+
+        .image-controls {
+            display: flex;
+            justify-content: center;
+            padding: 25px 25px 5px;
+            gap: 25px;
+        }
+
+        .control-btn {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #c0e3dd;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            color: #3a8b7a;
+            font-size: 1.4rem;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(82, 169, 145, 0.1);
+        }
+
+            .control-btn:hover {
+                background: linear-gradient(45deg, #5bc2b0, #4a8a9b);
+                color: white;
+                box-shadow: 0 8px 18px rgba(82, 169, 145, 0.25);
+                border-color: transparent;
+            }
+
+        .correct-combined-btn {
+            background: linear-gradient(45deg, #5a9c46, #4d8840);
+            color: white;
+            min-width: 160px;
+            border: none;
+            padding: 0 20px;
+            font-size: 1.15rem;
+            font-weight: 650;
+            gap: 10px;
+            border-radius: 14px;
+            height: 56px;
+            box-shadow: 0 8px 20px rgba(90, 156, 70, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s ease;
+            max-width: 220px;
+        }
+
+            .correct-combined-btn:hover {
+                background: linear-gradient(45deg, #4d8840, #3f7534);
+                box-shadow: 0 10px 25px rgba(90, 156, 70, 0.35);
+            }
+
+        .angle-display {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            background: rgba(44, 80, 66, 0.92);
+            color: white;
+            padding: 7px 20px;
+            border-radius: 30px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #5bc2b0;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 1.0rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.35s ease;
+            pointer-events: none;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(91, 194, 176, 0.35);
+        }
+
+            .status-indicator.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .tooltip {
+            position: absolute;
+            bottom: -27px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 80, 66, 0.9);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            min-width: max-content;
+            white-space: nowrap;
+        }
+
+        .control-btn:hover .tooltip {
+            opacity: 1;
+        }
+
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 18px;
+            display: none;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+            .progress-container.active {
+                display: flex;
+            }
+
+        .progress-text {
+            font-weight: 700;
+            color: #3a8b7a;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            width: 80%;
+            max-width: 300px;
+            height: 10px;
+            background: #d1e5e2;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 8px 0;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.07);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #5bc2b0, #4a8a9b);
+            width: 0%;
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-percent {
+            font-weight: 600;
+            color: #3a8b7a;
+            font-size: 1.08rem;
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(91, 194, 176, 0.04);
+            font-size: 18rem;
+            font-weight: 900;
+            z-index: -1;
+            font-family: 'Arial';
+            user-select: none;
+            transform: rotate(-10deg);
+            opacity: 0.15;
+        }
+
+        .saved-badge {
+            display: inline-block;
+            background: #5bc2b0;
+            color: white;
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-left: 10px;
+            animation: pulseBadge 1.5s infinite;
+        }
+
+        .summary-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            padding: 25px 30px;
+            margin: 20px auto 50px;
+            max-width: 1000px;
+            border: 1px solid #c6e9df;
+            box-shadow: 0 8px 30px rgba(80, 160, 140, 0.12);
+        }
+
+        .summary-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2c5042;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+            .summary-title i {
+                color: #5bc2b0;
+                font-size: 1.6rem;
+            }
+
+        .summary-text {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #517567;
+        }
+
+        .summary-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #bfe6dd;
+            border-radius: 14px;
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            color: #2c5042;
+            resize: vertical;
+            background: #f9fffd;
+        }
+
+            .summary-textarea:focus {
+                outline: none;
+                border-color: #5bc2b0;
+                box-shadow: 0 0 0 3px rgba(91, 194, 176, 0.2);
+            }
+
+        @keyframes pulseBadge {
+            0% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.7;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="deco"></div>
+    <div class="watermark">EDU</div>
+
+    <div class="app-container">
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo-badge">
+                    <div class="logo-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="logo-text">作业<span>批改系统</span></div>
+                </div>
+            </div>
+            <div class="title-section">
+                <h1 class="page-title">作业批量预览与调整</h1>
+                <p class="subtitle">请检查每份作业方向是否正确，确认无误后点击"批改"按钮</p>
+            </div>
+        </div>
+
+        <div class="image-control-section">
+            <div class="controls-info">
+                <div class="controls-title">
+                    <i class="fas fa-tasks"></i>
+                    作业预处理流程
+                </div>
+                <p class="controls-description">
+                    使用旋转按钮调整作业图片方向 → 点击"批改"按钮保存并进入批改界面 → 完成批改打分
+                </p>
+            </div>
+        </div>
+
+        <div class="images-grid">
+            <!-- 作业图片 1 -->
+            <div class="image-card">
+                <div class="card-header">
+                    <div class="image-title">
+                        <i class="fas fa-calculator"></i>
+                        <div>数学作业 - 王小明</div>
+                    </div>
+                    <div class="image-status">待处理</div>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="canvas1"></canvas>
+                    <div class="angle-display">
+                        <i class="fas fa-sync-alt"></i>
+                        角度: 0°
+                    </div>
+                    <div class="status-indicator">
+                        <i class="fas fa-check-circle"></i>
+                        保存成功，正在进入批改页面
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-text">保存试卷图片中...</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-percent">0%</div>
+                    </div>
+                </div>
+                <div class="image-controls">
+                    <button class="control-btn rotate-btn" data-index="0" id="rotateLeft0">
+                        <i class="fas fa-undo-alt"></i>
+                        <span class="tooltip">逆时针旋转90°</span>
+                    </button>
+                    <button class="correct-combined-btn" id="correctBtn0">
+                        <i class="fas fa-pencil-alt"></i>
+                        批改
+                    </button>
+                    <button class="control-btn rotate-btn" data-index="0" id="rotateRight0">
+                        <i class="fas fa-redo-alt"></i>
+                        <span class="tooltip">顺时针旋转90°</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 作业图片 2 -->
+            <div class="image-card">
+                <div class="card-header">
+                    <div class="image-title">
+                        <i class="fas fa-calculator"></i>
+                        <div>数学作业 - 张小华</div>
+                    </div>
+                    <div class="image-status">待处理</div>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="canvas2"></canvas>
+                    <div class="angle-display">
+                        <i class="fas fa-sync-alt"></i>
+                        角度: 0°
+                    </div>
+                    <div class="status-indicator">
+                        <i class="fas fa-check-circle"></i>
+                        保存成功，正在进入批改页面
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-text">保存试卷图片中...</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-percent">0%</div>
+                    </div>
+                </div>
+                <div class="image-controls">
+                    <button class="control-btn rotate-btn" data-index="1" id="rotateLeft1">
+                        <i class="fas fa-undo-alt"></i>
+                        <span class="tooltip">逆时针旋转90°</span>
+                    </button>
+                    <button class="correct-combined-btn" id="correctBtn1">
+                        <i class="fas fa-pencil-alt"></i>
+                        批改
+                    </button>
+                    <button class="control-btn rotate-btn" data-index="1" id="rotateRight1">
+                        <i class="fas fa-redo-alt"></i>
+                        <span class="tooltip">顺时针旋转90°</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 作业图片 3 -->
+            <div class="image-card">
+                <div class="card-header">
+                    <div class="image-title">
+                        <i class="fas fa-calculator"></i>
+                        <div>数学作业 - 赵晓红</div>
+                    </div>
+                    <div class="image-status">待处理</div>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="canvas3"></canvas>
+                    <div class="angle-display">
+                        <i class="fas fa-sync-alt"></i>
+                        角度: 0°
+                    </div>
+                    <div class="status-indicator">
+                        <i class="fas fa-check-circle"></i>
+                        保存成功，正在进入批改页面
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-text">保存试卷图片中...</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-percent">0%</div>
+                    </div>
+                </div>
+                <div class="image-controls">
+                    <button class="control-btn rotate-btn" data-index="2" id="rotateLeft2">
+                        <i class="fas fa-undo-alt"></i>
+                        <span class="tooltip">逆时针旋转90°</span>
+                    </button>
+                    <button class="correct-combined-btn" id="correctBtn2">
+                        <i class="fas fa-pencil-alt"></i>
+                        批改
+                    </button>
+                    <button class="control-btn rotate-btn" data-index="2" id="rotateRight2">
+                        <i class="fas fa-redo-alt"></i>
+                        <span class="tooltip">顺时针旋转90°</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 总结评语区域 -->
+        <div class="summary-section">
+            <h2 class="summary-title"><i class="fas fa-comment-dots"></i>本批作业总结评语</h2>
+            <span class="summary-text">对本批作业的整体评价：</span>
+            <textarea class="summary-textarea"
+                      placeholder="请在此处写对本批作业的整体评语（优点、常见问题、改进建议等）"></textarea>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 作业图片数据
+            const images = [
+                'https://images.unsplash.com/photo-1579783928621-7a13d66a62d1?q=80&w=400&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=400&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?q=80&w=400&auto=format&fit=crop'
+            ];
+
+            // 批改页面信息（模拟）
+            const correctionPages = [
+                "数学作业批改页面 - 王小明",
+                "数学作业批改页面 - 张小华",
+                "数学作业批改页面 - 赵晓红"
+            ];
+
+            // 图片状态数组
+            const imageStates = images.map((src, index) => {
+                return {
+                    angle: 0,
+                    img: null,
+                    canvas: document.getElementById(`canvas${index + 1}`),
+                    ctx: null,
+                    containerSize: { width: 0, height: 0 },
+                    angleDisplay: null,
+                    statusIndicator: null,
+                    progressContainer: null,
+                    progressFill: null,
+                    progressPercent: null,
+                    statusElement: null,
+                    correctBtn: document.getElementById(`correctBtn${index}`),
+                    isSaved: false,
+                    isEdited: false
+                };
+            });
+
+            // 初始化所有图片
+            function initImages() {
+                images.forEach((src, index) => {
+                    const state = imageStates[index];
+                    state.ctx = state.canvas.getContext('2d');
+                    state.angleDisplay = state.canvas.parentElement.querySelector('.angle-display');
+                    state.statusIndicator = state.canvas.parentElement.querySelector('.status-indicator');
+                    state.progressContainer = state.canvas.parentElement.querySelector('.progress-container');
+                    state.progressFill = state.progressContainer.querySelector('.progress-fill');
+                    state.progressPercent = state.progressContainer.querySelector('.progress-percent');
+                    state.statusElement = state.canvas.parentElement.parentElement.querySelector('.image-status');
+
+                    // 设置容器尺寸
+                    const container = state.canvas.parentElement;
+                    state.containerSize = {
+                        width: container.clientWidth - 44,
+                        height: container.clientHeight - 44
+                    };
+
+                    // 加载图片
+                    const img = new Image();
+                    img.onload = function () {
+                        state.img = img;
+                        updateCanvasSize(index);
+                        drawImage(index);
+                    };
+                    img.src = src;
+                    img.crossOrigin = "anonymous";
+                });
+            }
+
+            // 更新Canvas尺寸
+            function updateCanvasSize(index) {
+                const state = imageStates[index];
+                const img = state.img;
+
+                // 计算容器中的最大尺寸，同时保持纵横比
+                let width, height;
+
+                if (state.angle % 180 === 0) {
+                    width = state.containerSize.width;
+                    height = (state.containerSize.width * img.height) / img.width;
+
+                    if (height > state.containerSize.height) {
+                        height = state.containerSize.height;
+                        width = (state.containerSize.height * img.width) / img.height;
+                    }
+                } else {
+                    width = state.containerSize.width;
+                    height = (state.containerSize.width * img.width) / img.height;
+
+                    if (height > state.containerSize.height) {
+                        height = state.containerSize.height;
+                        width = (state.containerSize.height * img.height) / img.width;
+                    }
+                }
+
+                state.canvas.width = width;
+                state.canvas.height = height;
+
+                drawImage(index);
+            }
+
+            // 绘制图片（考虑旋转角度）
+            function drawImage(index) {
+                const state = imageStates[index];
+                const { ctx, img, angle } = state;
+                const width = state.canvas.width;
+                const height = state.canvas.height;
+
+                ctx.clearRect(0, 0, width, height);
+                ctx.save();
+
+                // 计算旋转中心
+                ctx.translate(width / 2, height / 2);
+                ctx.rotate(angle * Math.PI / 180);
+
+                // 根据角度调整宽高
+                let drawWidth, drawHeight;
+                if (angle % 180 === 0) {
+                    drawWidth = width;
+                    drawHeight = height;
+                } else {
+                    drawWidth = height;
+                    drawHeight = width;
+                }
+
+                ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+                ctx.restore();
+
+                // 更新角度显示
+                state.angleDisplay.innerHTML = `<i class="fas fa-sync-alt"></i> 角度: ${angle}°`;
+
+                // 更新状态标志
+                updateStatusDisplay(index);
+            }
+
+            // 更新状态显示
+            function updateStatusDisplay(index) {
+                const state = imageStates[index];
+
+                if (state.angle === 0) {
+                    state.statusElement.style.background = '#ffd66e';
+                    state.statusElement.textContent = '未调整';
+                } else {
+                    state.statusElement.style.background = '#75d8c4';
+                    state.statusElement.textContent = `已旋转${state.angle}°`;
+                }
+            }
+
+            // 旋转图片
+            function rotateImage(index, direction) {
+                const state = imageStates[index];
+
+                // 更新旋转角度
+                const directionValue = direction === 'cw' ? 90 : -90;
+                state.angle = (state.angle + directionValue + 360) % 360;
+                state.isEdited = true;
+
+                // 动画效果
+                state.canvas.parentElement.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    state.canvas.parentElement.style.transform = 'scale(1)';
+
+                    // 更新画布
+                    updateCanvasSize(index);
+                }, 200);
+            }
+
+            // 保存并批改
+            function saveAndCorrect(index) {
+                const state = imageStates[index];
+                const btn = state.correctBtn;
+
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+                btn.disabled = true;
+
+                // 显示进度条
+                state.progressContainer.classList.add('active');
+                state.progressFill.style.width = '0%';
+                state.progressPercent.textContent = '0%';
+
+                // 模拟上传过程
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    if (progress > 100) progress = 100;
+
+                    state.progressFill.style.width = `${progress}%`;
+                    state.progressPercent.textContent = `${progress}%`;
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+
+                        // 完成保存
+                        setTimeout(() => {
+                            state.progressContainer.classList.remove('active');
+                            state.statusIndicator.classList.add('active');
+
+                            // 更新状态
+                            state.statusElement.style.backgroundColor = '#5bc2b0';
+                            state.statusElement.textContent = '已完成';
+                            state.isSaved = true;
+
+                            btn.innerHTML = '<i class="fas fa-check-circle"></i> 保存成功！正在跳转';
+
+                            // 稍后跳转到批改页面
+                            setTimeout(() => {
+                                alert(`即将进入批改页面: ${correctionPages[index]}\n（实际应用中将跳转到真实批改界面）`);
+                                resetUI(index);
+                            }, 1500);
+                        }, 500);
+                    }
+                }, 100);
+            }
+
+            // 重置UI状态
+            function resetUI(index) {
+                const state = imageStates[index];
+                state.statusIndicator.classList.remove('active');
+                btn.innerHTML = '<i class="fas fa-pencil-alt"></i> 批改';
+                btn.disabled = false;
+                state.statusElement.textContent = '待处理';
+                state.statusElement.style.backgroundColor = '#ffd66e';
+                state.angle = 0;
+                updateCanvasSize(index);
+            }
+
+            // 初始化应用
+            function initApp() {
+                initImages();
+
+                // 绑定旋转按钮事件
+                document.querySelectorAll('.rotate-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        const direction = this.id.includes('Left') ? 'ccw' : 'cw';
+                        rotateImage(index, direction);
+
+                        // 按钮动画效果
+                        this.style.transform = 'scale(0.9)';
+                        setTimeout(() => this.style.transform = 'scale(1)', 200);
+                    });
+                });
+
+                // 绑定批改按钮事件
+                document.querySelectorAll('.correct-combined-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const index = parseInt(this.id.replace('correctBtn', ''));
+                        saveAndCorrect(index);
+                    });
+                });
+            }
+
+            // 启动应用
+            initApp();
+        });
+    </script>
+</body>
+</html>

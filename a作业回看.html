@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业管家 - 作业回看</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --primary: #0CA678;
+            --primary-light: #2CD69F;
+            --primary-extra-light: rgba(12, 166, 120, 0.08);
+            --secondary: #66D9E8;
+            --accent: #FF9A8C;
+            --light: #ffffff;
+            --dark: #2D334A;
+            --gray-100: #f8fafc;
+            --gray-200: #f1f5f9;
+            --gray-300: #e2e8f0;
+            --gray-400: #CBD5E1;
+            --gray-500: #94a3b8;
+            --gray-600: #64748B;
+            --gray-700: #334155;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --card-radius: 16px;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #DAF6EC, #E8F8F4, #F0F9F7);
+            min-height: 100vh;
+            padding-bottom: 60px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--gray-700);
+            position: relative;
+        }
+
+        .top-nav {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .back-button i {
+                margin-right: 5px;
+            }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+            .logo i {
+                font-size: 24px;
+            }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .user-info img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                border: 2px solid white;
+                object-fit: cover;
+            }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto 0;
+            padding: 0 20px;
+        }
+
+        .header-card {
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .header-card::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 8px;
+                background: var(--primary);
+            }
+
+        .assignment-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 15px;
+        }
+
+            .info-item i {
+                color: var(--primary);
+                font-size: 20px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--primary-extra-light);
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            .info-item .label {
+                font-weight: 500;
+                color: var(--gray-600);
+                margin-bottom: 4px;
+                font-size: 14px;
+            }
+
+            .info-item .value {
+                font-weight: 600;
+                color: var(--dark);
+                font-size: 16px;
+            }
+
+        .score-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 180px;
+            position: relative;
+        }
+
+            .score-display::after {
+                content: "";
+                position: absolute;
+                left: -25px;
+                height: 80%;
+                width: 1px;
+                background: var(--gray-300);
+            }
+
+            .score-display .score-value {
+                font-size: 46px;
+                font-weight: 700;
+                line-height: 1;
+                color: var(--primary);
+                margin-bottom: 5px;
+            }
+
+            .score-display .max-score {
+                color: var(--gray-500);
+                font-weight: 500;
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+        .teacher-comment {
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+            .section-title i {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: var(--primary-extra-light);
+                border-radius: 50%;
+                color: var(--primary);
+                font-size: 18px;
+            }
+
+            .section-title h2 {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--dark);
+            }
+
+        .comment-content {
+            line-height: 1.8;
+            color: var(--dark);
+            padding: 15px;
+            background: var(--primary-extra-light);
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .images-section {
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .image-card {
+            position: relative;
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+            .image-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .image-card img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.3s ease;
+            }
+
+        .card-label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        .student-label {
+            color: #66D9E8;
+        }
+
+        .teacher-label {
+            color: var(--primary);
+        }
+
+        .resources-section {
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .resource-card {
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border: 1px solid var(--gray-300);
+        }
+
+            .resource-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-md);
+                border-color: var(--primary-light);
+            }
+
+        .resource-header {
+            padding: 20px;
+            text-align: center;
+            background: var(--primary-extra-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+            .resource-header i {
+                font-size: 36px;
+                margin-bottom: 12px;
+                color: var(--primary);
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .resource-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .resource-desc {
+            color: var(--gray-600);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray-500);
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .resource-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            flex: 1;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+            .btn-outline:hover {
+                background: var(--primary-extra-light);
+            }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(12, 166, 120, 0.3);
+        }
+
+            .btn-primary:hover {
+                background: var(--primary-light);
+                box-shadow: 0 6px 15px rgba(12, 166, 120, 0.5);
+            }
+
+        .floating-action {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 6px 15px rgba(12, 166, 120, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+            .floating-action:hover {
+                transform: scale(1.1) rotate(45deg);
+                box-shadow: 0 8px 20px rgba(12, 166, 120, 0.6);
+            }
+
+        /* 图片查看器样式 */
+        .image-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+            .image-viewer.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .viewer-container {
+            position: relative;
+            width: 90%;
+            height: 90%;
+            max-width: 1200px;
+            max-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .viewer-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            cursor: grab;
+            transition: transform 0.3s;
+        }
+
+        .viewer-toolbar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .viewer-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .viewer-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+        .viewer-info {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 10px;
+            font-size: 18px;
+            z-index: 10;
+        }
+
+        .viewer-caption {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .navigation-panel {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .nav-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+        .zoom-info {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .header-card {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .assignment-info {
+                grid-template-columns: 1fr;
+            }
+
+            .score-display {
+                flex: 1;
+                align-items: flex-start;
+            }
+
+                .score-display::after {
+                    content: none;
+                }
+
+            .image-grid, .resources-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .viewer-info {
+                font-size: 16px;
+                bottom: 10px;
+            }
+
+            .viewer-caption {
+                max-width: 80%;
+                text-align: center;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <!--<a href="#" class="back-button">
+            <i class="fas fa-arrow-left"></i>返回
+        </a>-->
+        <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <span class="page-title">作业管家 - 作业回看</span>
+        </div>
+        <div class="user-info">
+           <!-- <span>张小明同学</span>-->
+            <img src="https://randomuser.me/api/portraits/lego/1.jpg" alt="用户头像">
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-card">
+            <div class="assignment-info">
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <div class="label">学年段</div>
+                        <div class="value" id="xuenianduan">初中</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <div class="label">作业名称</div>
+                        <div class="value" id="zuoyemingcheng">刷题</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book"></i>
+                    <div>
+                        <div class="label">科目</div>
+                        <div class="value" id="kemu">数学</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-history"></i>
+                    <div>
+                        <div class="label">上传时间</div>
+                        <div class="value" id="shijian">2023年6月12日 下午 4:35</div>
+                    </div>
+                </div>
+            </div>
+             <div class="score-display"> 
+                <div class="score-status" id="pan">
+                    已判作业
+                </div>
+            </div>
+            <!--<div class="score-display">
+                <div class="score-value">92</div>
+                <div class="max-score">满分 100</div>
+                <div class="score-status">
+                    优秀作业
+                </div>
+            </div>--> 
+        </div>
+
+        <div class="teacher-comment">
+            <div class="section-title">
+                <i class="fas fa-comment-alt"></i>
+                <h2>教师评语</h2>
+            </div>
+            <div class="comment-content" id="pingyu">
+                <p>本次作业整体完成质量很高，字迹工整，思路清晰。在解决问题时，你很好地运用了乘法分配律。特别是第三题的解题步骤非常清晰，老师要特别表扬！</p>
+                <p>要注意的是第五题乘法分配律的应用需要更严谨一点，题目解答过程可以再完善。课后老师为你准备了相关的学习材料和练习题，认真完成可以帮你巩固这部分知识。</p>
+                <p>继续努力！期待你下次作业的精彩表现！</p>
+            </div>
+        </div>
+
+        <div class="images-section">
+            <div class="section-title">
+                <i class="fas fa-image"></i>
+                <h2>作业浏览</h2>
+            </div>
+            <div class="image-grid" id="myimgs">
+                <div class="image-card" data-id="1" data-caption="教师批改第一页">
+                    <span class="card-label teacher-label"><i class="fas fa-chalkboard-teacher"></i> 教师批改</span>
+                    <img src="" alt="批改后作业1">
+                </div> 
+            </div>
+        </div>
+
+        <div class="resources-section">
+            <div class="section-title">
+                <i class="fas fa-book-open"></i>
+                <h2>错题本及错题推送</h2>
+            </div>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <!--<i class="fas fa-video"></i>-->
+                        <i class="fas fa-file-alt"></i>
+                        <div class="resource-type">错题本</div>
+                    </div>
+                    <div class="resource-content">
+                        <div class="resource-desc">温故而知新，错题重练，提高学习质量。</div>
+
+                        <div class="resource-actions">
+                            <button class="btn btn-outline" id="cuoti">
+                                <i class="fas fa-play"></i> 下载错题本
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <i class="fas fa-file-alt"></i>
+                        <div class="resource-type">错题类题练习</div>
+                    </div>
+                    <div class="resource-content">
+                        <div class="resource-desc">精选类题练习题，包含易错题和拔高题，帮你巩固知识点，每道题都有详细解析。</div>
+
+                        <div class="resource-actions">
+                            <button class="btn btn-outline" id="leiti">
+                                <i class="fas fa-download"></i> 下载类题
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-action">
+        <i class="fas fa-paper-plane"></i>
+    </div>
+
+    <!-- 图片查看器 -->
+    <div class="image-viewer">
+        <div class="viewer-container">
+            <img class="viewer-image" src="" alt="查看作业大图">
+            <div class="viewer-toolbar">
+                <div class="viewer-btn" id="zoom-in">
+                    <i class="fas fa-search-plus"></i>
+                </div>
+                <div class="viewer-btn" id="reset">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="viewer-btn" id="close-viewer">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="viewer-info">作业批改 - 1/2</div>
+            <div class="viewer-caption"></div>
+
+            <div class="navigation-panel">
+                <div class="nav-btn" id="prev-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="nav-btn" id="next-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <div class="zoom-info">
+                <i class="fas fa-info-circle"></i> 双击放大/缩小 | 使用滚轮缩放 | ESC关闭
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var myhomework = {
+            "id": 10,
+            "imgs": [
+                "http://tcyc.vip:9012/Homework\\1\\21\\251025223050047数据库关系图-副本.png",
+                "http://tcyc.vip:9012/Homework\\1\\21\\251025223050047数据库关系图.png"
+            ],
+            "科目": "数学",
+            "学期名称": "七年上",
+            "图书名称": "刷题",
+            "评语": "",
+            "时间": "2025/10/25 22:30:50",
+            "评判": "作业已判"
+        };
+        var urlParams = new URLSearchParams(window.location.search);
+        var homeworkid = urlParams.get('id')
+        const leiti = document.getElementById('leiti');
+        const cuoti = document.getElementById('cuoti');
+
+        async function fetchAnswerData() {
+            try {
+                var apiUrl = `zygj.ashx?action=zygj-homework&homeid=` + homeworkid;
+                const response = await fetch(apiUrl, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`网络请求失败 (${response.status})`);
+                }
+                const responseText = await response.text();
+
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+
+                } catch (e) {
+                    try {
+                        responseData = JSON.parse(responseText.replace(/^"|"$/g, ''));
+                    } catch (finalError) {
+                        throw new Error(`API响应格式错误: ${responseText}`);
+                    }
+                }
+                return responseData;
+            } catch (error) {
+                console.error('加载答案失败:', error);
+                throw new Error('无法加载答案数据。请稍后重试。');
+            }
+        }
+        document.addEventListener('DOMContentLoaded',async function () {
+            // 图片查看功能实现
+            const viewer = document.querySelector('.image-viewer');
+            const viewerImage = document.querySelector('.viewer-image');
+            const viewerInfo = document.querySelector('.viewer-info');
+            const viewerCaption = document.querySelector('.viewer-caption');
+            const closeBtn = document.getElementById('close-viewer');
+            const zoomInBtn = document.getElementById('zoom-in');
+            const resetBtn = document.getElementById('reset');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            const xuenianduan = document.getElementById('xuenianduan');
+            const zuoyemingcheng = document.getElementById('zuoyemingcheng');
+            const kemu = document.getElementById('kemu');
+            const shijian = document.getElementById('shijian');
+            const pan = document.getElementById('pan');
+            const pingyu = document.getElementById('pingyu');
+            const myimgs = document.getElementById('myimgs');
+
+            myhomework = await fetchAnswerData();
+
+            leiti.addEventListener('click', function () {
+                
+                if (myhomework.类题推送路径 == "") return;
+                // 创建隐藏的下载链接
+                const a = document.createElement('a');
+                a.href =  myhomework.类题推送路径;
+                document.body.appendChild(a); 
+                a.click();// 触发下载 
+                // 清理资源
+                setTimeout(() => {
+                    document.body.removeChild(a); 
+                }, 100);
+            });
+            cuoti.addEventListener('click', function () {
+
+                if (myhomework.错题本路径 == "") return;
+                // 创建隐藏的下载链接
+                const a = document.createElement('a');
+                a.href = myhomework.错题本路径;
+                document.body.appendChild(a);
+                a.click();// 触发下载 
+                // 清理资源
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                }, 100);
+            });
+            xuenianduan.innerHTML = myhomework.学期名称;
+            zuoyemingcheng.innerHTML = myhomework.图书名称;
+            kemu.innerHTML = myhomework.科目;
+            shijian.innerHTML = myhomework.时间;
+            pan.innerHTML = myhomework.评判;
+            pingyu.innerHTML = myhomework.评语
+            var html1 = "";
+            for (var i = 0; i < myhomework.imgs.length; i++) {
+                html1 += '  <div class="image-card" data-id="'+(i+1)+'" data-caption="教师批改第' + (i + 1)
+                    + '页">   <img src=' + myhomework.imgs[i] +' alt="批改后作业2"></div>';
+            }
+
+
+            //<div class="image-card" data-id="2" data-caption="教师批改第二页">
+            //    <span class="card-label teacher-label"><i class="fas fa-chalkboard-teacher"></i> 教师批改</span>
+            //    <img src="http://tcyc.vip:9012/a.png" alt="批改后作业2">
+            //    </div>
+            myimgs.innerHTML = html1;
+
+
+
+            let currentImage = 0;
+            let images = [];
+            let scale = 1;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0;
+            let offsetX = 0, offsetY = 0;
+
+            // 收集所有图片信息
+            const imageCards = document.querySelectorAll('.image-card');
+
+            var number = 0;
+            imageCards.forEach(card => {
+                const img = card.querySelector('img');
+                images.push({
+                    src: img.src,
+                    caption: card.dataset.caption,
+                    index: card.dataset.id
+                });
+
+                // 为每个图片添加点击事件
+                card.addEventListener('click', function () {
+                    openImageViewer(card.dataset.id);
+                });
+            });
+
+            // 打开图片查看器
+            function openImageViewer(index) {
+                currentImage = parseInt(index) - 1;
+                const imgData = images[currentImage];
+
+                viewerImage.src = imgData.src;
+                viewerInfo.textContent = `作业批改 - ${index}/${images.length}`;
+                viewerCaption.textContent = imgData.caption;
+
+                // 重置图片状态
+                resetImage();
+                viewer.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // 关闭图片查看器
+            function closeImageViewer() {
+                viewer.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            // 重置图片状态
+            function resetImage() {
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                offsetX = 0;
+                offsetY = 0;
+                updateTransform();
+                viewerImage.style.cursor = '';
+            }
+
+            // 更新图片变换
+            function updateTransform() {
+                viewerImage.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+            }
+
+            // 关闭按钮事件
+            closeBtn.addEventListener('click', closeImageViewer);
+
+            // 点击外部区域关闭
+            viewer.addEventListener('click', function (e) {
+                if (e.target === viewer) {
+                    closeImageViewer();
+                }
+            });
+
+            // ESC键关闭
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeImageViewer();
+                }
+            });
+
+            // 放大按钮
+            zoomInBtn.addEventListener('click', function () {
+                if (scale < 5) {
+                    scale += 0.5;
+                    updateTransform();
+                }
+            });
+
+            // 重置按钮
+            resetBtn.addEventListener('click', resetImage);
+
+            // 切换到上一张
+            prevBtn.addEventListener('click', function () {
+                if (currentImage > 0) {
+                    currentImage--;
+                } else {
+                    currentImage = images.length - 1;
+                }
+                openImageViewer(currentImage + 1);
+            });
+
+            // 切换到下一张
+            nextBtn.addEventListener('click', function () {
+                if (currentImage < images.length - 1) {
+                    currentImage++;
+                } else {
+                    currentImage = 0;
+                }
+                openImageViewer(currentImage + 1);
+            });
+
+            // 左右箭头切换
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                } else if (e.key === 'ArrowRight') {
+                    nextBtn.click();
+                }
+            });
+
+            // 图片双击放大/缩小
+            viewerImage.addEventListener('dblclick', function () {
+                if (scale <= 1) {
+                    scale = 2.0;
+                    viewerImage.style.cursor = 'grab';
+                } else {
+                    resetImage();
+                }
+                updateTransform();
+            });
+
+            // 鼠标滚轮缩放
+            viewerImage.addEventListener('wheel', function (e) {
+                e.preventDefault();
+
+                // 判断滚轮方向
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+
+                // 计算新的缩放比例（限制在0.5x-5x之间）
+                const newScale = Math.max(0.5, Math.min(5, scale + delta));
+
+                // 只在缩放级别改变时更新
+                if (Math.abs(newScale - scale) >= 0.05) {
+                    scale = newScale;
+
+                    // 当放大时改变光标
+                    if (scale > 1) {
+                        viewerImage.style.cursor = 'grab';
+                    } else {
+                        viewerImage.style.cursor = '';
+                    }
+
+                    updateTransform();
+                }
+            });
+
+            // 图片拖拽功能
+            viewerImage.addEventListener('mousedown', startDrag);
+            viewerImage.addEventListener('touchstart', startDragTouch);
+
+            function startDrag(e) {
+                if (scale <= 1) return;
+
+                e.preventDefault();
+                isDragging = true;
+                startX = e.clientX - offsetX;
+                startY = e.clientY - offsetY;
+
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                viewerImage.style.cursor = 'grabbing';
+            }
+
+            function startDragTouch(e) {
+                if (scale <= 1) return;
+
+                e.preventDefault();
+                isDragging = true;
+                startX = e.touches[0].clientX - offsetX;
+                startY = e.touches[0].clientY - offsetY;
+
+                document.addEventListener('touchmove', dragTouch);
+                document.addEventListener('touchend', stopDrag);
+                viewerImage.style.cursor = 'grabbing';
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateTransform();
+            }
+
+            function dragTouch(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                updateTransform();
+            }
+
+            function stopDrag() {
+                isDragging = false;
+                offsetX = translateX;
+                offsetY = translateY;
+
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('touchmove', dragTouch);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchend', stopDrag);
+
+                if (scale > 1) {
+                    viewerImage.style.cursor = 'grab';
+                }
+            }
+
+            // 浮动按钮功能
+            const floatBtn = document.querySelector('.floating-action');
+            floatBtn.addEventListener('click', function () {
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                this.style.backgroundColor = '#3bc9db';
+                this.style.transform = 'scale(1.2)';
+
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    this.style.backgroundColor = '';
+                    this.style.transform = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

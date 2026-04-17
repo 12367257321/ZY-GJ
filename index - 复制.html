@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧学习平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --primary: #4A98CF;
+            --secondary: #6AB8E6;
+            --accent: #FF9EA7;
+            --success: #66C291;
+            --light: #FFFEFC;
+            --dark-text: #1E293B;
+            --dark-bg: #2D334A;
+            --warning: #FFD699;
+            --gray: #9CA3AF;
+            --card-radius: 16px;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --text-medium: #475569;
+            --text-light: #f8fafc;
+            --background-gradient: linear-gradient(135deg, #4A98CF 0%, #6AB8E6 100%);
+            --download-gradient: linear-gradient(135deg, #66C291 0%, #4AAA7D 100%);
+            --construction-gradient: linear-gradient(135deg, #FFD072 0%, #FFB45A 100%);
+            /* 卡片专用颜色 */
+            --card-blue: #4A98CF;
+            --card-light-blue: #45ACB6;
+            --card-yellow: #FFB45A;
+            --card-purple: #9768D0;
+            --card-orange: #FF9658;
+            --card-pink: #E6769C;
+        }
+
+        body {
+            background: #f7faff;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(74, 152, 207, 0.1) 0%, transparent 50%), radial-gradient(ellipse at 90% 80%, rgba(101, 171, 246, 0.08) 0%, transparent 50%);
+            color: var(--text-medium);
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.6;
+            padding-top: 75px;
+            padding-bottom: 60px;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .logo-icon {
+            background: var(--background-gradient);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(74, 152, 207, 0.35);
+        }
+
+            .logo-icon i {
+                font-size: 20px;
+                color: white;
+            }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-text);
+            letter-spacing: 1px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+            .user-actions a {
+                display: inline-block;
+                transition: all 0.3s ease;
+            }
+
+            .user-actions i {
+                font-size: 20px;
+                color: var(--card-blue);
+                opacity: 0.85;
+                transition: all 0.3s;
+                cursor: pointer;
+            }
+
+                .user-actions i:hover {
+                    opacity: 1;
+                    transform: scale(1.15);
+                    color: var(--primary);
+                }
+
+        /* 主要内容区域 */
+        .hero {
+            text-align: center;
+            padding: 30px 20px 40px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+            .hero h2 {
+                font-size: 2.8rem;
+                font-weight: 800;
+                color: var(--dark-text);
+                line-height: 1.3;
+                margin-bottom: 15px;
+                letter-spacing: -0.5px;
+            }
+
+            .hero p {
+                font-size: 1.15rem;
+                color: var(--text-medium);
+                max-width: 600px;
+                margin: 0 auto 30px;
+                line-height: 1.7;
+            }
+
+        .status-notice {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(74, 152, 207, 0.15);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--card-blue);
+            transition: all 0.3s ease;
+        }
+
+        /* 功能卡片区域 */
+        .features-section {
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            text-align: center;
+            position: relative;
+            margin-bottom: 45px;
+        }
+
+            .section-title:after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 5px;
+                background: var(--card-blue);
+                border-radius: 100px;
+            }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--card-radius);
+            padding: 35px 30px 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+            .feature-card:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 8px;
+                z-index: 1;
+            }
+
+        /* 卡片颜色定制 */
+        .card-blue:before {
+            background: var(--card-blue);
+        }
+
+        .card-light-blue:before {
+            background: var(--card-light-blue);
+        }
+
+        .card-yellow:before {
+            background: var(--card-yellow);
+        }
+
+        .card-purple:before {
+            background: var(--card-purple);
+        }
+
+        .card-orange:before {
+            background: var(--card-orange);
+        }
+
+        .card-pink:before {
+            background: var(--card-pink);
+        }
+
+        .feature-card .card-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            z-index: 2;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .feature-card .free-tag {
+            background: var(--card-light-blue);
+            box-shadow: 0 3px 10px rgba(69, 172, 182, 0.3);
+        }
+
+        .feature-card .custom-tag {
+            background: var(--card-purple);
+            box-shadow: 0 3px 10px rgba(151, 104, 208, 0.3);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0 25px;
+            font-size: 32px;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+        }
+
+        .card-blue .card-icon {
+            color: var(--card-blue);
+        }
+
+        .card-light-blue .card-icon {
+            color: var(--card-light-blue);
+        }
+
+        .card-yellow .card-icon {
+            color: var(--card-yellow);
+        }
+
+        .card-purple .card-icon {
+            color: var(--card-purple);
+        }
+
+        .card-orange .card-icon {
+            color: var(--card-orange);
+        }
+
+        .card-pink .card-icon {
+            color: var(--card-pink);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--dark-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: var(--text-medium);
+            line-height: 1.65;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .card-blue .action-button {
+            background: var(--card-blue);
+        }
+
+        .card-light-blue .action-button {
+            background: var(--card-light-blue);
+        }
+
+        .card-yellow .action-button {
+            background: var(--card-yellow);
+        }
+
+        .card-purple .action-button {
+            background: var(--card-purple);
+        }
+
+        .card-orange .action-button {
+            background: var(--card-orange);
+        }
+
+        .card-pink .action-button {
+            background: var(--card-pink);
+        }
+
+        .action-button:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0, 1);
+            transform-origin: top right;
+            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+            z-index: -1;
+        }
+
+        .action-button:hover:after {
+            transform: scale(1, 1);
+            transform-origin: top left;
+        }
+
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-button i {
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-button:hover i {
+            transform: translateX(5px);
+        }
+
+        /* 底部区域 */
+        .footer-note {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--text-medium);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 80px auto 0;
+            line-height: 1.7;
+            border-top: 1px solid rgba(74, 152, 207, 0.15);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* 装饰元素 */
+        .decoration {
+            position: fixed;
+            top: -150px;
+            right: -150px;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(136deg, rgba(74, 152, 207, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .dots-decoration {
+            position: fixed;
+            bottom: 50px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background-image: radial-gradient(circle at 10px 10px, rgba(74, 152, 207, 0.1) 2px, transparent 5px), radial-gradient(circle at 30px 40px, rgba(74, 152, 207, 0.08) 2px, transparent 4px), radial-gradient(circle at 80px 120px, rgba(74, 152, 207, 0.06) 1px, transparent 3px);
+            background-size: 50px 50px;
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        /* 弹出层样式 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .message-box {
+            background: white;
+            border-radius: 20px;
+            padding: 45px 40px;
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .overlay.active .message-box {
+            transform: scale(1);
+        }
+
+        .message-box i {
+            font-size: 64px;
+            color: #45ACB6;
+            margin-bottom: 25px;
+        }
+
+        .message-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark-text);
+        }
+
+        .message-content {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .close-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(74, 152, 207, 0.3);
+        }
+
+            .close-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(74, 152, 207, 0.4);
+                background: #3d8fc8;
+            }
+
+        /* 媒体查询 */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .feature-card {
+                height: auto;
+                min-height: 320px;
+            }
+
+            body {
+                padding-top: 65px;
+                padding-bottom: 30px;
+            }
+
+            .user-actions {
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 装饰元素 -->
+    <div class="decoration"></div>
+    <div class="dots-decoration"></div>
+
+    <!-- 建设中的弹出层 -->
+    <div class="overlay" id="constructionOverlay">
+        <div class="message-box">
+            <i class="fas fa-tools"></i>
+            <h2 class="message-title">正在建设中...</h2>
+            <p class="message-content">下载中心正在紧张开发中，我们将尽快为您提供优质服务，敬请期待！</p>
+            <button class="close-btn" id="closeOverlay">我知道了</button>
+        </div>
+    </div>
+
+    <!-- 头部导航栏 -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1>智慧学习平台</h1>
+        </div>
+        <div class="user-actions">
+            <a href="#" id="notificationIcon">
+                <i class="fas fa-bell"></i>
+            </a>
+            <a href="#">
+                <i class="fas fa-cog"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <h2>智慧学习，快乐成长</h2>
+        <p>精选视频课程、智能作业辅导、个性化学习方案，助力初中生全面提升</p>
+        <!--<div class="status-notice">
+            <i class="fas fa-circle"></i> 当前系统状态良好
+        </div>-->
+    </section>
+
+    <!-- 功能区域 -->
+    <section class="features-section">
+        <h2 class="section-title">核心功能区</h2>
+
+        <div class="features-grid">
+            <!-- 视频书库卡片 - 蓝色 -->
+            <div class="feature-card card-blue" onclick="window.location='a视频书库.html'">
+                <a href="a视频书库.html" class="card-link"></a>
+                <div class="card-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="card-title">视频书库</h3>
+                <p class="card-description">丰富多样的视频学习资料库，覆盖初中全科知识点。精选数学、语文、英语等学科优质视频课程，帮助学生深度理解课本知识。</p>
+                <a href="a视频书库.html" class="action-button">
+                    <span>进入书库</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 答案查看卡片 - 淡蓝色（添加免费标签）-->
+            <div class="feature-card card-light-blue" onclick="window.location='a查看答案.html'">
+                <div class="card-tag free-tag">免费</div>
+                <div class="card-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3 class="card-title">查看答案</h3>
+                <p class="card-description">核对整理重难易错习题，专项突破薄弱环节，提高学习效率。</p>
+                <button class="action-button">
+                    <span>立即查看</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- 我的视频卡片 - 黄色（添加定制标签）-->
+            <div class="feature-card card-yellow" onclick="window.location='a我的图书.html'">
+                <div class="card-tag custom-tag">定制</div>
+                <a href="b4.html" class="card-link"></a>
+                <div class="card-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <h3 class="card-title">我的图书</h3>
+                <p class="card-description">专业老师精心讲解，动画与实例相结合的视频课程。章节知识点讲解清晰，涵盖初中数学重点难点，帮助孩子巩固基础。</p>
+                <a href="b4.html" class="action-button">
+                    <span>开始学习</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 作业管家卡片 - 紫色（添加定制标签）-->
+            <div class="feature-card card-purple" onclick="window.location='a作业管家.html'">
+                <div class="card-tag custom-tag">定制</div>
+                <a href="a作业管家.html" class="card-link"></a>
+                <div class="card-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3 class="card-title">作业管家</h3>
+                <p class="card-description">轻松上传数理化作业题，AI智能识别并批改。支持多个文件同时上传，生成详细反馈报告，帮助学生针对性地提高。</p>
+                <a href="a作业管家.html" class="action-button">
+                    <span>上传作业</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 下载中心卡片 - 橙色 -->
+            <div class="feature-card card-orange" id="downloadCard" onclick="window.location='a下载中心.html'">
+                <a class="card-link" id="downloadLink"></a>
+                <div class="card-icon" id="downloadIcon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3 class="card-title">下载中心</h3>
+                <p class="card-description">提供专业教师批改后的作业下载，配套学习资源下载。涵盖各类练习题、知识点总结等精选资料。</p>
+                <button class="action-button" id="downloadBtn">
+                    <span>前往下载</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- 使用说明卡片 - 粉色 -->
+            <div class="feature-card card-pink" onclick="window.location='a使用说明.html'">
+                <a href="a使用说明.html" class="card-link"></a>
+                <div class="card-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3 class="card-title">使用说明</h3>
+                <p class="card-description">帮助学生快速学习使用平台，深度理解错题中涉及到的相关知识。让学习更加高效便捷。</p>
+                <a href="a使用说明.html" class="action-button">
+                    <span>立即查看</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部区域 -->
+    <footer class="footer-note">
+        <p>智慧学习平台 © 2025<br>专为初中生设计的现代化学习助手</p>
+      <!--  <div class="copyright">知识启迪智慧，智慧点亮人生</div>-->
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 卡片悬浮动画
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', function () {
+                    this.querySelector('.action-button').style.transform = 'translate(0, -3px)';
+                    this.querySelector('.card-icon').style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                card.addEventListener('mouseleave', function () {
+                    this.querySelector('.action-button').style.transform = 'none';
+                    this.querySelector('.card-icon').style.transform = 'scale(1) rotate(0deg)';
+                });
+
+                // 卡片点击效果
+                card.addEventListener('click', function (e) {
+                    // 避免在按钮上点击时触发两次
+                    if (!e.target.closest('.action-button')) {
+                        this.style.transform = 'translateY(-8px)';
+                        setTimeout(() => { this.style.transform = 'translateY(-10px)'; }, 100);
+                    }
+                });
+            });
+
+            // 背景元素移动效果
+            window.addEventListener('scroll', function () {
+                let scrollTop = window.scrollY || document.documentElement.scrollTop;
+                document.querySelector('.decoration').style.transform =
+                    `translate(${scrollTop * 0.05}px, ${scrollTop * 0.03}px) rotate(${scrollTop * 0.1}deg)`;
+                document.querySelector('.dots-decoration').style.transform =
+                    `translate(${scrollTop * -0.02}px, ${scrollTop * -0.03}px)`;
+            });
+
+            // 下载中心功能实现
+            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadIcon = document.getElementById('downloadIcon');
+            const downloadLink = document.getElementById('downloadLink');
+            const overlay = document.getElementById('constructionOverlay');
+            const closeBtn = document.getElementById('closeOverlay');
+
+            // 下载功能
+            [downloadBtn, downloadIcon, downloadLink].forEach(el => {
+                el.addEventListener('click', function (e) {
+                    if (e.target !== downloadBtn && e.target !== downloadLink) e.preventDefault();
+                    overlay.classList.add('active');
+                });
+            });
+
+            // 关闭弹出层
+            closeBtn.addEventListener('click', function () {
+                overlay.classList.remove('active');
+            });
+
+            // 点击蒙层关闭
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+
+            // 设置按钮动画
+            document.querySelector('.fa-cog').parentElement.addEventListener('mouseenter', function () {
+                this.querySelector('i').style.transform = 'rotate(30deg)';
+            });
+            document.querySelector('.fa-cog').parentElement.addEventListener('mouseleave', function () {
+                this.querySelector('i').style.transform = 'rotate(0deg)';
+            });
+
+            // 设置所有卡片图标可点击
+            document.querySelectorAll('.card-icon').forEach(icon => {
+                icon.style.cursor = "pointer";
+            });
+        });
+    </script>
+</body>
+</html>

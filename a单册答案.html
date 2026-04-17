@@ -1,0 +1,1096 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>练习册答案浏览器 - 智慧学习平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4A98CF;
+            --secondary: #6AB8E6;
+            --light: #f0f8ff;
+            --dark-text: #1E293B;
+            --card-radius: 16px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --error: #ff4757;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        body {
+            background: var(--light);
+            background-image: radial-gradient(ellipse at 30% 10%, rgba(106, 184, 230, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 90%, rgba(74, 152, 207, 0.08) 0%, transparent 50%);
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+
+        /* 顶部导航 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(74, 152, 207, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, #4A98CF 0%, #6AB8E6 100%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(74, 152, 207, 0.25);
+        }
+
+            .logo-icon i {
+                font-size: 20px;
+                color: white;
+            }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            letter-spacing: 0.5px;
+        }
+        .nav-controls i {
+            font-size: 20px;
+            color: var(--primary);
+            margin-left: 15px;
+            transition: all 0.3s;
+        } 
+
+            .nav-controls i:hover {
+                color: var(--dark-text);
+                transform: translateY(-2px);
+            }
+
+        /* 主体内容容器 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+                font-weight: 700;
+                margin-bottom: 15px;
+                color: var(--dark-text);
+                position: relative;
+            }
+
+                .page-header h1:after {
+                    content: '';
+                    position: absolute;
+                    bottom: -8px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 80px;
+                    height: 4px;
+                    background: var(--primary);
+                    border-radius: 100px;
+                }
+
+        .book-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #475569;
+            animation: fadeIn 0.5s ease-out 0.2s both;
+        }
+
+        .meta-item {
+            background: rgba(74, 152, 207, 0.15);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 500px;
+            height: 8px;
+            background: rgba(74, 152, 207, 0.2);
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        /* 答案画廊 */
+        .gallery-holder {
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 400px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            aspect-ratio: 4 / 3;
+            background: linear-gradient(45deg, #f5fcff, #e6f7ff);
+            border-top: 4px solid var(--primary);
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+            transform: perspective(1000px) rotateY(0deg);
+            transform-style: preserve-3d;
+        }
+
+            .gallery-item.loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 210px;
+                background: rgba(0,0,0,0.03);
+            }
+
+        .loading-spinner {
+            color: rgba(74, 152, 207, 0.7);
+            font-size: 2.1rem;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+            background: linear-gradient(120deg, #e0f7ff 0%, #f0fbfe 100%);
+            transform: translateZ(20px);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px) scale(1.03) perspective(1000px) rotateY(3deg);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+
+            .gallery-item:hover .gallery-img {
+                transform: scale(1.05) translateZ(20px);
+            }
+
+        .page-number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            transform: translateZ(10px);
+        }
+
+        .book-pages {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.4s;
+            transform: translateY(100%);
+        }
+
+        .gallery-item:hover .book-pages {
+            transform: translateY(0);
+        }
+
+        /* 答案预览模块 - 修改了点击关闭功能 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease;
+            padding: 20px;
+        }
+
+            .overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .overlay-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .enlarged-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; /* 添加光标指示可点击 */
+        }
+
+        .enlarged-img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.7);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            display: none;
+        }
+
+            .enlarged-img.loaded {
+                display: block;
+            }
+
+        .loading-large {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            animation: pulse 1.5s infinite;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            font-size: 2.7rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.85);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2001;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+            .close-btn:hover {
+                color: white;
+                background: rgba(255, 0, 0, 0.4);
+                transform: rotate(90deg) scale(1.1);
+            }
+
+        .control-toolbar {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 2001;
+        }
+
+        .zoom-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .zoom-btn:hover {
+                background: var(--primary);
+                transform: scale(1.1);
+            }
+
+        .instruction {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 9px 24px;
+            border-radius: 20px;
+            width: auto;
+            max-width: 90%;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #475569;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        /* 分页控件 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+            padding: 15px 0;
+            position: relative;
+        }
+
+        .pagination-btn {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(74, 152, 207, 0.35);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .pagination-btn:disabled {
+                background: #e0e0e0;
+                color: #a0a0a0;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .pagination-btn:not(:disabled):hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(74, 152, 207, 0.45);
+            }
+
+            .pagination-btn:not(:disabled):active {
+                transform: scale(0.95);
+            }
+
+            .pagination-btn::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateX(-100%);
+                transition: transform 0.4s ease;
+            }
+
+            .pagination-btn:not(:disabled):hover::after {
+                transform: translateX(100%);
+            }
+
+        .btn-icon {
+            font-size: 1.3rem;
+            transition: transform 0.3s;
+        }
+
+        .pagination-btn:not(:disabled):hover .btn-icon {
+            transform: scale(1.2);
+        }
+
+        .pagination-info {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: 10px 20px;
+            background: rgba(106, 184, 230, 0.12);
+            border-radius: 100px;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        /* 错误提示 */
+        .error-card {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            background: white;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .error-icon {
+            font-size: 3.5rem;
+            color: var(--error);
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .error-title {
+            font-size: 1.7rem;
+            color: var(--error);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .error-description {
+            color: #545a69;
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+                padding-bottom: 20px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .close-btn {
+                top: 15px;
+                right: 15px;
+                font-size: 2.2rem;
+                width: 45px;
+                height: 45px;
+            }
+
+            .instruction {
+                font-size: 0.9rem;
+                padding: 7px 18px;
+            }
+
+            .book-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .pagination-btn {
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .gallery-holder {
+                padding: 20px 15px;
+            }
+
+            .pagination {
+                gap: 8px;
+                padding: 10px 5px;
+            }
+
+            .pagination-btn {
+                width: 42px;
+                height: 42px;
+            }
+
+            .pagination-info {
+                min-width: auto;
+                padding: 8px 12px;
+                font-size: 0.95rem;
+            }
+
+            .loading-large {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h1>练习册答案浏览器</h1>
+        </div>
+        <!--<div class="nav-controls">
+            <i class="fas fa-search" title="搜索练习册"></i>
+            <i class="fas fa-home" title="返回首页"></i>
+            <i class="fas fa-bookmark" title="收藏练习册"></i>
+        </div>-->
+    </header>
+
+    <div class="container">
+        <!-- 页面标题和图书信息 -->
+        <div class="page-header">
+            <h1 id="book-title">练习册答案加载中...</h1>
+            <div class="book-meta">
+                <div class="meta-item"><i class="fas fa-book"></i> <span id="edition">--</span></div>
+                <div class="meta-item"><i class="fas fa-layer-group"></i> <span id="grade">--</span></div>
+                <div class="meta-item"><i class="fas fa-user-graduate"></i> <span id="subject">--</span></div>
+                <div class="meta-item"><i class="fas fa-images"></i> <span id="page-count" style="color: var(--primary); font-weight: 600;">0</span>页答案</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- 画廊区域 -->
+        <div class="gallery-holder">
+            <div class="gallery" id="gallery">
+                <!-- 初始加载提示 -->
+                <div class="gallery-item loading">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> 载入练习册答案...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分页控件 -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prev-page" disabled>
+                    <i class="fas fa-chevron-left btn-icon"></i>
+                </button>
+                <div class="pagination-info" id="page-info">加载中...</div>
+                <button class="pagination-btn" id="next-page" disabled>
+                    <i class="fas fa-chevron-right btn-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 预览大图模块 -->
+        <div class="overlay">
+            <button class="close-btn">&times;</button>
+            <div class="overlay-content">
+                <div class="enlarged-container">
+                    <div class="loading-large" id="large-loading">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        加载高清答案...
+                    </div>
+                    <img class="enlarged-img" src="" alt="答案详情">
+                </div>
+                <div class="control-toolbar">
+                    <button class="zoom-btn" id="zoom-in" title="放大"><i class="fas fa-search-plus"></i></button>
+                    <button class="zoom-btn" id="zoom-out" title="缩小"><i class="fas fa-search-minus"></i></button>
+                    <button class="zoom-btn" id="zoom-reset" title="重置"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="instruction">滚轮控制缩放 | 点击图片关闭 | ESC键返回</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>智慧学习平台 &copy; 2025 | 专业答案解析 | 高效学习资源 | 提升学习成绩</p>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentBookId = null;
+        let currentPage = 1;
+        const perPage = 6;
+        let totalPages = 0;
+        let images = [];
+        let currentScale = 1;
+        let overlayClickHandler;  // 保存点击事件的句柄，用于后面移除
+
+        // 从URL中获取图书ID
+        function getBookIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || 1;
+        }
+
+        // 从ASHX接口获取答案数据
+        async function fetchAnswerData() {
+            try {
+                updateProgress(20);
+                currentBookId = getBookIdFromUrl();
+                var apiUrl = `http://tcyc.vip:9012/zygj.ashx?action=zygj-chakandance&id=${currentBookId}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`网络请求失败 (${response.status})`);
+                }
+
+                const responseText = await response.text();
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    try {
+                        responseData = JSON.parse(responseText.replace(/^"|"$/g, ''));
+                    } catch (finalError) {
+                        throw new Error(`API响应格式错误: ${responseText}`);
+                    }
+                }
+
+                document.title = `练习册 ${currentBookId} 答案 - 智慧学习平台`;
+
+                if (responseData.status == "success") {
+                    const mockData = {
+                        bookId: currentBookId,
+                        title: "《" + responseData.title + "》参考答案",
+                        edition: responseData.edition,
+                        grade: responseData.grade,
+                        subject: responseData.subject,
+                        pageCount: responseData.pages,
+                        images: []
+                    };
+
+                    var imagepath = responseData.imagepath;
+                    for (let i = 0; i < mockData.pageCount; i++) {
+                        var num = i + 1;
+                        const thumbUrl = imagepath + "/" + num + ".jpg";
+                        const largeUrl = imagepath + "/" + num + ".jpg";
+                        mockData.images.push({
+                            id: i + 1,
+                            thumb: thumbUrl,
+                            large: largeUrl,
+                            pageNumber: i + 1
+                        });
+                    }
+
+                    updateProgress(100);
+                    return mockData;
+                } else {
+                    throw new Error('API返回错误状态');
+                }
+            } catch (error) {
+                console.error('加载答案失败:', error);
+                throw new Error('无法加载答案数据。请稍后重试。');
+            }
+        }
+
+        // 展示错误信息
+        function showError(message) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = `
+                        <div class="error-card">
+                            <div class="error-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <h2 class="error-title">数据加载失败</h2>
+                            <p class="error-description">${message}</p>
+                            <button class="pagination-btn" style="margin: 0 auto; padding: 10px 25px;"
+                                    onclick="window.location.reload()">
+                                <i class="fas fa-sync-alt"></i> 重新加载
+                            </button>
+                        </div>
+                    `;
+
+            document.getElementById('pagination').style.display = 'none';
+        }
+
+        // 更新加载进度条
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.style.width = `${percent}%`;
+            }
+        }
+
+        // 初始化画廊
+        function renderGallery(bookData) {
+            const gallery = document.getElementById('gallery');
+
+            document.getElementById('book-title').textContent = bookData.title;
+            document.getElementById('edition').textContent = bookData.edition;
+            document.getElementById('grade').textContent = bookData.grade;
+            document.getElementById('subject').textContent = bookData.subject;
+            document.getElementById('page-count').textContent = bookData.pageCount;
+
+            if (!bookData.images || bookData.images.length === 0) {
+                gallery.innerHTML = `
+                            <div class="error-card">
+                                <div class="error-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h2 class="error-title">没有找到答案信息</h2>
+                                <p class="error-description">这本练习册暂时没有可用的答案，请稍后再试。</p>
+                                <button class="pagination-btn" style="margin: 0 auto; padding: 10px 25px;"
+                                        onclick="window.history.back()">
+                                    <i class="fas fa-arrow-left"></i> 返回上一页
+                                </button>
+                            </div>
+                        `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            images = bookData.images;
+            totalPages = Math.ceil(images.length / perPage);
+
+            document.getElementById('pagination').style.display = 'flex';
+
+            renderGalleryPage(1);
+        }
+
+        // 渲染画廊页面
+        function renderGalleryPage(pageNum) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            currentPage = Math.max(1, Math.min(pageNum, totalPages));
+
+            const start = (currentPage - 1) * perPage;
+            const end = Math.min(start + perPage, images.length);
+
+            document.getElementById('page-info').textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages;
+
+            if (totalPages === 0) return;
+
+            for (let i = start; i < end; i++) {
+                const imgData = images[i];
+
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.dataset.index = imgData.id;
+                galleryItem.style.animationDelay = `${0.1 * (i % 8)}s`;
+                galleryItem.title = `点击查看第${imgData.pageNumber}页答案大图`;
+
+                const loadingSpinner = document.createElement('div');
+                loadingSpinner.className = 'loading-spinner';
+                loadingSpinner.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                galleryItem.appendChild(loadingSpinner);
+
+                const pageNumElem = document.createElement('div');
+                pageNumElem.className = 'page-number';
+                pageNumElem.textContent = imgData.pageNumber;
+                galleryItem.appendChild(pageNumElem);
+
+                const imgElement = document.createElement('img');
+                imgElement.className = 'gallery-img';
+                imgElement.src = imgData.thumb;
+                imgElement.alt = `练习册答案缩略图第${imgData.pageNumber}页`;
+                imgElement.loading = 'lazy';
+                galleryItem.appendChild(imgElement);
+
+                const pageInfo = document.createElement('div');
+                pageInfo.className = 'book-pages';
+                pageInfo.innerHTML = `第${imgData.pageNumber}页答案`;
+                galleryItem.appendChild(pageInfo);
+
+                gallery.appendChild(galleryItem);
+
+                galleryItem.addEventListener('click', () => {
+                    showEnlargedImage(imgData.large, imgData.pageNumber);
+                });
+
+                imgElement.onload = function () {
+                    if (galleryItem.contains(loadingSpinner)) {
+                        galleryItem.removeChild(loadingSpinner);
+                    }
+                };
+            }
+        }
+
+        // 显示放大的图片 - 关键功能修改点
+        function showEnlargedImage(imgSrc, pageNumber) {
+            const overlay = document.querySelector('.overlay');
+            const enlargedImg = document.querySelector('.enlarged-img');
+            const loadingLarge = document.getElementById('large-loading');
+            const closeBtn = document.querySelector('.close-btn');
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            currentScale = 1;
+
+            // 显示加载状态
+            loadingLarge.innerHTML = `<i class="fas fa-spinner fa-spin"></i><br>加载第${pageNumber}页高清答案...`;
+            loadingLarge.style.display = 'block';
+            enlargedImg.classList.remove('loaded');
+            enlargedImg.style.transform = "scale(1)";
+
+            enlargedImg.src = '';
+
+            setTimeout(() => {
+                enlargedImg.src = imgSrc;
+            }, 50);
+
+            enlargedImg.onload = function () {
+                loadingLarge.style.display = 'none';
+                this.classList.add('loaded');
+            };
+
+            enlargedImg.onerror = function () {
+                console.error('大图加载失败:', imgSrc);
+                loadingLarge.innerHTML = `<i class="fas fa-exclamation-triangle"></i><br>
+                                                 第${pageNumber}页加载失败
+                                                 <div style="margin-top:10px;font-size:0.7em">${imgSrc}</div>`;
+            };
+
+            // 点击关闭按钮 - 阻止事件冒泡
+            closeBtn.onclick = function (e) {
+                e.stopPropagation();
+                closeOverlay();
+            };
+
+            // 点击大图区域关闭大图
+            enlargedImg.addEventListener('click', function (e) {
+                e.preventDefault();
+                closeOverlay();
+            });
+
+            // 点击背景遮罩关闭
+            overlay.addEventListener('click', function (e) {
+                if (!e.target.closest('.enlarged-container') && !e.target.closest('.control-toolbar')) {
+                    closeOverlay();
+                }
+            });
+
+            // ESC按键关闭
+            document.addEventListener('keydown', function keyHandler(e) {
+                if (e.key === "Escape") {
+                    closeOverlay();
+                    // 移除事件监听
+                    document.removeEventListener('keydown', keyHandler);
+                }
+            });
+
+            // 滚轮缩放功能
+            enlargedImg.addEventListener('wheel', function (e) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                zoomImage(delta);
+            });
+
+            // 缩放按钮功能
+            document.getElementById('zoom-in').addEventListener('click', function (e) {
+                e.stopPropagation();
+                zoomImage(0.2);
+            });
+
+            document.getElementById('zoom-out').addEventListener('click', function (e) {
+                e.stopPropagation();
+                zoomImage(-0.2);
+            });
+
+            document.getElementById('zoom-reset').addEventListener('click', function (e) {
+                e.stopPropagation();
+                zoomImage(0, true);
+            });
+        }
+
+        // 辅助函数：缩放图片
+        function zoomImage(delta, reset = false) {
+            const enlargedImg = document.querySelector('.enlarged-img');
+
+            if (reset) {
+                currentScale = 1;
+            } else {
+                currentScale += delta;
+                currentScale = Math.max(0.1, Math.min(currentScale, 3.0));
+            }
+
+            enlargedImg.style.transform = `scale(${currentScale})`;
+        }
+
+        // 关闭放大视图
+        function closeOverlay() {
+            const overlay = document.querySelector('.overlay');
+            const enlargedImg = document.querySelector('.enlarged-img');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            enlargedImg.src = "";
+            enlargedImg.style.transform = "scale(1)";
+
+            // 移除可能存在的点击事件监听器
+            const overlayElements = document.querySelectorAll('.overlay, .enlarged-container');
+            overlayElements.forEach(el => {
+                el.removeEventListener('click', overlayClickHandler);
+            });
+        }
+
+        // 初始化页面
+        async function initPage() {
+            currentBookId = getBookIdFromUrl();
+
+            try {
+                const bookData = await fetchAnswerData();
+                renderGallery(bookData);
+
+                document.getElementById('prev-page').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        renderGalleryPage(currentPage - 1);
+                        window.scrollTo({ top: 150, behavior: 'smooth' });
+                    }
+                });
+
+                document.getElementById('next-page').addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        renderGalleryPage(currentPage + 1);
+                        window.scrollTo({ top: 150, behavior: 'smooth' });
+                    }
+                });
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
