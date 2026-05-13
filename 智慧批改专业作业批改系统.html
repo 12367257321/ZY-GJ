@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧批改 - 专业作业批改系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        /* 首页 */
+        .home-page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 22px 30px;
+            border-radius: 15px;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        
+        .logo i {
+            font-size: 36px;
+            margin-right: 16px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.87;
+            font-weight: 500;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .info-card {
+            padding: 26px;
+        }
+        
+        .student-info {
+            display: flex;
+            align-items: center;
+            padding-bottom: 26px;
+            border-bottom: 1px solid #eaeff5;
+            margin-bottom: 26px;
+        }
+        
+        .student-avatar {
+            width: 76px;
+            height: 76px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            border-radius: 50%;
+            color: white;
+            font-size: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 22px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .student-details h2 {
+            font-size: 26px;
+            margin-bottom: 6px;
+            color: #2c3e50;
+        }
+        
+        .student-details p {
+            color: #637282;
+            font-size: 15px;
+        }
+        
+        .meta-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+        
+        .meta-item {
+            display: flex;
+            background: #f8fafd;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #2575fc;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease;
+        }
+        
+        .meta-item:hover {
+            transform: translateY(-4px);
+        }
+        
+        .meta-icon {
+            width: 50px;
+            height: 50px;
+            background: #e0ebff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            font-size: 22px;
+            color: #2575fc;
+        }
+        
+        .meta-content h3 {
+            font-size: 16px;
+            color: #546e7a;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .meta-content p {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            background: #e0ebff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            color: #2575fc;
+            font-size: 20px;
+        }
+        
+        .section-title h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+        }
+        
+        .work-card {
+            border-radius: 14px;
+            overflow: hidden;
+           
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .work-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f5ff;
+        }
+        
+        .work-card img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: all 0.5s ease;
+        }
+        
+        .work-overlay {
+            padding: 16px 22px;
+            background: white;
+        }
+        
+        .work-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        
+        .work-title span {
+            font-weight: 600;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        
+        .work-title .status {
+            font-size: 14px;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        .work-progress {
+            height: 10px;
+            background: #f0f4f8;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+           
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.3) 50%, 
+                rgba(255,255,255,0) 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* 按钮区域 */
+        .work-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 18px;
+            background: #f8fafd;
+            border-top: 1px solid #eaeff5;
+        }
+        
+        .work-actions button {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .rotate-btn {
+            background: #f1f8ff;
+            color: #4a90e2;
+        }
+        
+        .rotate-btn:hover {
+            background: #e3f0ff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(74, 144, 226, 0.2);
+        }
+        
+        .rotate-btn i {
+            transition: transform 0.7s ease;
+        }
+        
+        .edit-btn {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(37, 117, 252, 0.3);
+        }
+        
+        .edit-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* 评语区域 */
+        .review-section {
+            padding: 26px;
+            border-top: 1px solid #eaeff5;
+            background: linear-gradient(to bottom, #f8fafd, #f0f7ff);
+        }
+        
+        .review-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .review-title i {
+            background: #e0ebff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            color: #2575fc;
+            font-size: 20px;
+        }
+        
+        .review-title h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .review-text {
+            width: 100%;
+            height: 130px;
+            padding: 18px;
+            border: 1px solid #d1e3f8;
+            border-radius: 12px;
+            resize: none;
+            font-size: 16px;
+            margin-bottom: 22px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) inset;
+            transition: border-color 0.3s;
+        }
+        
+        .review-text:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+        
+        .review-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .review-save {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 13px 36px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 117, 252, 0.25);
+        }
+        
+        .review-save:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+          
+        }
+        
+        .review-save:active {
+            transform: translateY(0);
+        }
+        
+        /* 全屏批改页面 */
+        .annotation-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .annotation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 28px;
+            background: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+        }
+        
+        .annotation-title .main-title {
+            font-size: 20px;
+            font-weight: 600; 
+        }
+        
+        .annotation-title .sub-title {
+            font-size: 15px;
+            color: #637282;
+            margin-top: 5px;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .header-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f4f8;
+            cursor: pointer;
+            font-size: 19px;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-btn:hover {
+            background: #e0ebff;
+            color: #2575fc;
+            transform: translateY(-2px);
+        }
+        
+        .annotation-container {
+            position: relative;
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f5ff;
+            padding: 20px;
+        }
+        
+        .annotation-body {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 76px);
+        }
+        
+        .canvas-wrapper {
+            position: relative;
+            overflow: auto;
+            max-width: calc(100% - 40px);
+            max-height: calc(100% - 40px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #annotationCanvas {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            touch-action: none;
+        }
+        
+        .annotation-toolbar {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 22px;
+            background: white;
+            border-bottom: 1px solid #eaeff5;
+            flex-wrap: wrap;
+        }
+        
+        .tool-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .tool-btn {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f4f8;
+            cursor: pointer;
+            font-size: 22px;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tool-btn.active {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
+        }
+        
+        .tool-btn.toggle.active {
+            background: #e0ebff;
+            color: #2575fc;
+        }
+        
+        .tool-btn:hover:not(.active) {
+            background: #e0ebff;
+            color: #2575fc;
+        }
+        
+        .tool-tip {
+            position: absolute;
+            bottom: -28px;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+            transform: translateY(5px);
+        }
+        
+        .tool-btn:hover .tool-tip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 颜色选择器 */
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-left: 15px;
+        }
+        
+        .color-label {
+            font-weight: 600;
+            color: #546e7a;
+        }
+        
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-option:hover {
+            transform: scale(1.15);
+        }
+        
+        .color-option.active {
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 3px #2575fc;
+        }
+        
+        .color-red {
+            background: #e74c3c;
+        }
+        
+        .color-blue {
+            background: #3498db;
+        }
+        
+        .color-green {
+            background: #2ecc71;
+        }
+        
+        .color-yellow {
+            background: #f1c40f;
+        }
+        
+        .color-purple {
+            background: #9b59b6;
+        }
+        
+        .width-control {
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            background: white;
+            border-bottom: 1px solid #eaeff5;
+        }
+        
+        .width-value {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
+        }
+        
+        .width-slider {
+            flex: 1;
+            max-width: 400px;
+            height: 10px;
+            -webkit-appearance: none;
+            border-radius: 5px;
+            background: #e0ebff;
+            outline: none;
+        }
+        
+        .width-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2575fc;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .action-bar {
+            display: flex;
+            gap: 18px;
+            padding: 22px;
+            background: white;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 14px 34px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .action-btn.secondary { 
+            color: #2c3e50;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #e2eaf5;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px); 
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            padding: 18px 30px;
+            max-width: 90%;
+            z-index: 2000;
+            opacity: 0;
+            transform: translateX(-50%) translateY(120px);
+            transition: all 0.4s ease;
+        }
+        
+        .notification.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .notif-icon {
+            font-size: 26px;
+            margin-right: 16px;
+        }
+        
+        .notif-content {
+            font-size: 17px;
+            font-weight: 500;
+        }
+        
+        .notif-close {
+            margin-left: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .notif-close:hover {
+            opacity: 1;
+        }
+        
+        /* 页面过渡 */
+        .page-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            z-index: 1500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        
+        .page-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .meta-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .work-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .work-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .annotation-toolbar {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 10px;
+            }
+            
+            .tool-group, .color-picker {
+                flex-wrap: wrap;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="homePage" class="home-page">
+        <header>
+            <div class="logo">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h1>智慧批改</h1>
+            </div>
+            <div class="subtitle">专业作业批改系统 - 支持多种批注方式</div>
+        </header>
+
+        <div class="container">
+            <div class="info-card">
+                <div class="student-info">
+                    <div class="student-avatar">L</div>
+                    <div class="student-details">
+                        <h2>李晓明</h2>
+                        <p>三年级二班 | 学号: SH20230317</p>
+                        <p>最近提交: 数学作业 - 一课一练</p>
+                    </div>
+                </div>
+
+                <div class="meta-container">
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>书籍名称</h3>
+                            <p>一课一练 - 三年级下册</p>
+                        </div>
+                    </div>
+
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>提交时间</h3>
+                            <p>2023年6月20日 17:08</p>
+                        </div>
+                    </div>
+
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>作业状态</h3>
+                            <p>批改中</p>
+                        </div>
+                    </div>
+
+                    <div class="meta-item">
+                        <div class="meta-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="meta-content">
+                            <h3>完成进度</h3>
+                            <p>第1页/共2页</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-file-alt"></i>
+                        <h2>学生作业</h2>
+                    </div>
+                </div>
+
+                <div class="work-grid">
+                    <div class="work-card" data-page="1">
+                        <div class="work-image-container">
+                            <img class="work-image" id="workImage1" data-page="1" 
+                                 src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80" 
+                                 alt="数学作业第一页">
+                        </div>
+                        <div class="work-overlay">
+                            <div class="work-title">
+                                <span>数学作业 - 第1页</span>
+                                <span class="status">批改中</span>
+                            </div>
+                            <div class="work-progress">
+                                <div class="progress-bar" id="progress-page1" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="work-actions">
+                            <button class="rotate-btn" id="rotateBtn1" data-page="1">
+                                <i class="fas fa-redo"></i> 旋转图片
+                            </button>
+                            <button class="edit-btn" data-page="1">
+                                <i class="fas fa-edit"></i> 批改作业
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="work-card" data-page="2">
+                        <div class="work-image-container">
+                            <img class="work-image" id="workImage2" data-page="2" 
+                                 src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80" 
+                                 alt="数学作业第二页">
+                        </div>
+                        <div class="work-overlay">
+                            <div class="work-title">
+                                <span>数学作业 - 第2页</span>
+                                <span class="status">待批改</span>
+                            </div>
+                            <div class="work-progress">
+                                <div class="progress-bar" id="progress-page2"></div>
+                            </div>
+                        </div>
+                        <div class="work-actions">
+                            <button class="rotate-btn" id="rotateBtn2" data-page="2">
+                                <i class="fas fa-redo"></i> 旋转图片
+                            </button>
+                            <button class="edit-btn" data-page="2">
+                                <i class="fas fa-edit"></i> 批改作业
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <div class="review-title">
+                    <i class="fas fa-comment-alt"></i>
+                    <h2>作业总评</h2>
+                </div>
+                <textarea class="review-text" id="reviewText" placeholder="请在此处填写对本次作业的总体评语...">学生解题思路清晰，大部分题目正确。但在最后两道应用题中存在计算错误，建议加强复杂问题的训练。</textarea>
+                <div class="review-actions">
+                    <button class="review-save" id="saveReview">
+                        <i class="fas fa-save"></i> 保存评语
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="annotationPage" class="annotation-page">
+        <div class="annotation-header">
+            <div class="header-left">
+                <div class="annotation-title">
+                    <div class="main-title" id="annotationTitle">数学作业 - 第一页</div>
+                    <div class="sub-title" id="annotationSubtitle">铅笔模式 - 红色批注</div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="header-btn" id="undoBtn">
+                    <i class="fas fa-undo"></i>
+                </div>
+                
+                <div class="header-btn" id="closeEditBtn">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="annotation-body">
+            <div class="annotation-container">
+                <div class="canvas-wrapper" id="canvasWrapper">
+                    <canvas id="annotationCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="annotation-toolbar">
+                <div class="tool-group">
+                    <div class="tool-btn active" id="penTool">
+                        <i class="fas fa-pen"></i>
+                        <div class="tool-tip">铅笔</div>
+                    </div>
+                    <div class="tool-btn" id="eraserTool">
+                        <i class="fas fa-eraser"></i>
+                        <div class="tool-tip">橡皮擦</div>
+                    </div>
+                    <div class="tool-btn toggle" id="markerToggle">
+                        <i class="fas fa-highlighter"></i>
+                        <div class="tool-tip">荧光笔</div>
+                    </div>
+                    
+                    <div class="color-picker">
+                        <span class="color-label">颜色：</span>
+                        <div class="color-option color-red active" data-color="#e74c3c"></div>
+                        <div class="color-option color-blue" data-color="#3498db"></div>
+                        <div class="color-option color-green" data-color="#2ecc71"></div>
+                        <div class="color-option color-yellow" data-color="#f1c40f"></div>
+                        <div class="color-option color-purple" data-color="#9b59b6"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="width-control">
+                <div class="width-value" id="widthValue">3px</div>
+                <input type="range" min="1" max="20" value="3" id="widthSlider" class="width-slider">
+            </div>
+
+            <div class="action-bar">
+                <div class="action-btn secondary" id="clearBtn">
+                    <i class="fas fa-trash-alt"></i>
+                    清除批注
+                </div>
+                <div class="action-btn primary" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    保存批注
+                </div>
+                <div class="action-btn" id="saveAndExitBtn">
+                    <i class="fas fa-check-circle"></i>
+                    完成批改
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="saveNotification">
+        <div class="notif-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="notif-content">批注已成功保存！</div>
+        <div class="notif-close" id="closeNotif"><i class="fas fa-times"></i></div>
+    </div>
+
+    <div class="page-overlay" id="pageOverlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // DOM 元素引用
+            const homePage = document.getElementById('homePage');
+            const annotationPage = document.getElementById('annotationPage');
+            const canvas = document.getElementById('annotationCanvas');
+            const ctx = canvas.getContext('2d');
+            const saveNotification = document.getElementById('saveNotification');
+            const pageOverlay = document.getElementById('pageOverlay');
+            
+            // 工具按钮
+            const penTool = document.getElementById('penTool');
+            const eraserTool = document.getElementById('eraserTool');
+            const markerToggle = document.getElementById('markerToggle');
+            
+            // 功能按钮
+            const saveBtn = document.getElementById('saveBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const saveAndExitBtn = document.getElementById('saveAndExitBtn');
+            const closeEditBtn = document.getElementById('closeEditBtn');
+            const undoBtn = document.getElementById('undoBtn');
+            const saveReview = document.getElementById('saveReview');
+            const colorOptions = document.querySelectorAll('.color-option');
+            
+            // 旋转按钮
+            const rotateButtons = document.querySelectorAll('.rotate-btn');
+            
+            // 变量初始化
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let currentColor = '#e74c3c';
+            let currentStrokeWidth = 3;
+            let currentTool = 'pen';
+            let isMarker = false;
+            let currentPage = 1;
+            let drawingHistory = [];
+            let currentStep = -1;
+            let image = new Image();
+            let originalWidth = 0;
+            let originalHeight = 0;
+            
+            // 页面批注状态记录
+            const pageAnnotations = {
+                1: {
+                    progress: 65,
+                    imageSrc: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80',
+                    rotation: 0
+                },
+                2: {
+                    progress: 0,
+                    imageSrc: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80',
+                    rotation: 0
+                }
+            };
+            
+            // 初始化画笔
+            function initPen() {
+                currentTool = 'pen';
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                penTool.classList.add('active');
+                setStrokeStyle();
+            }
+            
+            // 初始化画布
+            function initCanvas() {
+                // 设置画布的尺寸
+                const rotation = pageAnnotations[currentPage].rotation;
+                if (rotation === 90 || rotation === 270) {
+                    canvas.width = originalHeight;
+                    canvas.height = originalWidth;
+                } else {
+                    canvas.width = originalWidth;
+                    canvas.height = originalHeight;
+                }
+                
+                // 绘制图像（考虑旋转角度）
+                drawImageWithRotation();
+                
+                // 设置初始样式
+                setStrokeStyle();
+                
+                // 保存初始状态
+                saveDrawingState();
+                
+                console.log("画布初始化完成，尺寸: ", canvas.width, canvas.height);
+            }
+            
+            // 绘制带旋转的图像
+            function drawImageWithRotation() {
+                ctx.save();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const rotation = pageAnnotations[currentPage].rotation;
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(rotation * Math.PI / 180);
+                
+                // 根据旋转角度调整图像位置
+                switch(rotation) {
+                    case 90:
+                        ctx.drawImage(image, -originalHeight/2, -originalWidth/2, originalHeight, originalWidth);
+                        break;
+                    case 180:
+                        ctx.drawImage(image, -originalWidth/2, -originalHeight/2, originalWidth, originalHeight);
+                        break;
+                    case 270:
+                        ctx.drawImage(image, -originalHeight/2, -originalWidth/2, originalHeight, originalWidth);
+                        break;
+                    default: // 0度
+                        ctx.drawImage(image, -originalWidth/2, -originalHeight/2, originalWidth, originalHeight);
+                }
+                
+                ctx.restore();
+            }
+            
+            // 加载指定页的图片
+            function loadImage(page) {
+                currentPage = page;
+                document.getElementById('annotationTitle').textContent = `数学作业 - ${page === 1 ? '第一页' : '第二页'}`;
+                
+                // 从状态对象中获取图片源和旋转状态
+                image = new Image();
+                image.crossOrigin = "Anonymous";
+                image.onload = function() {
+                    originalWidth = image.width;
+                    originalHeight = image.height;
+                    initCanvas();
+                };
+                image.src = pageAnnotations[page].imageSrc;
+            }
+            
+            // 保存当前画布状态
+            function saveDrawingState() {
+                currentStep++;
+                if (currentStep < drawingHistory.length) {
+                    drawingHistory.length = currentStep;
+                }
+                drawingHistory.push(canvas.toDataURL());
+                
+                // 保存批注进度
+                pageAnnotations[currentPage].progress = Math.min(100, Math.max(0, currentStep * 20 + 30));
+                
+                // 更新进度显示
+                document.querySelectorAll('.progress-bar').forEach((el, index) => {
+                    el.style.width = pageAnnotations[index + 1].progress + '%';
+                });
+            }
+            
+            // 设置工具样式
+            function setStrokeStyle() {
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = currentStrokeWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
+                
+                if (isMarker) {
+                    ctx.globalAlpha = 0.4;
+                } else {
+                    ctx.globalAlpha = 1.0;
+                }
+            }
+            
+            // 开始绘制
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastX);
+                
+                // 保存当前状态开始新路径
+                saveDrawingState();
+                
+                console.log("开始绘制 @", lastX, lastY);
+            }
+            
+            // 绘制中
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                
+                lastX = x;
+                lastY = y;
+            }
+            
+            // 停止绘制
+            function stopDrawing() {
+                if (!isDrawing) return;
+                isDrawing = false;
+                
+                ctx.closePath();
+                console.log("停止绘制");
+            }
+            
+            // 显示通知
+            function showNotification() {
+                saveNotification.classList.add('active', 'success');
+                setTimeout(() => {
+                    saveNotification.classList.remove('active');
+                }, 3000);
+            }
+            
+            // 清空批注
+            function clearCanvas() {
+                if (confirm('确定要清除所有批注吗？')) {
+                    // 清除画布但保留图像
+                    console.log("清除所有批注");
+                    drawImageWithRotation();
+                    
+                    // 清空批注记录
+                    drawingHistory = [];
+                    currentStep = -1;
+                    
+                    saveDrawingState();
+                }
+            }
+            
+            // 撤销操作
+            function undoDrawing() {
+                if (currentStep <= 0) return;
+                
+                currentStep--;
+                
+                const img = new Image();
+                img.onload = function () {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = drawingHistory[currentStep];
+                console.log("撤销操作，当前步骤: ", currentStep);
+            }
+            
+            // 切换工具
+            function activateTool(tool) {
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                
+                switch(tool) {
+                    case 'pen':
+                        currentTool = 'pen';
+                        penTool.classList.add('active');
+                        break;
+                    case 'eraser':
+                        currentTool = 'eraser';
+                        eraserTool.classList.add('active');
+                        break;
+                    case 'marker':
+                        isMarker = !isMarker;
+                        markerToggle.classList.toggle('active', isMarker);
+                        break;
+                }
+                
+                setStrokeStyle();
+            }
+            
+            // 选择颜色
+            function selectColor(color) {
+                currentColor = color;
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                event.target.classList.add('active');
+                setStrokeStyle();
+                console.log("已选择颜色: " + color);
+            }
+            
+            // 打开全屏批改页面
+            function openAnnotationPage(page) {
+                pageOverlay.classList.add('active');
+                setTimeout(() => {
+                    homePage.style.display = 'none';
+                    annotationPage.style.display = 'flex';
+                    pageOverlay.classList.remove('active');
+                    
+                    loadImage(page);
+                    activateTool('pen'); // 初始化画笔工具
+                    
+                    // 初始化事件监听器
+                    setupAnnotationPageListeners();
+                    
+                    console.log(`进入批改页面，页面编号: ${page}`);
+                }, 300);
+            }
+            
+            // 返回首页
+            function closeAnnotationPage() {
+                pageOverlay.classList.add('active');
+                setTimeout(() => {
+                    annotationPage.style.display = 'none';
+                    homePage.style.display = 'block';
+                    document.body.style.overflow = 'auto';
+                    pageOverlay.classList.remove('active');
+                }, 300);
+            }
+            
+            // 保存评语
+            function saveOverallReview() {
+                const reviewText = document.getElementById('reviewText').value;
+                console.log('保存评语:', reviewText);
+                
+                // 显示保存反馈
+                saveReview.innerHTML = '<i class="fas fa-check"></i> 已保存';
+                saveReview.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                
+                setTimeout(() => {
+                    saveReview.innerHTML = '<i class="fas fa-save"></i> 保存评语';
+                    saveReview.style.background = 'linear-gradient(135deg, #6a11cb, #2575fc)';
+                }, 2000);
+            }
+            
+            // 图片旋转函数
+            function rotateImage(page) {
+                const currentRotation = (pageAnnotations[page].rotation + 90) % 360;
+                pageAnnotations[page].rotation = currentRotation;
+                
+                // 更新卡片上的图片旋转
+                const img = document.getElementById(`workImage${page}`);
+                if (img) {
+                    img.style.transform = `rotate(${currentRotation}deg)`;
+                }
+                
+                // 如果在批改同一页，重新绘制
+                if (annotationPage.style.display === 'flex' && currentPage == page) {
+                    drawImageWithRotation();
+                }
+                
+                // 动画效果
+                const btn = document.querySelector(`#rotateBtn${page} i`);
+                btn.style.transform = 'rotate(90deg)';
+                btn.style.transition = 'transform 0.5s ease';
+                
+                setTimeout(() => {
+                    btn.style.transform = 'rotate(0deg)';
+                }, 500);
+                
+                console.log(`页面${page}旋转至 ${currentRotation} 度`);
+            }
+            
+            // 设置图片旋转监听
+            function setupRotationListeners() {
+                // 绑定所有旋转按钮
+                rotateButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const page = this.getAttribute('data-page');
+                        rotateImage(page);
+                    });
+                });
+            }
+            
+            // 初始化作业卡片按钮监听
+            function setupWorkCardListeners() {
+                // 绑定批改按钮
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const page = this.getAttribute('data-page');
+                        console.log(`批改作业按钮点击，页面编号: ${page}`);
+                        openAnnotationPage(page);
+                    });
+                });
+            }
+            
+            // 设置工具监听器
+            function setupToolListeners() {
+                penTool.addEventListener('click', () => activateTool('pen'));
+                eraserTool.addEventListener('click', () => activateTool('eraser'));
+                markerToggle.addEventListener('click', () => activateTool('marker'));
+            }
+            
+            // 设置颜色选择监听器
+            function setupColorListeners() {
+                colorOptions.forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        selectColor(e.target.dataset.color);
+                    });
+                });
+            }
+            
+            // 批改页面功能按钮监听
+            function setupAnnotationPageListeners() {
+                // 清除已有事件监听器
+                canvas.onmousedown = null;
+                canvas.onmousemove = null;
+                canvas.onmouseup = null;
+                canvas.onmouseout = null;
+                
+                // 添加新的绘制事件监听器
+                canvas.addEventListener('mousedown', startDrawing);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopDrawing);
+                canvas.addEventListener('mouseout', stopDrawing);
+                
+                // 添加触摸设备支持
+                canvas.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+                    const mouseEvent = new MouseEvent('mousedown', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    canvas.dispatchEvent(mouseEvent);
+                    e.preventDefault();
+                });
+                
+                canvas.addEventListener('touchmove', (e) => {
+                    const touch = e.touches[0];
+                    const mouseEvent = new MouseEvent('mousemove', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    canvas.dispatchEvent(mouseEvent);
+                    e.preventDefault();
+                });
+                
+                canvas.addEventListener('touchend', () => {
+                    const mouseEvent = new MouseEvent('mouseup', {});
+                    canvas.dispatchEvent(mouseEvent);
+                    e.preventDefault();
+                });
+                
+                // 功能按钮监听
+                clearBtn.addEventListener('click', clearCanvas);
+                undoBtn.addEventListener('click', undoDrawing);
+                closeEditBtn.addEventListener('click', closeAnnotationPage);
+                
+                // 宽度控制
+                widthSlider.addEventListener('input', function() {
+                    currentStrokeWidth = parseInt(this.value);
+                    widthValue.textContent = `${currentStrokeWidth}px`;
+                    setStrokeStyle();
+                    
+                    // 显示视觉反馈
+                    widthValue.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        widthValue.style.transform = '';
+                    }, 300);
+                });
+                
+                // 保存操作
+                saveBtn.addEventListener('click', function() {
+                    saveDrawingState();
+                    showNotification();
+                    
+                    // 按钮反馈
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 300);
+                });
+                
+                saveAndExitBtn.addEventListener('click', function() {
+                    saveDrawingState();
+                    showNotification();
+                    
+                    setTimeout(closeAnnotationPage, 1200);
+                });
+                
+                // 通知关闭
+                document.getElementById('closeNotif').addEventListener('click', () => {
+                    saveNotification.classList.remove('active');
+                });
+            }
+            
+            // 页面初始化函数
+            function init() {
+                setupWorkCardListeners();
+                setupRotationListeners();
+                setupToolListeners();
+                setupColorListeners();
+                
+                saveReview.addEventListener('click', saveOverallReview);
+                
+                document.getElementById('progress-page1').style.width = '65%';
+            }
+            
+            // 启动应用
+            init();
+        });
+    </script>
+</body>
+</html>
